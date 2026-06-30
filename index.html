@@ -9,7 +9,7 @@
     body {
         margin: 0;
         padding: 0;
-        overflow: hidden; /* 화면에 딱 맞춰서 불필요한 스크롤바가 생기는 걸 막아줍니다 */
+        overflow: hidden;
     }
 </style>
 
@@ -241,12 +241,10 @@ document.getElementById("back5").onclick = () => music.currentTime = Math.max(0,
 document.getElementById("forward5").onclick = () => music.currentTime = Math.min(music.duration, music.currentTime + 5);
 music.addEventListener("ended", () => { cd.classList.remove("spinning"); playBtn.textContent = "▶"; progress.style.width = "0%"; });
 
-/* --- 멘헤라 폭주 파괴 연출 스크립트 --- */
 const closeBtn = document.getElementById("closeBtn");
 const messages = ["왜? 왜?", "나 버려? 나 버려?", "가지마...", "나만 두고 가는거야?", "평생 함께한다며!!", "어딜 가는거야?", "버리지마버리지마"];
 let popupCount = 0; const targetPopups = 30;
 
-// 1. 일반 경고음 효과음
 function playRetroDing() {
   if(!audioCtx) return;
   const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
@@ -256,7 +254,6 @@ function playRetroDing() {
   osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1);
 }
 
-// 2. 창 닫기 즉시 울리는 소름 끼치는 저음 스크림음
 function playCreepyScream() {
   if(!audioCtx) return;
   const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
@@ -266,7 +263,6 @@ function playCreepyScream() {
   osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.8);
 }
 
-// 3. 최후에 터지는 아날로그 화이트 노이즈 (치지직-)
 function playWhiteNoise() {
   if(!audioCtx) return;
   const bufferSize = audioCtx.sampleRate * 0.4, buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate), data = buffer.getChannelData(0);
@@ -280,19 +276,18 @@ function playWhiteNoise() {
 closeBtn.addEventListener("click", () => {
   initAudio(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   
-  // [수정] 즉시 기존 음악 완벽 차단 및 아이콘 무섭게 강제 변경
   music.pause(); music.currentTime = 0;
   cd.classList.remove("spinning");
   cd.style.background = "url('https://raw.githubusercontent.com/fixk1234/12344/main/needy-streamer.gif') center/cover no-repeat";
   
-  playCreepyScream(); // 소름 끼치는 호러 사운드 재생
+  playCreepyScream();
   popupCount = 0;
   
   const spamInterval = setInterval(() => {
     if (popupCount >= targetPopups) {
       clearInterval(spamInterval);
       
-      playWhiteNoise(); // 마지막 순간 TV 지직 소리 폭발
+      playWhiteNoise();
       document.body.style.filter = "invert(1) contrast(3) brightness(1.2)";
       document.body.classList.add("glitch-active");
       
