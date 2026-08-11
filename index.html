@@ -35,6 +35,7 @@ html, body{
 
 body{ position:relative; }
 
+/* ---------- 심연 배경 (안개 + 비네트 + 별 + 날개 실루엣) ---------- */
 #depth{
   position:fixed; inset:0; z-index:0; pointer-events:none;
   --rx:18%; --ry:20%; --gx:82%; --gy:75%;
@@ -81,6 +82,7 @@ body{ position:relative; }
   50%{ opacity:.9; transform:scale(1.6); }
 }
 
+/* ---------- 마우스 추적 오라 & 깃털 잔불 ---------- */
 #cursorAura{
   position:fixed; top:0; left:0; width:340px; height:340px; z-index:1;
   pointer-events:none; border-radius:50%; transform:translate(-50%,-50%);
@@ -98,6 +100,7 @@ body{ position:relative; }
   100%{ opacity:0; transform:translateY(-46px) rotate(140deg) scale(.25); }
 }
 
+/* ---------- 상단 좌측 음소거 버튼 + 호버 볼륨 UI ---------- */
 #soundControl{
   position:fixed; top:26px; left:26px; z-index:20;
   display:flex; align-items:center;
@@ -146,6 +149,7 @@ body{ position:relative; }
   cursor:pointer;
 }
 
+/* ---------- 좌측 하단 조회수 ---------- */
 #viewCount{
   position:fixed; bottom:26px; left:26px; z-index:20;
   display:flex; align-items:center; gap:8px;
@@ -153,6 +157,7 @@ body{ position:relative; }
 }
 #viewCount svg{ width:15px; height:15px; stroke:var(--ash); fill:none; }
 
+/* ---------- 메인 레이아웃 ---------- */
 .stage{
   position:relative; z-index:1;
   min-height:100vh;
@@ -161,6 +166,7 @@ body{ position:relative; }
   align-items:center;
 }
 
+/* 왼쪽: 프로필 컬럼 */
 .profile-col{
   display:flex; flex-direction:column; align-items:center;
   padding:0 40px;
@@ -215,6 +221,7 @@ body{ position:relative; }
   margin:0 0 30px 0; text-align:center; font-style:italic;
 }
 
+/* 프로필 카드 */
 .id-card{
   width:300px;
   background:rgba(242,239,233,0.045);
@@ -242,6 +249,7 @@ body{ position:relative; }
 .id-name{ font-family:'Cinzel', serif; font-size:1rem; letter-spacing:.05em; }
 .id-status{ font-size:.85rem; color:var(--ash); font-family:'Noto Serif KR',serif; }
 
+/* 재생바 (재생/일시정지 · 5초 스킵 · 탐색바) */
 .player-widget{
   width:300px; margin-top:18px;
   background:rgba(242,239,233,0.045);
@@ -298,6 +306,7 @@ body{ position:relative; }
   cursor:pointer;
 }
 
+/* 아이콘 줄 */
 .link-row{ display:flex; gap:22px; margin-top:26px; }
 .link-row a{
   width:24px; height:24px; opacity:.75; transition:.2s;
@@ -306,12 +315,14 @@ body{ position:relative; }
 .link-row a:hover{ opacity:1; transform:translateY(-2px); }
 .link-row svg{ width:100%; height:100%; fill:var(--bone); }
 
+/* 곡 정보 (얇게, 로고 아래 표기) */
 .track-line{
   margin-top:22px; font-size:.78rem; color:var(--ash);
   letter-spacing:.08em; text-align:center;
 }
 .track-line span{ color:var(--bone); }
 
+/* ---------- 오른쪽: 캐릭터 아트 자리 ---------- */
 .altar-col{
   position:relative; height:100vh;
   display:flex; align-items:center; justify-content:center;
@@ -320,7 +331,9 @@ body{ position:relative; }
   position:relative; width:min(46vw, 560px); height:70vh;
   display:flex; align-items:flex-end; justify-content:center;
 }
-
+/* 🖼 캐릭터 이미지 삽입 위치:
+   아래 #characterArt 안에 <img src="캐릭터이미지경로" /> 를 추가하세요.
+   비율은 자유롭게, 프레임 크기는 위 .altar-frame 에서 조절합니다. */
 #characterArt{
   position:relative;
   width:100%; height:78%;
@@ -358,6 +371,7 @@ body{ position:relative; }
   0%,100%{ transform:translateY(0) scale(1); }
   50%{ transform:translateY(-6px) scale(1.01); }
 }
+/* 캐릭터 클릭 시 푸딩처럼 말랑거리는 애니메이션 (breathe 애니메이션을 잠깐 대체) */
 #characterArt img.jelly{
   animation:jellySquish .6s cubic-bezier(.36,.02,.16,1) 1;
 }
@@ -371,6 +385,7 @@ body{ position:relative; }
   100%{ transform:scale(1, 1); }
 }
 
+/* ---------- 배경 사야 날개에서 떨어지는 잔빛 파티클 ---------- */
 .wing-spark{
   position:fixed; z-index:1; pointer-events:none; border-radius:50%;
   background:radial-gradient(circle, rgba(242,239,233,0.95), rgba(242,239,233,0) 72%);
@@ -406,6 +421,7 @@ body{ position:relative; }
 }
 .reflection #characterArt{ border:none; background:none; }
 
+/* ---------- 반응형 ---------- */
 @media (max-width:880px){
   .stage{ grid-template-columns:1fr; padding-top:70px; }
   .altar-col{ height:64vh; order:-1; }
@@ -417,6 +433,7 @@ body{ position:relative; }
   }
 }
 
+/* ---------- fixk 이스터에그: 글리치 + 비 + 숨겨진 메시지 ---------- */
 #glitchOverlay{
   position:fixed; inset:0; z-index:50; pointer-events:none; opacity:0;
   mix-blend-mode:screen;
@@ -521,6 +538,7 @@ body.glitching #depth, body.glitching .altar-col, body.glitching .profile-col{
 
 <main class="stage">
 
+  <!-- 왼쪽: 이름 / 소개 / 프로필 -->
   <section class="profile-col">
     <div class="sigil">
       <svg viewBox="0 0 100 70">
@@ -597,10 +615,12 @@ body.glitching #depth, body.glitching .altar-col, body.glitching .profile-col{
 
 </main>
 
+<!-- 아래 src를 깃허브 저장소의 "두번째" mp3 파일 raw 링크로 교체하세요 (without u - longq) -->
 <audio id="bgm" loop crossorigin="anonymous"
   src="https://raw.githubusercontent.com/fixk1234/12344/3c7addf1c7073152cce6cbae66846d7c0897edf5/without%20u_spotdown.org.mp3"></audio>
 
 <script>
+/* ---------- 별 생성 ---------- */
 const starsEl = document.getElementById('stars');
 for(let i=0;i<80;i++){
   const s = document.createElement('div');
@@ -614,10 +634,12 @@ for(let i=0;i<80;i++){
 
 const artEl = document.getElementById('characterArt');
 
+/* ---------- 배경 사야 날개에서 잔빛이 떨어지는 효과 ---------- */
 function spawnWingSpark(){
   const spark = document.createElement('div');
   spark.className = 'wing-spark';
 
+  /* 날개가 있는 화면 상단~중단 영역에서 랜덤하게 시작 */
   const startXPct = 38 + Math.random()*34;   // 38%~72%
   const startYPct = 6 + Math.random()*26;    // 6%~32%
   const size = Math.random()*2.6 + 1.6;
@@ -639,6 +661,7 @@ function spawnWingSpark(){
 setInterval(spawnWingSpark, 550);
 for(let i=0;i<5;i++){ setTimeout(spawnWingSpark, i*300); }
 
+/* ---------- 캐릭터 클릭 시 푸딩처럼 말랑 + 뾰잉뾰잉 소리 ---------- */
 function playBoing(){
   try{
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -659,7 +682,7 @@ function playBoing(){
     }
     boing(now, 480);
     boing(now+0.16, 620);
-  }catch(err)
+  }catch(err){ /* 오디오 미지원 브라우저는 조용히 무시 */ }
 }
 
 if(artEl){
@@ -667,7 +690,7 @@ if(artEl){
   artEl.addEventListener('click', () => {
     if(!charImg) return;
     charImg.classList.remove('jelly');
-    void charImg.offsetWidth;
+    void charImg.offsetWidth; /* 리플로우로 애니메이션 재시작 보장 */
     charImg.classList.add('jelly');
     playBoing();
   });
@@ -680,6 +703,7 @@ if(artEl){
   }
 }
 
+/* ---------- 마우스 추적 오라 + 잔불 파티클 + 안개/배경/색 팔레트 패럴랙스 ---------- */
 const aura = document.getElementById('cursorAura');
 const fogWrap1 = document.getElementById('fogWrap1');
 const fogWrap2 = document.getElementById('fogWrap2');
@@ -691,13 +715,16 @@ window.addEventListener('mousemove', (e) => {
   aura.style.left = e.clientX + 'px';
   aura.style.top = e.clientY + 'px';
 
+  /* 화면 중앙 대비 마우스 위치 비율(-1 ~ 1) */
   const nx = (e.clientX / window.innerWidth) - 0.5;
   const ny = (e.clientY / window.innerHeight) - 0.5;
 
+  /* 안개 레이어마다 다른 강도로 살짝 움직이게 (패럴랙스) */
   if(fogWrap1) fogWrap1.style.transform = `translate(${nx*46}px, ${ny*34}px)`;
   if(fogWrap2) fogWrap2.style.transform = `translate(${nx*-38}px, ${ny*-30}px)`;
   if(fogWrap3) fogWrap3.style.transform = `translate(${nx*28}px, ${ny*22}px)`;
 
+  /* 핏빛/초록 색 팔레트(배경 앰비언트 글로우)도 마우스 따라 살짝 이동 */
   if(depthEl){
     depthEl.style.setProperty('--rdx', (nx*60)+'px');
     depthEl.style.setProperty('--rdy', (ny*44)+'px');
@@ -739,6 +766,7 @@ visitorRef.on('value', s => {
   document.getElementById('count').textContent = String(s.val() || 0).padStart(3,'0');
 });
 
+/* ---------- 배경음악 볼륨 (호버 시 조절 UI 노출) ---------- */
 const bgm = document.getElementById('bgm');
 const soundBtn = document.getElementById('soundBtn');
 const volumeRange = document.getElementById('volumeRange');
@@ -755,6 +783,7 @@ function setIcon(){
 }
 setIcon();
 
+/* 슬라이더로 볼륨 조절 (재생은 멈추지 않음) */
 volumeRange.addEventListener('input', () => {
   const v = volumeRange.value / 100;
   bgm.volume = v;
@@ -763,6 +792,10 @@ volumeRange.addEventListener('input', () => {
   setIcon();
 });
 
+/* 버튼 클릭:
+   - 아직 재생이 시작되지 않았다면(자동재생이 브라우저 정책에 막힌 상태) 첫 클릭은
+     무조건 "재생 시작"으로 처리합니다 (음소거하지 않음) → 이전 버그(껐다 켜야 들리던 문제) 수정.
+   - 이미 재생 중이면 원래대로 음소거 토글로 동작합니다. */
 soundBtn.addEventListener('click', () => {
   if(bgm.paused){
     bgm.play().catch(()=>{});
@@ -780,6 +813,7 @@ soundBtn.addEventListener('click', () => {
   setIcon();
 });
 
+/* ---------- 재생바 (재생/일시정지 · 5초 스킵 · 탐색바) ---------- */
 const playPauseBtn = document.getElementById('playPauseBtn');
 const playIcon = document.getElementById('playIcon');
 const pauseIcon = document.getElementById('pauseIcon');
@@ -842,10 +876,22 @@ seekRange.addEventListener('change', () => {
   isSeeking = false;
 });
 
+/* 페이지 로드시 자동재생 시도 (브라우저 정책상 실패할 수 있음) */
 window.addEventListener('load', () => {
   bgm.play().catch(()=>{});
 });
 
+/* ---------- "소리가 안 들리는" 버그 원인과 보강 ----------
+   1) 대부분의 브라우저(크롬/사파리 등)는 소리가 켜진 오디오의 자동재생을
+      사용자 상호작용 없이는 허용하지 않습니다. 그래서 위 window 'load' 시점의
+      bgm.play()가 정책에 막혀 조용히 실패(.catch로 삼켜짐)할 수 있습니다.
+      이건 브라우저 자체 정책이라 100% 우회는 불가능하지만, 아래처럼 사용자의
+      "첫 클릭/터치/키 입력" 시점에 다시 한번 재생을 시도해서 최대한 빨리 소리가
+      나오도록 보완합니다 (음소거 버튼이 아니어도 페이지 아무 곳이나 한 번만 눌러도 재생됨).
+   2) 실제로 보고된 "껐다 켜야 들리는" 증상은, 위에서 고친 음소거 버튼 로직 때문이었습니다.
+      기존 코드는 자동재생이 막혀 아직 재생 중이 아닌데도 첫 클릭에서 "음소거 토글"부터
+      실행되어 볼륨을 0으로 만들어버렸고, 그 다음에야(다른 리스너로) 재생이 시작돼서
+      "재생은 되지만 소리는 0"인 상태가 됐던 것입니다. */
 function unlockAudioOnce(){
   if(bgm.paused){ bgm.play().catch(()=>{}); }
   UNLOCK_EVENTS.forEach(ev => window.removeEventListener(ev, unlockAudioOnce));
@@ -853,6 +899,8 @@ function unlockAudioOnce(){
 const UNLOCK_EVENTS = ['click', 'touchstart', 'keydown', 'pointerdown', 'mousemove', 'wheel', 'scroll'];
 UNLOCK_EVENTS.forEach(ev => window.addEventListener(ev, unlockAudioOnce, { passive:true }));
 
+/* ---------- "fixk" 입력 시 이스터에그 ---------- */
+/* 아래 src를 두번째(글리치용) mp3 파일의 raw 링크로 교체하세요 */
 const GLITCH_TRACK_SRC = "https://raw.githubusercontent.com/fixk1234/12344/3c7addf1c7073152cce6cbae66846d7c0897edf5/unhappy_spotdown.org.mp3";
 
 let typedBuffer = '';
