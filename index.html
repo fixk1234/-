@@ -535,7 +535,6 @@ body{ position:relative; }
   86%{  transform:scale(1.03, 0.98); }
   100%{ transform:scale(1, 1); }
 }
-
 .wing-spark{
   position:fixed; z-index:1; pointer-events:none; border-radius:50%;
   background:radial-gradient(circle, rgba(242,239,233,0.95), rgba(242,239,233,0) 72%);
@@ -548,7 +547,6 @@ body{ position:relative; }
   80%{ opacity:.55; }
   100%{ opacity:0; transform:translate(var(--sx), var(--sy)) scale(.4); }
 }
-
 .wing-spark.spark-burst{
   background:radial-gradient(circle, var(--spark-core, #fff), var(--spark-mid, rgba(242,239,233,0.7)) 45%, transparent 75%);
   box-shadow:0 0 10px var(--spark-glow, rgba(242,239,233,0.9)), 0 0 22px var(--spark-glow, rgba(242,239,233,0.5));
@@ -595,7 +593,6 @@ body{ position:relative; }
 }
 .reflection #characterArt{ border:none; background:none; }
 
-/* ---------- 반응형 ---------- */
 @media (max-width:880px){
   .stage{ grid-template-columns:1fr; padding-top:70px; }
   .altar-col{ height:64vh; order:-1; }
@@ -616,62 +613,6 @@ body{ position:relative; }
   .player-btn-main{ width:44px; height:44px; }
   .link-row{ gap:16px; }
   #soundControl{ top:14px; left:14px; }
-}
-
-/* ---------- fixk 이스터에그: 글리치 + 비 + 숨겨진 메시지 ---------- */
-#glitchOverlay{
-  position:fixed; inset:0; z-index:50; pointer-events:none; opacity:0;
-  mix-blend-mode:screen;
-  background:repeating-linear-gradient(0deg, rgba(242,239,233,0.14) 0px, rgba(242,239,233,0.14) 2px, transparent 3px, transparent 6px);
-}
-#glitchOverlay.active{
-  animation:glitchStatic .12s steps(2) infinite, glitchFlicker 1.6s ease-in-out infinite;
-}
-#glitchFlash{
-  position:fixed; inset:0; z-index:52; pointer-events:none; opacity:0;
-  background:radial-gradient(circle at 50% 50%, rgba(242,239,233,0.9), var(--blood-soft) 55%, transparent 80%);
-}
-#glitchFlash.flash-burst{
-  animation:flashBurst .5s ease-out;
-}
-@keyframes flashBurst{
-  0%{ opacity:.95; }
-  100%{ opacity:0; }
-}
-@keyframes glitchStatic{
-  0%{ transform:translate(0,0); }
-  20%{ transform:translate(-6px,3px); }
-  40%{ transform:translate(6px,-3px); }
-  60%{ transform:translate(-4px,5px); }
-  80%{ transform:translate(4px,-5px); }
-  100%{ transform:translate(0,0); }
-}
-@keyframes glitchFlicker{
-  0%,100%{ opacity:.25; }
-  10%{ opacity:.75; }
-  15%{ opacity:.15; }
-  50%{ opacity:.6; }
-  55%{ opacity:.08; }
-  90%{ opacity:.7; }
-}
-body.glitching .stage{
-  animation:screenShake .18s steps(2) infinite;
-}
-@keyframes screenShake{
-  0%{ transform:translate(0,0); }
-  25%{ transform:translate(-8px,4px); }
-  50%{ transform:translate(7px,-5px); }
-  75%{ transform:translate(-5px,-3px); }
-  100%{ transform:translate(0,0); }
-}
-body.glitching #depth, body.glitching .altar-col, body.glitching .profile-col{
-  animation:rgbSplit .16s steps(2) infinite;
-}
-@keyframes rgbSplit{
-  0%{ filter:none; }
-  33%{ filter:drop-shadow(6px 0 var(--blood)) drop-shadow(-6px 0 var(--verdant)); }
-  66%{ filter:drop-shadow(-6px 0 var(--blood)) drop-shadow(6px 0 var(--verdant)); }
-  100%{ filter:none; }
 }
 
 #rain{
@@ -708,8 +649,6 @@ body.glitching #depth, body.glitching .altar-col, body.glitching .profile-col{
 <body>
 
 <div id="depth"></div>
-<div id="glitchOverlay"></div>
-<div id="glitchFlash"></div>
 <div id="rain"></div>
 <div id="hiddenMsg"><span id="hiddenMsgText"></span><span class="cursor">▌</span></div>
 <div class="fog-wrap" id="fogWrap1"><div class="fog f1"></div></div>
@@ -761,8 +700,7 @@ body.glitching #depth, body.glitching .altar-col, body.glitching .profile-col{
             <stop offset="100%" stop-color="var(--ink)" stop-opacity="0"/>
           </radialGradient>
         </defs>
-
-        <!-- 왼쪽 날개: 텅 빈 듯 겹쳐진 깃털들 -->
+        
         <g class="wing-l">
           <path class="feather-fill" d="M110 78 C 84 46 46 26 6 10 C 30 34 46 54 52 84 C 34 74 16 74 2 82 C 24 82 40 92 50 108 C 34 104 20 108 12 118 C 30 112 44 114 54 124 C 62 108 74 92 110 78 Z"/>
           <path class="feather wing-core" d="M110 78 C 84 46 46 26 6 10 C 30 34 46 54 52 84 C 34 74 16 74 2 82 C 24 82 40 92 50 108 C 34 104 20 108 12 118 C 30 112 44 114 54 124 C 62 108 74 92 110 78 Z"/>
@@ -771,8 +709,7 @@ body.glitching #depth, body.glitching .altar-col, body.glitching .profile-col{
           <path class="feather" d="M90 92 C 66 78 38 72 10 74"/>
           <path class="feather" d="M84 102 C 62 92 36 90 18 96"/>
         </g>
-
-        <!-- 오른쪽 날개 -->
+        
         <g class="wing-r">
           <path class="feather-fill" d="M110 78 C 136 46 174 26 214 10 C 190 34 174 54 168 84 C 186 74 204 74 218 82 C 196 82 180 92 170 108 C 186 104 200 108 208 118 C 190 112 176 114 166 124 C 158 108 146 92 110 78 Z"/>
           <path class="feather wing-core" d="M110 78 C 136 46 174 26 214 10 C 190 34 174 54 168 84 C 186 74 204 74 218 82 C 196 82 180 92 170 108 C 186 104 200 108 208 118 C 190 112 176 114 166 124 C 158 108 146 92 110 78 Z"/>
@@ -923,6 +860,7 @@ function playBoing(){
   }catch(err){}
 }
 
+
 const BURST_SPARK_COLORS = [
   { core:'#eafff2', mid:'rgba(79,174,122,0.85)',  glow:'rgba(79,174,122,0.8)'  },
   { core:'#ffecef', mid:'rgba(197,24,63,0.8)',    glow:'rgba(197,24,63,0.75)' },
@@ -932,7 +870,7 @@ function spawnArtBurst(originEl){
   const rect = originEl.getBoundingClientRect();
   const cx = rect.left + rect.width/2;
   const cy = rect.top + rect.height*0.55;
-
+  
   const ring = document.createElement('div');
   ring.className = 'art-burst-ring';
   const ringColor = BURST_SPARK_COLORS[Math.floor(Math.random()*BURST_SPARK_COLORS.length)];
@@ -994,14 +932,14 @@ window.addEventListener('mousemove', (e) => {
   aura.style.opacity = '1';
   aura.style.left = e.clientX + 'px';
   aura.style.top = e.clientY + 'px';
-
+  
   const nx = (e.clientX / window.innerWidth) - 0.5;
   const ny = (e.clientY / window.innerHeight) - 0.5;
-
+  
   if(fogWrap1) fogWrap1.style.transform = `translate(${nx*46}px, ${ny*34}px)`;
   if(fogWrap2) fogWrap2.style.transform = `translate(${nx*-38}px, ${ny*-30}px)`;
   if(fogWrap3) fogWrap3.style.transform = `translate(${nx*28}px, ${ny*22}px)`;
-
+  
   if(depthEl){
     depthEl.style.setProperty('--rdx', (nx*60)+'px');
     depthEl.style.setProperty('--rdy', (ny*44)+'px');
@@ -1147,6 +1085,7 @@ seekRange.addEventListener('change', () => {
   isSeeking = false;
 });
 
+/* 페이지 로드시 자동재생 시도 (브라우저 정책상 실패할 수 있음) */
 window.addEventListener('load', () => {
   bgm.play().catch(()=>{});
 });
@@ -1196,24 +1135,9 @@ function typeMessage(text, el, speed){
 }
 
 function triggerFixkEasterEgg(){
-  const glitchOverlay = document.getElementById('glitchOverlay');
   const rainEl = document.getElementById('rain');
   const hiddenMsg = document.getElementById('hiddenMsg');
   const hiddenMsgText = document.getElementById('hiddenMsgText');
-  const flashEl = document.getElementById('glitchFlash');
-
-  if(flashEl){
-    flashEl.classList.remove('flash-burst');
-    void flashEl.offsetWidth;
-    flashEl.classList.add('flash-burst');
-  }
-
-  document.body.classList.add('glitching');
-  glitchOverlay.classList.add('active');
-  setTimeout(() => {
-    document.body.classList.remove('glitching');
-    glitchOverlay.classList.remove('active');
-  }, 2200);
 
   if(!rainEl.dataset.spawned){ spawnRain(); }
   rainEl.classList.add('active');
@@ -1369,7 +1293,7 @@ if(wingEl){
     try{
       if(!wingSfx){
         wingSfx = new Audio(WING_SFX_SRC);
-        wingSfx.volume = 1; /* HTML Audio 최대치 */
+        wingSfx.volume = 1;
         wingSfx.crossOrigin = 'anonymous';
       }
       setupWingSfxBoost();
