@@ -233,10 +233,10 @@ body{ position:relative; }
   stroke:url(#wingEdge);
   stroke-width:1.6;
 }
-.sigil .wing-l{ transform-origin:96% 55%; animation:flutterL 4.6s ease-in-out infinite; }
-.sigil .wing-r{ transform-origin:4% 55%; animation:flutterR 4.6s ease-in-out infinite; }
-.sigil .wing-l .feather{ animation:plumeL 4.6s ease-in-out infinite; }
-.sigil .wing-r .feather{ animation:plumeR 4.6s ease-in-out infinite; }
+.sigil .wing-l{ transform-origin:96% 55%; animation:flutterL 11s ease-in-out infinite; }
+.sigil .wing-r{ transform-origin:4% 55%; animation:flutterR 11s ease-in-out infinite; }
+.sigil .wing-l .feather{ animation:plumeL 11s ease-in-out infinite; }
+.sigil .wing-r .feather{ animation:plumeR 11s ease-in-out infinite; }
 .sigil .wing-l .feather:nth-child(2){ animation-delay:-.15s; }
 .sigil .wing-l .feather:nth-child(3){ animation-delay:-.3s; }
 .sigil .wing-l .feather:nth-child(4){ animation-delay:-.45s; }
@@ -245,19 +245,19 @@ body{ position:relative; }
 .sigil .wing-r .feather:nth-child(4){ animation-delay:-.45s; }
 @keyframes flutterL{
   0%,100%{ transform:scaleX(1) rotate(0deg); }
-  50%{ transform:scaleX(.9) rotate(-3deg); }
+  50%{ transform:scaleX(.985) rotate(-0.7deg); }
 }
 @keyframes flutterR{
   0%,100%{ transform:scaleX(1) rotate(0deg); }
-  50%{ transform:scaleX(.9) rotate(3deg); }
+  50%{ transform:scaleX(.985) rotate(0.7deg); }
 }
 @keyframes plumeL{
-  0%,100%{ transform:translateY(0) rotate(0deg); opacity:.85; }
-  50%{ transform:translateY(-1.5px) rotate(-1.2deg); opacity:1; }
+  0%,100%{ transform:translateY(0) rotate(0deg); opacity:.9; }
+  50%{ transform:translateY(-0.5px) rotate(-0.4deg); opacity:1; }
 }
 @keyframes plumeR{
-  0%,100%{ transform:translateY(0) rotate(0deg); opacity:.85; }
-  50%{ transform:translateY(-1.5px) rotate(1.2deg); opacity:1; }
+  0%,100%{ transform:translateY(0) rotate(0deg); opacity:.9; }
+  50%{ transform:translateY(-0.5px) rotate(0.4deg); opacity:1; }
 }
 @keyframes sigilFloat{
   0%,100%{ transform:translateY(0); }
@@ -337,8 +337,14 @@ body{ position:relative; }
 .id-name:active{ transform:translateY(1px); }
 .id-status{ display:inline-flex; align-items:center; gap:5px; white-space:nowrap; max-width:190px; overflow:hidden; text-overflow:ellipsis; }
 .id-status .activity-icon{ width:11px; height:11px; opacity:.75; flex-shrink:0; }
-.id-lastseen{ display:block; font-size:.72rem; color:var(--ash); margin-top:2px; letter-spacing:.02em; }
+.id-lastseen{ display:inline-flex; align-items:center; gap:6px; font-size:.72rem; color:var(--ash); margin-top:2px; letter-spacing:.02em; }
 .id-lastseen b{ color:var(--st-accent); font-weight:600; }
+.id-lastseen.is-active{ color:var(--status-online); }
+.id-lastseen .pulse-dot{
+  width:6px; height:6px; border-radius:50%; background:var(--status-online);
+  box-shadow:0 0 6px var(--status-online); flex-shrink:0;
+  animation:listeningPulse 1.8s ease-in-out infinite;
+}
 
 /* ── Activity Analytics Dashboard ── */
 .activity-panel{
@@ -367,7 +373,7 @@ body{ position:relative; }
 
 #copyToast{
   position:fixed; left:50%; bottom:70px; transform:translate(-50%,10px);
-  z-index:60; background:rgba(20,22,20,0.92); color:var(--bone);
+  z-index:60; background:rgba(43,18,32,0.92); color:#fff;
   border:1px solid var(--verdant-soft); border-radius:8px;
   padding:9px 16px; font-family:'Jua', sans-serif; font-size:.72rem; letter-spacing:.08em;
   opacity:0; pointer-events:none; backdrop-filter:blur(6px);
@@ -375,7 +381,6 @@ body{ position:relative; }
   box-shadow:0 8px 24px -8px rgba(0,0,0,0.7);
 }
 #copyToast.show{ opacity:1; transform:translate(-50%,0); }
-}
 .avatar{
   position:relative; width:52px; height:52px; border-radius:50%;
   background:radial-gradient(circle at 35% 30%, #2a2a2a, #0c0c0c);
@@ -461,7 +466,7 @@ body{ position:relative; }
   font-size:.85rem; color:var(--bone); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:190px;
 }
 .player-row{
-  display:flex; align-items:center; justify-content:center; gap:18px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
 }
 .player-btn{
   position:relative; flex-shrink:0;
@@ -475,12 +480,72 @@ body{ position:relative; }
 .player-btn svg{ width:16px; height:16px; stroke:var(--bone); fill:none; }
 .player-btn-label{
   position:absolute; bottom:-2px; right:-2px;
-  width:13px; height:13px; border-radius:50%;
-  background:var(--ink); border:1px solid var(--line);
-  font-family:'Jua', sans-serif; font-size:.5rem; color:var(--bone);
+  width:14px; height:14px; border-radius:50%;
+  background:var(--blood); border:1px solid #fff;
+  font-family:'Jua', sans-serif; font-size:.58rem; line-height:1; color:#fff;
   display:flex; align-items:center; justify-content:center;
+  box-shadow:0 1px 4px rgba(255,79,163,0.45);
+  z-index:1;
 }
 .player-btn-main{ width:48px; height:48px; background:rgba(255,255,255,0.85); }
+.player-eq{
+  display:flex; align-items:flex-end; gap:2px; height:10px; margin-left:2px;
+  opacity:.35;
+}
+.player-eq span{
+  width:2px; height:3px; border-radius:1px; background:var(--blood);
+  animation:eqIdle 1.2s ease-in-out infinite;
+}
+.player-eq span:nth-child(2){ animation-delay:.15s; }
+.player-eq span:nth-child(3){ animation-delay:.3s; }
+.player-top-label.playing .player-eq{ opacity:1; }
+.player-top-label.playing .player-eq span{ animation-name:eqPlay; }
+@keyframes eqIdle{ 0%,100%{ height:3px; } 50%{ height:5px; } }
+@keyframes eqPlay{
+  0%,100%{ height:3px; }
+  35%{ height:10px; }
+  60%{ height:5px; }
+}
+.playlist-head{
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:'Jua', sans-serif; font-size:.58rem; letter-spacing:.12em; color:var(--ash);
+  margin-top:12px; padding-top:10px; border-top:1px solid var(--line);
+}
+.playlist{
+  margin-top:6px; padding-top:0; border-top:none;
+  display:flex; flex-direction:column; gap:3px;
+  max-height:168px; overflow-y:auto;
+}
+.playlist::-webkit-scrollbar{ width:4px; }
+.playlist::-webkit-scrollbar-thumb{ background:var(--gold); border-radius:4px; }
+.playlist-head b{ color:var(--ink); }
+.playlist-item{
+  display:flex; align-items:center; gap:8px;
+  width:100%; border:none; background:transparent; text-align:left;
+  font-family:inherit;
+  padding:6px 8px; border-radius:8px;
+  cursor:pointer; font-size:.74rem; color:var(--ash);
+  transition:background .2s, color .2s;
+}
+.playlist-item:hover{ background:rgba(255,143,192,0.12); color:var(--ink); }
+.playlist-item.active{
+  background:linear-gradient(90deg, rgba(255,143,192,0.22), rgba(255,194,217,0.08));
+  color:var(--bone); font-weight:600;
+}
+.playlist-num{
+  font-family:'Jua', sans-serif; font-size:.62rem; width:14px; text-align:right; opacity:.55;
+}
+.playlist-item.active .playlist-num{ color:var(--blood); opacity:1; }
+.playlist-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.track-line .sp-progress{
+  display:block; width:min(220px, 70vw); height:3px; margin:8px auto 0;
+  border-radius:3px; background:var(--line); overflow:hidden;
+}
+.track-line .sp-progress i{
+  display:block; height:100%; width:0%; background:var(--verdant);
+  box-shadow:0 0 8px var(--verdant-soft);
+  transition:width .4s linear;
+}
 .player-btn-main svg{ width:20px; height:20px; fill:var(--bone); stroke:none; }
 .player-seek-row{ display:flex; align-items:center; gap:10px; margin-top:12px; }
 .player-time{
@@ -665,32 +730,6 @@ body{ position:relative; }
   #soundControl{ top:14px; left:14px; }
 }
 
-#rain{
-  position:fixed; inset:0; z-index:1; pointer-events:none;
-  opacity:0; transition:opacity 1.4s ease; overflow:hidden;
-}
-#rain.active{ opacity:1; }
-.raindrop{
-  position:absolute; top:-10%; width:1px; height:60px;
-  background:linear-gradient(to bottom, transparent, rgba(200,220,255,0.55));
-  animation:rainFall linear infinite;
-}
-@keyframes rainFall{
-  0%{ transform:translateY(-10vh); }
-  100%{ transform:translateY(110vh); }
-}
-
-#hiddenMsg{
-  position:fixed; top:8%; left:50%; transform:translateX(-50%);
-  z-index:51; color:var(--bone); font-family:'Jua', sans-serif;
-  font-size:1rem; letter-spacing:.12em; white-space:nowrap;
-  text-shadow:0 0 10px var(--blood-soft), 0 0 18px var(--verdant-soft);
-  opacity:0; transition:opacity .6s ease; pointer-events:none;
-}
-#hiddenMsg.active{ opacity:1; }
-#hiddenMsg .cursor{ display:inline-block; animation:blinkCursor 1s step-start infinite; }
-@keyframes blinkCursor{ 50%{ opacity:0; } }
-
 @media (prefers-reduced-motion:reduce){
   *{ animation:none !important; transition:none !important; }
 }
@@ -700,8 +739,6 @@ body{ position:relative; }
 
 <div id="depth"></div>
 <canvas id="statusFx"></canvas>
-<div id="rain"></div>
-<div id="hiddenMsg"><span id="hiddenMsgText"></span><span class="cursor">▌</span></div>
 <div class="fog-wrap" id="fogWrap1"><div class="fog f1"></div></div>
 <div class="fog-wrap" id="fogWrap2"><div class="fog f2"></div></div>
 <div class="fog-wrap" id="fogWrap3"><div class="fog f3"></div></div>
@@ -796,11 +833,18 @@ body{ position:relative; }
       <div class="player-top">
         <div id="lpDisc" class="lp-disc"></div>
         <div class="player-top-text">
-          <span id="playerTopLabel" class="player-top-label">now playing</span>
-          <span id="playerTopTitle" class="player-top-title">without u - longq</span>
+          <span id="playerTopLabel" class="player-top-label">
+            <span class="live-dot"></span>
+            now playing
+            <span class="player-eq" aria-hidden="true"><span></span><span></span><span></span></span>
+          </span>
+          <span id="playerTopTitle" class="player-top-title">もうそう☆えくすぷれす</span>
         </div>
       </div>
       <div class="player-row">
+        <button id="prevTrackBtn" class="player-btn" aria-label="이전 곡" title="이전 곡">
+          <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M6 6v12M19 6v12L9 12z" fill="var(--bone)" stroke="none"/></svg>
+        </button>
         <button id="skipBackBtn" class="player-btn" aria-label="5초 뒤로" title="5초 뒤로">
           <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 6V2L7 7l5 5V8a5 5 0 1 1-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="player-btn-label">5</span>
@@ -813,12 +857,17 @@ body{ position:relative; }
           <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 6V2l5 5-5 5V8a5 5 0 1 0 5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="player-btn-label">5</span>
         </button>
+        <button id="nextTrackBtn" class="player-btn" aria-label="다음 곡" title="다음 곡">
+          <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M18 6v12M5 6v12l10-6z" fill="var(--bone)" stroke="none"/></svg>
+        </button>
       </div>
       <div class="player-seek-row">
         <span id="curTime" class="player-time">0:00</span>
         <input type="range" id="seekRange" class="seek-range" min="0" max="100" value="0" step="0.1" aria-label="재생 위치">
         <span id="durTime" class="player-time">0:00</span>
       </div>
+      <div class="playlist-head"><span>PLAYLIST</span><b id="playlistCount">5</b></div>
+      <div id="playlist" class="playlist"></div>
     </div>
 
     <div class="activity-panel" data-tilt data-tilt-max="4" data-tilt-speed="500" data-tilt-perspective="1400" data-tilt-scale="1.008">
@@ -856,8 +905,7 @@ body{ position:relative; }
 
 </main>
 
-<audio id="bgm" loop crossorigin="anonymous"
-  src="https://raw.githubusercontent.com/fixk1234/12344/3c7addf1c7073152cce6cbae66846d7c0897edf5/without%20u_spotdown.org.mp3"></audio>
+<audio id="bgm" crossorigin="anonymous" preload="metadata"></audio>
 
 <script>
 const starsEl = document.getElementById('stars');
@@ -895,12 +943,23 @@ function spawnWingSpark(){
   document.body.appendChild(spark);
   setTimeout(()=> spark.remove(), duration*1000 + 100);
 }
-setInterval(spawnWingSpark, 550);
-for(let i=0;i<5;i++){ setTimeout(spawnWingSpark, i*300); }
+setInterval(spawnWingSpark, 1400);
+for(let i=0;i<3;i++){ setTimeout(spawnWingSpark, i*400); }
 
+let boingCtx = null;
+function getBoingCtx(){
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return null;
+  if(!boingCtx || boingCtx.state === 'closed'){
+    boingCtx = new AC();
+  }
+  return boingCtx;
+}
 function playBoing(){
   try{
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = getBoingCtx();
+    if(!ctx) return;
+    if(ctx.state === 'suspended'){ ctx.resume().catch(()=>{}); }
     const now = ctx.currentTime;
     function boing(startTime, baseFreq){
       const osc = ctx.createOscillator();
@@ -910,11 +969,15 @@ function playBoing(){
       osc.frequency.exponentialRampToValueAtTime(baseFreq*2.4, startTime+0.07);
       osc.frequency.exponentialRampToValueAtTime(baseFreq*0.75, startTime+0.2);
       gain.gain.setValueAtTime(0.0001, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.4, startTime+0.025);
+      gain.gain.exponentialRampToValueAtTime(0.28, startTime+0.025);
       gain.gain.exponentialRampToValueAtTime(0.0001, startTime+0.24);
       osc.connect(gain).connect(ctx.destination);
       osc.start(startTime);
       osc.stop(startTime+0.26);
+      osc.onended = () => {
+        osc.disconnect();
+        gain.disconnect();
+      };
     }
     boing(now, 480);
     boing(now+0.16, 620);
@@ -1041,14 +1104,60 @@ visitorRef.on('value', s => {
   document.getElementById('count').textContent = String(s.val() || 0).padStart(3,'0');
 });
 
+const PLAYLIST = [
+  { title:'もうそう☆えくすぷれす', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/%E3%82%82%E3%81%86%E3%81%9D%E3%81%86%E2%98%86%E3%81%88%E3%81%8F%E3%81%99%E3%81%B7%E3%82%8C%E3%81%99_spotdown.org.mp3' },
+  { title:'shotgun.', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/shotgun._spotdown.org.mp3' },
+  { title:'slaughtered', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/slaughtered_spotdown.org.mp3' },
+  { title:'POPI PO - SLOWED', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/POPI%20PO%20-%20SLOWED_spotdown.org.mp3' },
+  { title:'without u - longq', src:'https://raw.githubusercontent.com/fixk1234/12344/3c7addf1c7073152cce6cbae66846d7c0897edf5/without%20u_spotdown.org.mp3' }
+];
+
 const bgm = document.getElementById('bgm');
 const soundBtn = document.getElementById('soundBtn');
 const volumeRange = document.getElementById('volumeRange');
 const iconOn = document.getElementById('soundIconOn');
 const iconOff = document.getElementById('soundIconOff');
+const playlistEl = document.getElementById('playlist');
+const playerTopTitle = document.getElementById('playerTopTitle');
+const playerTopLabel = document.getElementById('playerTopLabel');
+const playlistCountEl = document.getElementById('playlistCount');
 
+let trackIndex = 0;
 let lastVolume = (volumeRange.value / 100) || 0.6;
 bgm.volume = lastVolume;
+if(playlistCountEl) playlistCountEl.textContent = String(PLAYLIST.length);
+
+function renderPlaylist(){
+  if(!playlistEl) return;
+  playlistEl.innerHTML = '';
+  PLAYLIST.forEach((t, i) => {
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'playlist-item' + (i === trackIndex ? ' active' : '');
+    item.innerHTML = '<span class="playlist-num">' + String(i+1).padStart(2,'0') + '</span><span class="playlist-name">' + escapeHtml(t.title) + '</span>';
+    item.addEventListener('click', () => loadTrack(i, true));
+    playlistEl.appendChild(item);
+  });
+}
+function highlightPlaylist(){
+  if(!playlistEl) return;
+  playlistEl.querySelectorAll('.playlist-item').forEach((el, i) => {
+    el.classList.toggle('active', i === trackIndex);
+  });
+}
+function loadTrack(i, autoplay){
+  const next = ((i % PLAYLIST.length) + PLAYLIST.length) % PLAYLIST.length;
+  const shouldPlay = autoplay || (!bgm.paused && !bgm.ended);
+  trackIndex = next;
+  const t = PLAYLIST[trackIndex];
+  bgm.src = t.src;
+  if(playerTopTitle) playerTopTitle.textContent = t.title;
+  highlightPlaylist();
+  seekRange.value = 0;
+  curTimeEl.textContent = '0:00';
+  durTimeEl.textContent = '0:00';
+  if(shouldPlay){ bgm.play().catch(()=>{}); }
+}
 
 function setIcon(){
   const muted = bgm.volume === 0;
@@ -1087,6 +1196,8 @@ const playIcon = document.getElementById('playIcon');
 const pauseIcon = document.getElementById('pauseIcon');
 const skipBackBtn = document.getElementById('skipBackBtn');
 const skipFwdBtn = document.getElementById('skipFwdBtn');
+const prevTrackBtn = document.getElementById('prevTrackBtn');
+const nextTrackBtn = document.getElementById('nextTrackBtn');
 const seekRange = document.getElementById('seekRange');
 const curTimeEl = document.getElementById('curTime');
 const durTimeEl = document.getElementById('durTime');
@@ -1105,6 +1216,7 @@ function updatePlayIcon(){
   pauseIcon.style.display = playing ? 'block' : 'none';
   const lp = document.getElementById('lpDisc');
   if(lp) lp.classList.toggle('spinning', playing);
+  if(playerTopLabel) playerTopLabel.classList.toggle('playing', playing);
 }
 updatePlayIcon();
 
@@ -1114,6 +1226,7 @@ playPauseBtn.addEventListener('click', () => {
 });
 bgm.addEventListener('play', updatePlayIcon);
 bgm.addEventListener('pause', updatePlayIcon);
+bgm.addEventListener('ended', () => loadTrack(trackIndex + 1, true));
 
 skipBackBtn.addEventListener('click', () => {
   bgm.currentTime = Math.max(0, bgm.currentTime - 5);
@@ -1122,6 +1235,8 @@ skipFwdBtn.addEventListener('click', () => {
   const dur = isFinite(bgm.duration) ? bgm.duration : bgm.currentTime + 5;
   bgm.currentTime = Math.min(dur, bgm.currentTime + 5);
 });
+if(prevTrackBtn) prevTrackBtn.addEventListener('click', () => loadTrack(trackIndex - 1, true));
+if(nextTrackBtn) nextTrackBtn.addEventListener('click', () => loadTrack(trackIndex + 1, true));
 
 function refreshDuration(){
   if(isFinite(bgm.duration)){
@@ -1146,7 +1261,18 @@ seekRange.addEventListener('change', () => {
   isSeeking = false;
 });
 
-/* 페이지 로드시 자동재생 시도 (브라우저 정책상 실패할 수 있음) */
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+renderPlaylist();
+loadTrack(0, false);
+
 window.addEventListener('load', () => {
   bgm.play().catch(()=>{});
 });
@@ -1158,69 +1284,14 @@ function unlockAudioOnce(){
 const UNLOCK_EVENTS = ['click', 'touchstart', 'keydown', 'pointerdown', 'mousemove', 'wheel', 'scroll'];
 UNLOCK_EVENTS.forEach(ev => window.addEventListener(ev, unlockAudioOnce, { passive:true }));
 
-const GLITCH_TRACK_SRC = "https://raw.githubusercontent.com/fixk1234/12344/3c7addf1c7073152cce6cbae66846d7c0897edf5/unhappy_spotdown.org.mp3";
-
-let typedBuffer = '';
-let glitchTriggered = false;
-window.addEventListener('keydown', (e) => {
-  if(e.key.length !== 1) return;
-  typedBuffer = (typedBuffer + e.key).slice(-10).toLowerCase();
-  if(typedBuffer.includes('fixk') && !glitchTriggered){
-    glitchTriggered = true;
-    triggerFixkEasterEgg();
-  }
-});
-
-function spawnRain(){
-  const rainEl = document.getElementById('rain');
-  for(let i = 0; i < 140; i++){
-    const drop = document.createElement('div');
-    drop.className = 'raindrop';
-    drop.style.left = Math.random()*100 + '%';
-    drop.style.animationDuration = (0.5 + Math.random()*0.5) + 's';
-    drop.style.animationDelay = (Math.random()*2) + 's';
-    drop.style.opacity = (0.3 + Math.random()*0.5).toString();
-    rainEl.appendChild(drop);
-  }
-  rainEl.dataset.spawned = '1';
-}
-
-function typeMessage(text, el, speed){
-  let i = 0;
-  el.textContent = '';
-  const timer = setInterval(() => {
-    el.textContent += text[i];
-    i++;
-    if(i >= text.length) clearInterval(timer);
-  }, speed);
-}
-
-function triggerFixkEasterEgg(){
-  const rainEl = document.getElementById('rain');
-  const hiddenMsg = document.getElementById('hiddenMsg');
-  const hiddenMsgText = document.getElementById('hiddenMsgText');
-
-  if(!rainEl.dataset.spawned){ spawnRain(); }
-  rainEl.classList.add('active');
-
-  if(GLITCH_TRACK_SRC && !GLITCH_TRACK_SRC.includes('여기에')){
-    bgm.src = GLITCH_TRACK_SRC;
-    bgm.currentTime = 0;
-    bgm.play().catch(()=>{});
-  }
-  const topTitleEl = document.getElementById('playerTopTitle');
-  if(topTitleEl){ topTitleEl.textContent = 'unhappy - s0rrow'; }
-
-  hiddenMsg.classList.add('active');
-  typeMessage('if u see it plz dm to me(8dk1)', hiddenMsgText, 70);
-}
-
 if(window.VanillaTilt){
   VanillaTilt.init(document.querySelectorAll('[data-tilt]'));
 }
 
 const DISCORD_USER_ID = '1489458472826441901';
 let spotifyActive = false;
+let currentPresenceStatus = 'offline';
+let liveSpotify = null;
 
 const idNameEl = document.getElementById('idName');
 const copyToastEl = document.getElementById('copyToast');
@@ -1278,15 +1349,6 @@ function renderBadges(publicFlags){
 
 const STATUS_LABEL = { online:'online', idle:'away', dnd:'do not disturb', offline:'offline' };
 
-function escapeHtml(str){
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 /* ── Discord CDN 아바타/배너 동적 URL (해시 기반) ── */
 function discordAssetUrl(userId, hash, kind){
   if(!hash) return null;
@@ -1321,19 +1383,25 @@ function applyLanyardData(data){
   }
 
   applyStatusTheme(status);
+  currentPresenceStatus = status;
   updateLastSeen(status);
   logActivity(data.activities);
 
   spotifyActive = !!data.listening_to_spotify && !!data.spotify;
   if(listeningBadgeEl){ listeningBadgeEl.classList.toggle('show', spotifyActive); }
-  if(spotifyLineEl){
-    if(spotifyActive){
-      const sp = data.spotify;
-      const songLabel = escapeHtml(sp.song) + (sp.artist ? ' - ' + escapeHtml(sp.artist) : '');
-      spotifyLineEl.innerHTML = "i'm listening <strong>" + songLabel + "</strong> now";
-    } else {
-      spotifyLineEl.textContent = "i'm not listening anything";
-    }
+  if(playerTopLabel) playerTopLabel.classList.toggle('live', spotifyActive);
+  if(spotifyActive){
+    const sp = data.spotify;
+    liveSpotify = {
+      song: sp.song || '',
+      artist: sp.artist || '',
+      start: sp.timestamps && sp.timestamps.start,
+      end: sp.timestamps && sp.timestamps.end
+    };
+    renderSpotifyLine();
+  } else {
+    liveSpotify = null;
+    if(spotifyLineEl) spotifyLineEl.textContent = "i'm not listening anything";
   }
 }
 
@@ -1452,31 +1520,69 @@ function startStatusFx(mode, colorHex){
   }
 }
 
-/* ── 마지막 접속(last seen) 추정: localStorage에 상태 전환 시각을 기록 ── */
+/* ── 마지막 접속 / 현재 활동 표시 ── */
+const LAST_ONLINE_KEY = 'fxk_last_online_ts';
+
+function formatOfflineDuration(ms){
+  if(ms < 0) ms = 0;
+  const sec = Math.floor(ms/1000);
+  if(sec < 60) return sec + '초';
+  const min = Math.floor(sec/60);
+  if(min < 60) return min + '분 ' + (sec%60) + '초';
+  const hr = Math.floor(min/60);
+  if(hr < 24) return hr + '시간 ' + (min%60) + '분';
+  const day = Math.floor(hr/24);
+  return day + '일 ' + (hr%24) + '시간';
+}
 function updateLastSeen(status){
   const el = document.getElementById('lastSeen');
   if(!el) return;
-  const key = 'fxk_last_online_ts';
   const now = Date.now();
-  if(status !== 'offline'){
-    localStorage.setItem(key, String(now));
-    el.innerHTML = '';
+  if(status === 'online'){
+    localStorage.setItem(LAST_ONLINE_KEY, String(now));
+    el.classList.add('is-active');
+    el.innerHTML = '<span class="pulse-dot"></span><b>지금은 활동중</b>';
     return;
   }
-  const stored = localStorage.getItem(key);
-  if(!stored){ el.innerHTML = ''; return; }
-  const diffMs = now - Number(stored);
-  el.innerHTML = '마지막 접속 <b>' + formatAgo(diffMs) + '</b> 전';
+  if(status === 'idle'){
+    localStorage.setItem(LAST_ONLINE_KEY, String(now));
+    el.classList.remove('is-active');
+    el.innerHTML = '자리비움';
+    return;
+  }
+  if(status === 'dnd'){
+    localStorage.setItem(LAST_ONLINE_KEY, String(now));
+    el.classList.remove('is-active');
+    el.innerHTML = '다른 용무 중';
+    return;
+  }
+  const stored = localStorage.getItem(LAST_ONLINE_KEY);
+  el.classList.remove('is-active');
+  if(!stored){
+    el.innerHTML = '오프라인 · 마지막 접속 기록 없음';
+    return;
+  }
+  el.innerHTML = '오프라인 <b>' + formatOfflineDuration(now - Number(stored)) + '</b>';
 }
-function formatAgo(ms){
-  const min = Math.floor(ms/60000);
-  if(min < 1) return '방금';
-  if(min < 60) return min + '분';
-  const hr = Math.floor(min/60);
-  if(hr < 24) return hr + '시간';
-  const day = Math.floor(hr/24);
-  return day + '일';
+setInterval(() => updateLastSeen(currentPresenceStatus), 1000);
+
+function renderSpotifyLine(){
+  const spotifyLineEl = document.getElementById('spotifyLine');
+  if(!spotifyLineEl || !liveSpotify) return;
+  const songLabel = escapeHtml(liveSpotify.song) + (liveSpotify.artist ? ' · ' + escapeHtml(liveSpotify.artist) : '');
+  let extra = '';
+  const start = Number(liveSpotify.start);
+  const end = Number(liveSpotify.end);
+  if(start && end && end > start){
+    const now = Date.now();
+    const pos = Math.min(end - start, Math.max(0, now - start));
+    const pct = Math.round((pos / (end - start)) * 100);
+    extra = ' <span>(' + formatTime(pos/1000) + ' / ' + formatTime((end-start)/1000) + ')</span>' +
+      '<span class="sp-progress"><i style="width:' + pct + '%"></i></span>';
+  }
+  spotifyLineEl.innerHTML = "i'm listening <strong>" + songLabel + "</strong> now" + extra;
 }
+setInterval(() => { if(liveSpotify) renderSpotifyLine(); }, 1000);
 
 /* ── Activity Analytics Dashboard: 세션 관찰 동안의 활동을 24h 로 누적 ── */
 const ACTIVITY_KEY = 'fxk_activity_log';
@@ -1601,10 +1707,43 @@ async function fetchLanyard(){
     if(json && json.success){ applyLanyardData(json.data); }
   }catch(err){}
 }
+
+function connectLanyardSocket(){
+  let ws;
+  let heartbeat = null;
+  function clearBeat(){ if(heartbeat){ clearInterval(heartbeat); heartbeat = null; } }
+  function open(){
+    try{ ws = new WebSocket('wss://api.lanyard.rest/socket'); }catch(err){ setTimeout(open, 4000); return; }
+    ws.onmessage = (ev) => {
+      let msg;
+      try{ msg = JSON.parse(ev.data); }catch(e){ return; }
+      if(msg.op === 1){
+        clearBeat();
+        heartbeat = setInterval(() => {
+          try{ ws.send(JSON.stringify({ op: 3 })); }catch(e){}
+        }, msg.d.heartbeat_interval);
+        ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: DISCORD_USER_ID } }));
+      }
+      if(msg.t === 'INIT_STATE' || msg.t === 'PRESENCE_UPDATE'){
+        const payload = msg.d && msg.d.discord_user ? msg.d : (msg.d && msg.d[DISCORD_USER_ID]) || msg.d;
+        applyLanyardData(payload);
+      }
+    };
+    ws.onclose = () => {
+      clearBeat();
+      setTimeout(open, 3000);
+    };
+    ws.onerror = () => { try{ ws.close(); }catch(e){} };
+  }
+  open();
+}
+
 applyStatusTheme('offline');
 renderBadges(0);
+updateLastSeen('offline');
 fetchLanyard();
-setInterval(fetchLanyard, 20000);
+connectLanyardSocket();
+setInterval(fetchLanyard, 60000);
 
 const WING_SFX_SRC = "https://raw.githubusercontent.com/fixk1234/12344/cf6eadc9a9cba1620462478222bda2eb2415ac94/kula-diamond-bye-bye-_v_-made-with-Voicemod.mp3";
 const wingEl = document.getElementById('sigilWings');
