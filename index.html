@@ -185,7 +185,7 @@ body{ position:relative; }
 #viewCount svg{ width:15px; height:15px; stroke:var(--ash); fill:none; }
 
 .stage{
-  position:relative; z-index:1;
+  position:relative; z-index:3;
   min-height:100vh;
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -299,6 +299,8 @@ body{ position:relative; }
 
 .id-card{
   position:relative;
+  z-index:4;
+  overflow:visible;
   width:300px;
   background:rgba(255,255,255,0.75);
   box-shadow:0 10px 30px -14px rgba(20,18,28,0.14);
@@ -332,9 +334,20 @@ body{ position:relative; }
 .status-dot.st-offline{ background:var(--status-offline); }
 .status-dot{ transition:background .4s ease; }
 
-.id-name{ cursor:pointer; position:relative; }
+.id-name{
+  cursor:pointer; position:relative;
+  display:inline-flex; align-items:center; gap:6px;
+}
 .id-name:hover{ color:var(--verdant); }
 .id-name:active{ transform:translateY(1px); }
+.id-tooltip{
+  font-size:0.68rem; color:var(--ash); font-family:'Noto Sans KR', sans-serif;
+  opacity:0; transform:translateX(-4px);
+  transition:opacity .3s ease, transform .3s ease; pointer-events:none;
+}
+.id-name:hover .id-tooltip{
+  opacity:1; transform:translateX(0);
+}
 .id-status{ display:inline-flex; align-items:center; gap:5px; white-space:nowrap; max-width:190px; overflow:hidden; text-overflow:ellipsis; }
 .id-status .activity-icon{ width:11px; height:11px; opacity:.75; flex-shrink:0; }
 .id-lastseen{ display:inline-flex; align-items:center; gap:6px; font-size:.72rem; color:var(--ash); margin-top:2px; letter-spacing:.02em; }
@@ -386,18 +399,20 @@ body{ position:relative; }
   background:radial-gradient(circle at 35% 30%, #2a2a2a, #0c0c0c);
   border:1px solid var(--line);
   display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; overflow:hidden;
+  flex-shrink:0; overflow:visible;
 }
 .avatar img{
   width:100%; height:100%; object-fit:cover; border-radius:50%;
+  position:relative; z-index:1;
 }
 #avatarFx{
   position:absolute; inset:0; width:100%; height:100%; border-radius:50%;
-  pointer-events:none; z-index:2; mix-blend-mode:screen; opacity:.85;
+  pointer-events:none; z-index:1; mix-blend-mode:screen; opacity:.85;
 }
 .status-dot{
   position:absolute; bottom:1px; right:1px; width:11px; height:11px;
   border-radius:50%; background:#ff6fb0; border:2px solid var(--ink);
+  z-index:5; pointer-events:none;
 }
 .listening-badge{
   position:absolute; top:-4px; left:-4px; width:20px; height:20px;
@@ -407,7 +422,7 @@ body{ position:relative; }
   opacity:0; transform:scale(.4);
   transition:opacity .3s ease, transform .3s ease;
   box-shadow:0 0 8px var(--verdant-soft);
-  z-index:2;
+  z-index:6;
 }
 .listening-badge.show{
   opacity:1; transform:scale(1);
@@ -556,8 +571,18 @@ body{ position:relative; }
 #durTime{ text-align:left; }
 .seek-range{
   flex:1; -webkit-appearance:none; appearance:none;
-  height:3px; border-radius:3px;
-  background:var(--line); outline:none; cursor:pointer;
+  height:4px; border-radius:3px;
+  background:linear-gradient(to right,
+    var(--verdant) 0%,
+    var(--verdant) var(--seek-played, 0%),
+    rgba(255,143,192,0.28) var(--seek-played, 0%),
+    rgba(255,143,192,0.28) var(--seek-loaded, 0%),
+    var(--line) var(--seek-loaded, 0%),
+    var(--line) 100%);
+  outline:none; cursor:pointer;
+}
+.seek-range::-webkit-slider-runnable-track{
+  height:4px; border-radius:3px; background:transparent;
 }
 .seek-range::-webkit-slider-thumb{
   -webkit-appearance:none; appearance:none;
@@ -565,6 +590,13 @@ body{ position:relative; }
   background:var(--bone);
   box-shadow:0 0 6px var(--verdant-soft);
   cursor:pointer;
+  margin-top:-3.5px;
+}
+.seek-range::-moz-range-track{
+  height:4px; border-radius:3px; background:transparent; border:none;
+}
+.seek-range::-moz-range-progress{
+  height:4px; border-radius:3px; background:var(--verdant);
 }
 .seek-range::-moz-range-thumb{
   width:11px; height:11px; border-radius:50%; border:none;
@@ -823,7 +855,9 @@ body{ position:relative; }
         </span>
       </div>
       <div class="id-text">
-        <span class="id-name" id="idName" title="클릭해서 디스코드 ID 복사">8dk1</span>
+        <span class="id-name" id="idName" title="클릭해서 디스코드 ID 복사">
+          8dk1<span class="id-tooltip">(1489458472826441901)</span>
+        </span>
         <span class="id-status" id="idStatus">i miss u</span>
         <span class="id-lastseen" id="lastSeen"></span>
       </div>
@@ -866,7 +900,7 @@ body{ position:relative; }
         <input type="range" id="seekRange" class="seek-range" min="0" max="100" value="0" step="0.1" aria-label="재생 위치">
         <span id="durTime" class="player-time">0:00</span>
       </div>
-      <div class="playlist-head"><span>PLAYLIST</span><b id="playlistCount">5</b></div>
+      <div class="playlist-head"><span>PLAYLIST</span><b id="playlistCount">6</b></div>
       <div id="playlist" class="playlist"></div>
     </div>
 
@@ -1109,7 +1143,8 @@ const PLAYLIST = [
   { title:'shotgun.', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/shotgun._spotdown.org.mp3' },
   { title:'slaughtered', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/slaughtered_spotdown.org.mp3' },
   { title:'POPI PO - SLOWED', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/POPI%20PO%20-%20SLOWED_spotdown.org.mp3' },
-  { title:'without u - longq', src:'https://raw.githubusercontent.com/fixk1234/12344/3c7addf1c7073152cce6cbae66846d7c0897edf5/without%20u_spotdown.org.mp3' }
+  { title:'without u - longq', src:'https://raw.githubusercontent.com/fixk1234/12344/3c7addf1c7073152cce6cbae66846d7c0897edf5/without%20u_spotdown.org.mp3' },
+  { title:'Monochrome', src:'https://raw.githubusercontent.com/fixk1234/12344/d52b4c834922a2502d59f3085e4a5538b01f4beb/Monochrome%20-%20Voacl%20Duet%20ver._spotdown.org.mp3' }
 ];
 
 const bgm = document.getElementById('bgm');
@@ -1156,6 +1191,7 @@ function loadTrack(i, autoplay){
   seekRange.value = 0;
   curTimeEl.textContent = '0:00';
   durTimeEl.textContent = '0:00';
+  updateSeekFill();
   if(shouldPlay){ bgm.play().catch(()=>{}); }
 }
 
@@ -1243,6 +1279,7 @@ function refreshDuration(){
     seekRange.max = bgm.duration;
     durTimeEl.textContent = formatTime(bgm.duration);
   }
+  updateSeekFill();
 }
 bgm.addEventListener('loadedmetadata', refreshDuration);
 bgm.addEventListener('durationchange', refreshDuration);
@@ -1250,16 +1287,36 @@ bgm.addEventListener('durationchange', refreshDuration);
 bgm.addEventListener('timeupdate', () => {
   if(!isSeeking){ seekRange.value = bgm.currentTime; }
   curTimeEl.textContent = formatTime(bgm.currentTime);
+  updateSeekFill();
 });
+bgm.addEventListener('progress', updateSeekFill);
 
 seekRange.addEventListener('input', () => {
   isSeeking = true;
   curTimeEl.textContent = formatTime(Number(seekRange.value));
+  updateSeekFill();
 });
 seekRange.addEventListener('change', () => {
   bgm.currentTime = Number(seekRange.value);
   isSeeking = false;
+  updateSeekFill();
 });
+
+function updateSeekFill(){
+  if(!seekRange) return;
+  const dur = isFinite(bgm.duration) && bgm.duration > 0 ? bgm.duration : 0;
+  const pos = Number(seekRange.value) || 0;
+  const played = dur ? Math.max(0, Math.min(100, (pos / dur) * 100)) : 0;
+  let loaded = 0;
+  try{
+    if(dur && bgm.buffered && bgm.buffered.length){
+      loaded = (bgm.buffered.end(bgm.buffered.length - 1) / dur) * 100;
+    }
+  }catch(e){}
+  if(loaded < played) loaded = played;
+  seekRange.style.setProperty('--seek-played', played + '%');
+  seekRange.style.setProperty('--seek-loaded', loaded + '%');
+}
 
 function escapeHtml(str){
   return String(str)
@@ -1357,7 +1414,36 @@ function discordAssetUrl(userId, hash, kind){
   return 'https://cdn.discordapp.com/' + kind + '/' + userId + '/' + hash + '.' + ext + '?size=256';
 }
 
+function unwrapLanyardPayload(d){
+  if(!d || typeof d !== 'object') return null;
+  if(d[DISCORD_USER_ID]) return d[DISCORD_USER_ID];
+  if(d.discord_user || d.discord_status || d.status || 'listening_to_spotify' in d) return d;
+  const keys = Object.keys(d);
+  if(keys.length === 1 && d[keys[0]] && typeof d[keys[0]] === 'object') return d[keys[0]];
+  return d;
+}
+
+function resolvePresenceStatus(data){
+  let status = String((data && (data.discord_status || data.status)) || '').toLowerCase().trim();
+  if(status === 'do_not_disturb' || status === 'do not disturb') status = 'dnd';
+  const hasFlags = ['active_on_discord_desktop','active_on_discord_mobile','active_on_discord_web']
+    .some(k => typeof data[k] === 'boolean');
+  const anyClient = !!(data.active_on_discord_desktop || data.active_on_discord_mobile || data.active_on_discord_web);
+  if(hasFlags && !anyClient) return 'offline';
+  if(status === 'online' || status === 'idle' || status === 'dnd' || status === 'offline') return status;
+  return hasFlags && anyClient ? 'online' : 'offline';
+}
+
+function isSpotifyLive(data, status){
+  if(status === 'offline') return false;
+  if(!data || !data.listening_to_spotify || !data.spotify) return false;
+  const end = data.spotify.timestamps && data.spotify.timestamps.end;
+  if(end && Number(end) < Date.now() - 1500) return false;
+  return true;
+}
+
 function applyLanyardData(data){
+  data = unwrapLanyardPayload(data);
   if(!data) return;
   const statusDotEl = document.getElementById('statusDot');
   const spotifyLineEl = document.getElementById('spotifyLine');
@@ -1375,7 +1461,7 @@ function applyLanyardData(data){
     }
   }
 
-  const status = data.discord_status || 'offline';
+  const status = resolvePresenceStatus(data);
   if(statusDotEl){
     statusDotEl.classList.remove('st-online','st-idle','st-dnd','st-offline');
     statusDotEl.classList.add('st-' + status);
@@ -1385,9 +1471,10 @@ function applyLanyardData(data){
   applyStatusTheme(status);
   currentPresenceStatus = status;
   updateLastSeen(status);
-  logActivity(data.activities);
+  if(status === 'offline') logActivity([]);
+  else logActivity(data.activities);
 
-  spotifyActive = !!data.listening_to_spotify && !!data.spotify;
+  spotifyActive = isSpotifyLive(data, status);
   if(listeningBadgeEl){ listeningBadgeEl.classList.toggle('show', spotifyActive); }
   if(playerTopLabel) playerTopLabel.classList.toggle('live', spotifyActive);
   if(spotifyActive){
@@ -1537,6 +1624,8 @@ function formatOfflineDuration(ms){
 function updateLastSeen(status){
   const el = document.getElementById('lastSeen');
   if(!el) return;
+  status = String(status || 'offline').toLowerCase();
+  if(status === 'do_not_disturb' || status === 'do not disturb') status = 'dnd';
   const now = Date.now();
   if(status === 'online'){
     localStorage.setItem(LAST_ONLINE_KEY, String(now));
@@ -1544,20 +1633,18 @@ function updateLastSeen(status){
     el.innerHTML = '<span class="pulse-dot"></span><b>지금은 활동중</b>';
     return;
   }
+  el.classList.remove('is-active');
   if(status === 'idle'){
     localStorage.setItem(LAST_ONLINE_KEY, String(now));
-    el.classList.remove('is-active');
     el.innerHTML = '자리비움';
     return;
   }
   if(status === 'dnd'){
     localStorage.setItem(LAST_ONLINE_KEY, String(now));
-    el.classList.remove('is-active');
     el.innerHTML = '다른 용무 중';
     return;
   }
   const stored = localStorage.getItem(LAST_ONLINE_KEY);
-  el.classList.remove('is-active');
   if(!stored){
     el.innerHTML = '오프라인 · 마지막 접속 기록 없음';
     return;
@@ -1587,6 +1674,7 @@ setInterval(() => { if(liveSpotify) renderSpotifyLine(); }, 1000);
 /* ── Activity Analytics Dashboard: 세션 관찰 동안의 활동을 24h 로 누적 ── */
 const ACTIVITY_KEY = 'fxk_activity_log';
 function logActivity(activities){
+  if(currentPresenceStatus === 'offline') return;
   if(!activities || !activities.length) return;
   const now = Date.now();
   let log = [];
@@ -1725,8 +1813,7 @@ function connectLanyardSocket(){
         ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: DISCORD_USER_ID } }));
       }
       if(msg.t === 'INIT_STATE' || msg.t === 'PRESENCE_UPDATE'){
-        const payload = msg.d && msg.d.discord_user ? msg.d : (msg.d && msg.d[DISCORD_USER_ID]) || msg.d;
-        applyLanyardData(payload);
+        applyLanyardData(unwrapLanyardPayload(msg.d));
       }
     };
     ws.onclose = () => {
