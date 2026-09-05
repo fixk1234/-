@@ -14,7 +14,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;600;700;900&display=swap');
 
 :root{
-  /* ── base: 화이트 + 핑크 톤 ── */
+  /* ── base: 화이트 + 핑크 톤 (프사 퍼스트 컬러 추출 전 기본값) ── */
   --ink:#2b1220;
   --bone:#33131f;
   --ash:#8a5b74;
@@ -27,6 +27,23 @@
   --blood-soft:rgba(255,79,163,0.38);
   --gold:#ffc2d9;
   --gold-soft:rgba(255,194,217,0.38);
+
+  /* 카드/패널 배경 — 다크 대비 모드에서 fx-engine 이 값을 뒤집어줌 */
+  --panel-bg:rgba(255,255,255,0.75);
+  --panel-bg-soft:rgba(255,255,255,0.7);
+  --panel-bg-strong:rgba(255,255,255,0.95);
+  --panel-bg-strongest:rgba(255,255,255,0.85);
+  --vignette-edge:rgba(255,255,255,0.65);
+
+  /* 날개 색상 — 프사(아바타)의 대표색이 추출되면 fx-engine 이 이 값들을 덮어씀 */
+  --wing-edge-2:#ff9fce;
+  --wing-edge-3:#ff4fa3;
+  --wing-hollow-2:#ffc7e4;
+  --wing-hollow-3:#ff8fc0;
+  --wing-feather:#e0468f;
+  --wing-spark-core:rgba(255,111,180,0.95);
+  --wing-spark-fade:rgba(255,111,180,0);
+  --wing-spark-glow:rgba(255,111,180,0.6);
 
   /* 디스코드 상태값 (기본 = offline) */
   --status-online:#ff6fb0;
@@ -90,7 +107,7 @@ body{ position:relative; }
 @keyframes driftC{ 0%,100%{ transform:translate(-4vw,0); } 50%{ transform:translate(4vw,6vh); } }
 #vignette{
   position:fixed; inset:0; z-index:2; pointer-events:none;
-  background:radial-gradient(ellipse at center, transparent 55%, rgba(255,255,255,0.65) 100%);
+  background:radial-gradient(ellipse at center, transparent 55%, var(--vignette-edge) 100%);
 }
 #grain{
   position:fixed; inset:0; z-index:2; pointer-events:none; opacity:.035;
@@ -110,12 +127,6 @@ body{ position:relative; }
   50%{ opacity:.9; transform:scale(1.6); }
 }
 
-#cursorAura{
-  position:fixed; top:0; left:0; width:340px; height:340px; z-index:1;
-  pointer-events:none; border-radius:50%; transform:translate(-50%,-50%);
-  background:radial-gradient(circle, var(--blood-soft), var(--verdant-soft) 40%, transparent 70%);
-  transition:opacity .3s; opacity:0;
-}
 .ember{
   position:fixed; z-index:1; pointer-events:none;
   background:linear-gradient(160deg, var(--verdant), var(--blood) 70%);
@@ -134,21 +145,21 @@ body{ position:relative; }
 }
 #soundBtn{
   width:44px; height:44px; border-radius:50%; flex-shrink:0;
-  background:rgba(255,255,255,0.7);
+  background:var(--panel-bg-soft);
   border:1px solid var(--line);
   box-shadow:0 4px 16px -6px rgba(20,18,28,0.12);
   display:flex; align-items:center; justify-content:center;
   cursor:pointer; backdrop-filter:blur(6px);
   transition:.25s;
 }
-#soundBtn:hover{ background:rgba(255,255,255,0.95); border-color:var(--st-accent); }
+#soundBtn:hover{ background:var(--panel-bg-strong); border-color:var(--st-accent); }
 #soundBtn svg{ width:18px; height:18px; stroke:var(--bone); fill:none; }
 
 #volumePanel{
   width:0; margin-left:0; opacity:0; overflow:hidden;
   display:flex; align-items:center; gap:8px;
   height:44px; padding:0 0;
-  background:rgba(255,255,255,0.7);
+  background:var(--panel-bg-soft);
   border:1px solid transparent;
   border-radius:22px;
   backdrop-filter:blur(6px);
@@ -194,7 +205,7 @@ body{ position:relative; }
 
 .profile-col{
   display:flex; flex-direction:column; align-items:center;
-  padding:0 40px;
+  padding:56px 40px 0;
   animation:riseIn 1s ease-out both;
 }
 @keyframes riseIn{
@@ -212,14 +223,14 @@ body{ position:relative; }
 .sigil:hover{ transform:scale(1.08) translateY(-6px); }
 /* 헤일로 링 제거 — 도는 링 대신 작고 조용한 발광만 남김 (초텐/kangel 느낌) */
 @keyframes wingGlow{
-  0%,100%{ filter:drop-shadow(0 0 6px rgba(255,79,163,0.45)) drop-shadow(0 0 16px var(--st-accent-soft)); }
-  50%{ filter:drop-shadow(0 0 10px rgba(255,79,163,0.6)) drop-shadow(0 0 22px var(--st-accent-soft)); }
+  0%,100%{ filter:drop-shadow(0 0 6px var(--wing-feather)) drop-shadow(0 0 16px var(--st-accent-soft)); }
+  50%{ filter:drop-shadow(0 0 10px var(--wing-feather)) drop-shadow(0 0 22px var(--st-accent-soft)); }
 }
 .sigil svg{ width:100%; height:100%; overflow:visible; }
 
 .sigil .feather{
   fill:none;
-  stroke:#e0468f;
+  stroke:var(--wing-feather);
   stroke-width:1.2;
   stroke-linecap:round;
   vector-effect:non-scaling-stroke;
@@ -301,8 +312,8 @@ body{ position:relative; }
   position:relative;
   z-index:4;
   overflow:visible;
-  width:300px;
-  background:rgba(255,255,255,0.75);
+  width:336px;
+  background:var(--panel-bg);
   box-shadow:0 10px 30px -14px rgba(20,18,28,0.14);
   border:1px solid var(--line);
   border-radius:10px;
@@ -361,8 +372,8 @@ body{ position:relative; }
 
 /* ── Activity Analytics Dashboard ── */
 .activity-panel{
-  width:300px; margin-top:14px;
-  background:rgba(255,255,255,0.75);
+  width:336px; margin-top:14px;
+  background:var(--panel-bg);
   border:1px solid var(--line);
   border-radius:10px;
   padding:14px 16px 12px;
@@ -375,8 +386,10 @@ body{ position:relative; }
   margin-bottom:10px;
 }
 .activity-head b{ color:var(--ink); }
-.activity-list{ display:flex; flex-direction:column; gap:8px; max-height:150px; overflow-y:auto; }
-.activity-row{ display:flex; align-items:center; gap:8px; font-size:.78rem; }
+.activity-list{ display:flex; flex-direction:column; gap:8px; max-height:60px; overflow-y:auto; }
+.activity-list::-webkit-scrollbar{ width:4px; }
+.activity-list::-webkit-scrollbar-thumb{ background:var(--gold); border-radius:4px; }
+.activity-row{ display:flex; align-items:center; gap:8px; font-size:.78rem; flex-shrink:0; }
 .activity-row .a-name{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .activity-row .a-time{ color:var(--ash); font-size:.68rem; flex-shrink:0; }
 .activity-bar-track{ position:relative; height:5px; border-radius:3px; background:var(--line); overflow:hidden; flex-shrink:0; width:64px; }
@@ -438,8 +451,8 @@ body{ position:relative; }
 .id-status{ font-size:.85rem; color:var(--ash); font-family:'Noto Sans KR',sans-serif; }
 
 .player-widget{
-  width:300px; margin-top:18px;
-  background:rgba(255,255,255,0.75);
+  width:336px; margin-top:18px;
+  background:var(--panel-bg);
   box-shadow:0 10px 30px -14px rgba(20,18,28,0.14);
   border:1px solid var(--line);
   border-radius:10px;
@@ -486,13 +499,13 @@ body{ position:relative; }
 .player-btn{
   position:relative; flex-shrink:0;
   width:38px; height:38px; border-radius:50%;
-  background:rgba(255,255,255,0.7);
+  background:var(--panel-bg-soft);
   border:1px solid var(--line);
   display:flex; align-items:center; justify-content:center;
   cursor:pointer; transition:.2s;
 }
-.player-btn:hover{ background:rgba(255,255,255,0.95); border-color:var(--st-accent); }
-.player-btn svg{ width:16px; height:16px; stroke:var(--bone); fill:none; }
+.player-btn:hover{ background:var(--panel-bg-strong); border-color:var(--st-accent); }
+.player-btn svg{ width:16px; height:16px; stroke:var(--bone); fill:none; display:block; }
 .player-btn-label{
   position:absolute; bottom:-2px; right:-2px;
   width:14px; height:14px; border-radius:50%;
@@ -502,7 +515,7 @@ body{ position:relative; }
   box-shadow:0 1px 4px rgba(255,79,163,0.45);
   z-index:1;
 }
-.player-btn-main{ width:48px; height:48px; background:rgba(255,255,255,0.85); }
+.player-btn-main{ width:48px; height:48px; background:var(--panel-bg-strongest); }
 .player-eq{
   display:flex; align-items:flex-end; gap:2px; height:10px; margin-left:2px;
   opacity:.35;
@@ -625,8 +638,8 @@ body{ position:relative; }
   display:flex; align-items:center; justify-content:center;
 }
 .altar-frame{
-  position:relative; width:min(46vw, 560px); height:70vh;
-  display:flex; align-items:flex-end; justify-content:center;
+  position:relative; width:min(52vw, 640px); height:88vh;
+  display:flex; align-items:center; justify-content:center;
 }
 .altar-frame{
   border-radius:22px;
@@ -684,8 +697,8 @@ body{ position:relative; }
 }
 .wing-spark{
   position:fixed; z-index:1; pointer-events:none; border-radius:50%;
-  background:radial-gradient(circle, rgba(255,111,180,0.95), rgba(255,111,180,0) 72%);
-  box-shadow:0 0 6px rgba(255,111,180,0.6);
+  background:radial-gradient(circle, var(--wing-spark-core), var(--wing-spark-fade) 72%);
+  box-shadow:0 0 6px var(--wing-spark-glow);
   animation:sparkFall linear forwards;
 }
 @keyframes sparkFall{
@@ -740,6 +753,11 @@ body{ position:relative; }
 }
 .reflection #characterArt{ border:none; background:none; }
 
+/* ── 화면 전체를 90%로 축소해서 보여줌 (요청 #6) ── */
+html{
+  zoom:0.9;
+}
+
 @media (max-width:880px){
   .stage{ grid-template-columns:1fr; padding-top:70px; }
   .altar-col{ height:64vh; order:-1; }
@@ -775,7 +793,6 @@ body{ position:relative; }
 <div class="fog-wrap" id="fogWrap2"><div class="fog f2"></div></div>
 <div class="fog-wrap" id="fogWrap3"><div class="fog f3"></div></div>
 <div id="stars"></div>
-<div id="cursorAura"></div>
 <div id="vignette"></div>
 <div id="grain"></div>
 
@@ -810,14 +827,14 @@ body{ position:relative; }
       <svg viewBox="0 0 220 130">
         <defs>
           <linearGradient id="wingEdge" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
-            <stop offset="45%" stop-color="#ff9fce" stop-opacity=".95"/>
-            <stop offset="100%" stop-color="#ff4fa3" stop-opacity=".95"/>
+            <stop offset="0%" style="stop-color:#ffffff" stop-opacity="1"/>
+            <stop offset="45%" style="stop-color:var(--wing-edge-2)" stop-opacity=".95"/>
+            <stop offset="100%" style="stop-color:var(--wing-edge-3)" stop-opacity=".95"/>
           </linearGradient>
           <radialGradient id="wingHollow" cx="50%" cy="35%" r="75%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity=".95"/>
-            <stop offset="55%" stop-color="#ffc7e4" stop-opacity=".8"/>
-            <stop offset="100%" stop-color="#ff8fc0" stop-opacity=".45"/>
+            <stop offset="0%" style="stop-color:#ffffff" stop-opacity=".95"/>
+            <stop offset="55%" style="stop-color:var(--wing-hollow-2)" stop-opacity=".8"/>
+            <stop offset="100%" style="stop-color:var(--wing-hollow-3)" stop-opacity=".45"/>
           </radialGradient>
         </defs>
         
@@ -848,7 +865,7 @@ body{ position:relative; }
       <div class="badge-row" id="badgeRow"></div>
       <div class="avatar" id="avatarWrap">
         <canvas id="avatarFx"></canvas>
-        <img id="avatarImg" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffe3f0'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%23ff8fc0'/%3E%3Cellipse cx='50' cy='88' rx='30' ry='24' fill='%23ff8fc0'/%3E%3C/svg%3E" alt="avatar">
+        <img id="avatarImg" crossorigin="anonymous" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffe3f0'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%23ff8fc0'/%3E%3Cellipse cx='50' cy='88' rx='30' ry='24' fill='%23ff8fc0'/%3E%3C/svg%3E" alt="avatar">
         <span id="statusDot" class="status-dot"></span>
         <span id="listeningBadge" class="listening-badge" title="listening to spotify">
           <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6Z"/></svg>
@@ -858,7 +875,7 @@ body{ position:relative; }
         <span class="id-name" id="idName" title="클릭해서 디스코드 ID 복사">
           8dk1<span class="id-tooltip">(1489458472826441901)</span>
         </span>
-        <span class="id-status" id="idStatus">i miss u</span>
+        <span class="id-status" id="idStatus">아무 생각 없음</span>
         <span class="id-lastseen" id="lastSeen"></span>
       </div>
     </div>
@@ -877,7 +894,7 @@ body{ position:relative; }
       </div>
       <div class="player-row">
         <button id="prevTrackBtn" class="player-btn" aria-label="이전 곡" title="이전 곡">
-          <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M6 6v12M19 6v12L9 12z" fill="var(--bone)" stroke="none"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" fill="var(--bone)" stroke="none"/></svg>
         </button>
         <button id="skipBackBtn" class="player-btn" aria-label="5초 뒤로" title="5초 뒤로">
           <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 6V2L7 7l5 5V8a5 5 0 1 1-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -892,7 +909,7 @@ body{ position:relative; }
           <span class="player-btn-label">5</span>
         </button>
         <button id="nextTrackBtn" class="player-btn" aria-label="다음 곡" title="다음 곡">
-          <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M18 6v12M5 6v12l10-6z" fill="var(--bone)" stroke="none"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" fill="var(--bone)" stroke="none"/></svg>
         </button>
       </div>
       <div class="player-seek-row">
@@ -1019,19 +1036,15 @@ function playBoing(){
 }
 
 
-const BURST_SPARK_COLORS = [
-  { core:'#fff0f7', mid:'rgba(255,143,192,0.85)', glow:'rgba(255,143,192,0.8)' },
-  { core:'#ffecf6', mid:'rgba(255,79,163,0.85)',  glow:'rgba(255,79,163,0.8)'  },
-  { core:'#ffffff', mid:'rgba(255,194,217,0.85)', glow:'rgba(255,194,217,0.8)'}
-];
 function spawnArtBurst(originEl){
   const rect = originEl.getBoundingClientRect();
   const cx = rect.left + rect.width/2;
   const cy = rect.top + rect.height*0.55;
-  
+  const burstColors = getBurstSparkColors();
+
   const ring = document.createElement('div');
   ring.className = 'art-burst-ring';
-  const ringColor = BURST_SPARK_COLORS[Math.floor(Math.random()*BURST_SPARK_COLORS.length)];
+  const ringColor = burstColors[Math.floor(Math.random()*burstColors.length)];
   ring.style.left = cx + 'px';
   ring.style.top = cy + 'px';
   ring.style.setProperty('--spark-glow', ringColor.glow);
@@ -1044,7 +1057,7 @@ function spawnArtBurst(originEl){
     const dist = 70 + Math.random()*150;
     const spark = document.createElement('div');
     spark.className = 'wing-spark spark-burst';
-    const color = BURST_SPARK_COLORS[Math.floor(Math.random()*BURST_SPARK_COLORS.length)];
+    const color = burstColors[Math.floor(Math.random()*burstColors.length)];
     const size = Math.random()*2.4 + 1.6;
     spark.style.left = cx + 'px';
     spark.style.top = cy + 'px';
@@ -1080,17 +1093,12 @@ if(artEl){
   }
 }
 
-const aura = document.getElementById('cursorAura');
 const fogWrap1 = document.getElementById('fogWrap1');
 const fogWrap2 = document.getElementById('fogWrap2');
 const fogWrap3 = document.getElementById('fogWrap3');
 const depthEl = document.getElementById('depth');
 let lastEmber = 0;
 window.addEventListener('mousemove', (e) => {
-  aura.style.opacity = '1';
-  aura.style.left = e.clientX + 'px';
-  aura.style.top = e.clientY + 'px';
-  
   const nx = (e.clientX / window.innerWidth) - 0.5;
   const ny = (e.clientY / window.innerHeight) - 0.5;
   
@@ -1119,7 +1127,6 @@ window.addEventListener('mousemove', (e) => {
     setTimeout(()=>em.remove(), 900);
   }
 });
-window.addEventListener('mouseleave', ()=>{ aura.style.opacity='0'; });
 
 const firebaseConfig = {
   apiKey: "f72ZBSsxK7e9ddz2WQCYDwPhlSDM1bnFDOaCakSD",
@@ -1442,6 +1449,18 @@ function isSpotifyLive(data, status){
   return true;
 }
 
+/* ── 요청: "i miss u" 텍스트를 디스코드 커스텀 상태 메시지로 실시간 반영, 없으면 "아무 생각 없음" ── */
+function updateCustomStatusText(data){
+  const idStatusEl = document.getElementById('idStatus');
+  if(!idStatusEl) return;
+  let text = '';
+  if(data && Array.isArray(data.activities)){
+    const custom = data.activities.find(a => a && a.type === 4);
+    if(custom && custom.state) text = String(custom.state).trim();
+  }
+  idStatusEl.textContent = text || '아무 생각 없음';
+}
+
 function applyLanyardData(data){
   data = unwrapLanyardPayload(data);
   if(!data) return;
@@ -1450,11 +1469,17 @@ function applyLanyardData(data){
   const listeningBadgeEl = document.getElementById('listeningBadge');
   const avatarImgEl = document.getElementById('avatarImg');
 
+  updateCustomStatusText(data);
+
   if(data.discord_user){
     renderBadges(data.discord_user.public_flags);
     const uid = data.discord_user.id;
     const avUrl = discordAssetUrl(uid, data.discord_user.avatar, 'avatars');
-    if(avUrl && avatarImgEl){ avatarImgEl.src = avUrl; }
+    if(avUrl && avatarImgEl){
+      avatarImgEl.src = avUrl;
+      /* 요청 #4: 프사(아바타)에서 색을 뽑아 사이트 전체 테마에 반영 */
+      extractAvatarTint(avUrl, () => applyStatusTheme(currentPresenceStatus));
+    }
     if(data.discord_user.banner){
       const bnUrl = discordAssetUrl(uid, data.discord_user.banner, 'banners');
       if(bnUrl){ applyBannerTint(bnUrl); }
@@ -1492,7 +1517,7 @@ function applyLanyardData(data){
   }
 }
 
-/* ── Nitro 배너 색상 자동 추출 → 사이트 accent에 반영 ── */
+/* ── Nitro 배너 색상 자동 추출 (참고용, --nitro-tint 로 저장) ── */
 function applyBannerTint(url){
   try{
     const img = new Image();
@@ -1514,28 +1539,221 @@ function applyBannerTint(url){
   }catch(e){}
 }
 
-/* ── 4가지 디스코드 상태별 사이트 전체 테마 (온라인=네온그린 파티클 / 자리비움=호박 와이어프레임 / 다른 용무 중=다크레드 펄스 / 오프라인=모노톤 시네마틱) ── */
-const STATUS_THEMES = {
-  online:  { accent:'#ff6fb0', soft:'rgba(255,111,176,0.30)', bgA:'#ffffff', bgB:'#fff0f8', glow:'rgba(255,111,176,0.20)', fx:'particles' },
-  idle:    { accent:'#ffb74f', soft:'rgba(255,183,79,0.32)', bgA:'#ffffff', bgB:'#fff6ea', glow:'rgba(255,183,79,0.20)', fx:'wireframe' },
-  dnd:     { accent:'#ff3b5c', soft:'rgba(255,59,92,0.32)',  bgA:'#ffffff', bgB:'#fff0f2', glow:'rgba(255,59,92,0.22)', fx:'pulse' },
-  offline: { accent:'#9aa0ac', soft:'rgba(154,160,172,0.30)', bgA:'#ffffff', bgB:'#f2f0f5', glow:'rgba(154,160,172,0.18)', fx:'mono' }
+/* ── 요청: 아바타(프사)에서 "퍼스트 컬러"(가장 대표적인/눈에 띄는 색)를 추출해
+   사이트 전체 accent 컬러 + 날개색 + 활동중 상태색에 전부 반영 ── */
+let avatarAccentColor = null; // {r,g,b}
+function extractAvatarTint(url, onDone){
+  try{
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try{
+        const size = 32;
+        const c = document.createElement('canvas');
+        c.width = size; c.height = size;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, size, size);
+        const d = ctx.getImageData(0, 0, size, size).data;
+
+        /* 색상을 16단계로 양자화해서 버킷별 등장 빈도(채도 가중치 포함)를 세고,
+           가장 "존재감 있는" 색(=퍼스트 컬러)을 고름. 무채색(흰/검/회색)은 낮은 가중치. */
+        const buckets = {};
+        for(let i=0;i<d.length;i+=4){
+          if(d[i+3] < 20) continue; // 투명 픽셀 제외
+          const r=d[i], g=d[i+1], b=d[i+2];
+          const max=Math.max(r,g,b), min=Math.min(r,g,b);
+          const sat = max===0 ? 0 : (max-min)/max;
+          const light = max/255;
+          if(light > 0.94 || light < 0.08) continue; // 거의 흰색/검정 제외
+          const key = (r>>4)+','+(g>>4)+','+(b>>4);
+          const weight = 0.25 + sat*1.5; // 채도 높을수록 가중치 up
+          if(!buckets[key]) buckets[key] = { r:0,g:0,b:0, w:0 };
+          buckets[key].r += r*weight;
+          buckets[key].g += g*weight;
+          buckets[key].b += b*weight;
+          buckets[key].w += weight;
+        }
+        const keys = Object.keys(buckets);
+        let picked = null;
+        if(keys.length){
+          keys.sort((a,b)=> buckets[b].w - buckets[a].w);
+          const top = buckets[keys[0]];
+          picked = { r:Math.round(top.r/top.w), g:Math.round(top.g/top.w), b:Math.round(top.b/top.w) };
+        } else {
+          /* 전부 무채색/투명이면 단순 평균으로 폴백 */
+          let r=0,g=0,b=0,n=0;
+          for(let i=0;i<d.length;i+=4){
+            if(d[i+3] < 12) continue;
+            r+=d[i]; g+=d[i+1]; b+=d[i+2]; n++;
+          }
+          if(n === 0) return;
+          picked = { r:Math.round(r/n), g:Math.round(g/n), b:Math.round(b/n) };
+        }
+        avatarAccentColor = picked;
+        if(onDone) onDone(avatarAccentColor);
+      }catch(e){ /* CORS 등으로 픽셀을 못 읽으면 조용히 무시 (기존 상태색 유지) */ }
+    };
+    img.onerror = () => {};
+    img.src = url;
+  }catch(e){}
+}
+function hexToRgb(hex){
+  hex = hex.replace('#','');
+  if(hex.length === 3){ hex = hex.split('').map(c=>c+c).join(''); }
+  const num = parseInt(hex, 16);
+  return { r:(num>>16)&255, g:(num>>8)&255, b:num&255 };
+}
+function rgbToHex({r,g,b}){
+  const h = (n)=> Math.max(0,Math.min(255,Math.round(n))).toString(16).padStart(2,'0');
+  return '#' + h(r) + h(g) + h(b);
+}
+function mixColor(rgb, target, amt){
+  return {
+    r: rgb.r + (target.r - rgb.r) * amt,
+    g: rgb.g + (target.g - rgb.g) * amt,
+    b: rgb.b + (target.b - rgb.b) * amt
+  };
+}
+const WHITE_RGB = {r:255,g:255,b:255}, BLACK_RGB = {r:0,g:0,b:0};
+function lightenRgb(rgb, amt){ return mixColor(rgb, WHITE_RGB, amt); }
+function darkenRgb(rgb, amt){ return mixColor(rgb, BLACK_RGB, amt); }
+
+/* ── 상태별 상태점(dot) 색상 — 요청 #4: 방해금지=노란색, 자리비움=빨간색으로 스왑 ── */
+const STATUS_DOT_COLORS = {
+  online:  '#ff6fb0',
+  idle:    '#ff3b5c',  /* 자리비움 → 빨간색 */
+  dnd:     '#ffd23f',  /* 방해 금지 → 노란색 */
+  offline: '#9aa0ac'
+};
+/* ── 상태별 배경 파티클 효과 모드 ── */
+const STATUS_FX = {
+  online:  'particles',
+  idle:    'pulse',
+  dnd:     'wireframe',
+  offline: 'mono'
 };
 let currentFx = null;
+function rgbaStr(rgb, a){ return 'rgba(' + Math.round(rgb.r) + ',' + Math.round(rgb.g) + ',' + Math.round(rgb.b) + ',' + a + ')'; }
+function luminanceOf(rgb){ return 0.299*rgb.r + 0.587*rgb.g + 0.114*rgb.b; }
+
+/* ── 요청: 프사 퍼스트 컬러가 배경(흰색)과 비슷하면(너무 밝으면) 배경을 어둡게,
+   반대로 아주 어두운 색이면 배경은 밝게 유지해서 항상 잘 보이도록 함 ── */
+function applyContrastMode(mode){
+  const root = document.documentElement;
+  root.setAttribute('data-contrast', mode);
+  if(mode === 'dark'){
+    root.style.setProperty('--ink', '#f6eef2');
+    root.style.setProperty('--bone', '#ffeaf3');
+    root.style.setProperty('--ash', '#d9b6c9');
+    root.style.setProperty('--line', 'rgba(255,255,255,0.14)');
+    root.style.setProperty('--surface', '#161018');
+    root.style.setProperty('--surface-soft', '#1f1620');
+    root.style.setProperty('--panel-bg', 'rgba(26,18,28,0.72)');
+    root.style.setProperty('--panel-bg-soft', 'rgba(26,18,28,0.65)');
+    root.style.setProperty('--panel-bg-strong', 'rgba(38,28,42,0.92)');
+    root.style.setProperty('--panel-bg-strongest', 'rgba(38,28,42,0.88)');
+    root.style.setProperty('--vignette-edge', 'rgba(6,4,8,0.65)');
+  } else {
+    root.style.setProperty('--ink', '#2b1220');
+    root.style.setProperty('--bone', '#33131f');
+    root.style.setProperty('--ash', '#8a5b74');
+    root.style.setProperty('--line', 'rgba(43,18,32,0.12)');
+    root.style.setProperty('--surface', '#ffffff');
+    root.style.setProperty('--surface-soft', '#fff3f8');
+    root.style.setProperty('--panel-bg', 'rgba(255,255,255,0.75)');
+    root.style.setProperty('--panel-bg-soft', 'rgba(255,255,255,0.7)');
+    root.style.setProperty('--panel-bg-strong', 'rgba(255,255,255,0.95)');
+    root.style.setProperty('--panel-bg-strongest', 'rgba(255,255,255,0.85)');
+    root.style.setProperty('--vignette-edge', 'rgba(255,255,255,0.65)');
+  }
+}
+
+/* ── 요청: 클릭 시 캐릭터에 터지는 반짝이도 프사 퍼스트 컬러 계열로 ── */
+function shadeToSpark(rgb, lightenAmt){
+  const v = lightenRgb(rgb, lightenAmt);
+  return {
+    core: rgbToHex(lightenRgb(v, 0.6)),
+    mid: rgbaStr(v, 0.85),
+    glow: rgbaStr(v, 0.8)
+  };
+}
+function getBurstSparkColors(){
+  const base = avatarAccentColor || { r:255, g:143, b:192 };
+  return [ shadeToSpark(base, 0.4), shadeToSpark(base, 0.15), shadeToSpark(base, 0.55) ];
+}
+
 function applyStatusTheme(status){
-  const t = STATUS_THEMES[status] || STATUS_THEMES.offline;
   const root = document.documentElement;
   root.setAttribute('data-status', status);
-  root.style.setProperty('--st-accent', t.accent);
-  root.style.setProperty('--st-accent-soft', t.soft);
-  root.style.setProperty('--st-bg-a', t.bgA);
-  root.style.setProperty('--st-bg-b', t.bgB);
-  root.style.setProperty('--st-glow', t.glow);
-  root.style.setProperty('--status-online', STATUS_THEMES.online.accent);
-  root.style.setProperty('--status-idle', STATUS_THEMES.idle.accent);
-  root.style.setProperty('--status-dnd', STATUS_THEMES.dnd.accent);
-  root.style.setProperty('--status-offline', STATUS_THEMES.offline.accent);
-  startStatusFx(t.fx, t.accent);
+
+  /* 요청: "활동중"일 때 메인 컬러(기존 고정 핑크)도 프사 퍼스트 컬러를 따라가도록 함 */
+  const onlineColor = avatarAccentColor ? rgbToHex(lightenRgb(avatarAccentColor, 0.06)) : STATUS_DOT_COLORS.online;
+  const dotColor = status === 'online' ? onlineColor : (STATUS_DOT_COLORS[status] || STATUS_DOT_COLORS.offline);
+  const fxMode = STATUS_FX[status] || STATUS_FX.offline;
+
+  /* 사이트 전체 테마(배경 글로우 등)는 프사에서 뽑은 퍼스트 컬러를 우선 사용하고,
+     아직 추출 전이거나 실패했으면 상태색으로 대체(fallback) */
+  const baseRGB = avatarAccentColor || hexToRgb(dotColor);
+  const accentHex = rgbToHex(baseRGB);
+  const soft = rgbaStr(baseRGB, 0.30);
+  const glow = rgbaStr(baseRGB, 0.18);
+  const bgB = 'rgb(' +
+    Math.round(255 - (255 - baseRGB.r) * 0.05) + ',' +
+    Math.round(255 - (255 - baseRGB.g) * 0.05) + ',' +
+    Math.round(255 - (255 - baseRGB.b) * 0.05) + ')';
+
+  /* 요청: 프사색이 배경(흰색)과 너무 비슷하면(=너무 밝으면) 배경을 어둡게 뒤집고,
+     반대로 프사색이 아주 어두우면 배경은 밝은 상태를 유지 */
+  let contrastMode = 'light';
+  if(avatarAccentColor){
+    const lum = luminanceOf(baseRGB);
+    if(lum > 205) contrastMode = 'dark';
+    else contrastMode = 'light';
+  }
+  applyContrastMode(contrastMode);
+
+  root.style.setProperty('--st-accent', accentHex);
+  root.style.setProperty('--st-accent-soft', soft);
+  root.style.setProperty('--st-bg-a', contrastMode === 'dark' ? '#161018' : '#ffffff');
+  root.style.setProperty('--st-bg-b', status === 'offline' ? (contrastMode === 'dark' ? '#201620' : '#f2f0f5') : bgB);
+  root.style.setProperty('--st-glow', glow);
+
+  root.style.setProperty('--status-online', onlineColor);
+  root.style.setProperty('--status-idle', STATUS_DOT_COLORS.idle);
+  root.style.setProperty('--status-dnd', STATUS_DOT_COLORS.dnd);
+  root.style.setProperty('--status-offline', STATUS_DOT_COLORS.offline);
+
+  /* 요청: 날개색 / 재생바 / CD / 글자 그림자 / 캐릭터 조명 / 클릭 반짝이 등
+     사이트 곳곳의 포인트 컬러(--verdant, --blood, --gold)를 전부 프사 퍼스트 컬러 계열로 통일 */
+  if(avatarAccentColor){
+    const edge3 = rgbToHex(baseRGB);
+    const edge2 = rgbToHex(lightenRgb(baseRGB, 0.32));
+    const hollow2 = rgbToHex(lightenRgb(baseRGB, 0.42));
+    const hollow3 = rgbToHex(lightenRgb(baseRGB, 0.12));
+    const feather = rgbToHex(darkenRgb(baseRGB, 0.12));
+    root.style.setProperty('--wing-edge-2', edge2);
+    root.style.setProperty('--wing-edge-3', edge3);
+    root.style.setProperty('--wing-hollow-2', hollow2);
+    root.style.setProperty('--wing-hollow-3', hollow3);
+    root.style.setProperty('--wing-feather', feather);
+
+    const sparkBase = lightenRgb(baseRGB, 0.06);
+    root.style.setProperty('--wing-spark-core', rgbaStr(sparkBase, 0.95));
+    root.style.setProperty('--wing-spark-fade', rgbaStr(sparkBase, 0));
+    root.style.setProperty('--wing-spark-glow', rgbaStr(sparkBase, 0.6));
+
+    const verdantRGB = lightenRgb(baseRGB, 0.1);
+    const bloodRGB = darkenRgb(baseRGB, 0.04);
+    const goldRGB = lightenRgb(baseRGB, 0.38);
+    root.style.setProperty('--verdant', rgbToHex(verdantRGB));
+    root.style.setProperty('--verdant-soft', rgbaStr(verdantRGB, 0.38));
+    root.style.setProperty('--blood', rgbToHex(bloodRGB));
+    root.style.setProperty('--blood-soft', rgbaStr(bloodRGB, 0.38));
+    root.style.setProperty('--gold', rgbToHex(goldRGB));
+    root.style.setProperty('--gold-soft', rgbaStr(goldRGB, 0.38));
+  }
+
+  startStatusFx(fxMode, dotColor);
 }
 
 /* ── canvas 기반 상태별 배경 효과 ── */
@@ -1607,8 +1825,48 @@ function startStatusFx(mode, colorHex){
   }
 }
 
-/* ── 마지막 접속 / 현재 활동 표시 ── */
+/* ── 마지막 접속 / 현재 활동 표시 ──
+   요청 #1: (a) 한국 시간(KST) 자정을 기준으로 하루가 지나면 오프라인 시간이 리셋되도록,
+            (b) 브라우저별 localStorage 편차로 "가끔 카운트가 안 되는" 문제를 없애기 위해
+                Firebase Realtime DB에 마지막 접속 시각을 공유 저장 */
 const LAST_ONLINE_KEY = 'fxk_last_online_ts';
+const presenceRef = db.ref('presence/lastOnline');
+let lastOnlineTs = null;
+let lastFirebaseWrite = 0;
+
+// 최초 로드시 로컬 캐시로 우선 채워둠 (Firebase 응답 오기 전 깜빡임 방지)
+try{
+  const cachedTs = Number(localStorage.getItem(LAST_ONLINE_KEY));
+  if(cachedTs > 0) lastOnlineTs = cachedTs;
+}catch(e){}
+
+// Firebase 값이 오면 모든 방문자 간에 동일한 "마지막 접속 시각"을 공유
+presenceRef.on('value', snap => {
+  const val = Number(snap.val());
+  if(val > 0){
+    lastOnlineTs = val;
+    try{ localStorage.setItem(LAST_ONLINE_KEY, String(val)); }catch(e){}
+    updateLastSeen(currentPresenceStatus);
+  }
+});
+
+function recordOnlineTimestamp(now){
+  lastOnlineTs = now;
+  try{ localStorage.setItem(LAST_ONLINE_KEY, String(now)); }catch(e){}
+  // Firebase에는 과도한 쓰기를 막기 위해 15초에 한 번만 기록
+  if(now - lastFirebaseWrite > 15000){
+    lastFirebaseWrite = now;
+    presenceRef.set(now).catch(()=>{});
+  }
+}
+
+/* 한국(KST, UTC+9) 기준 "오늘 00:00" 의 epoch(ms) 값 계산 */
+function kstMidnightTodayTs(now){
+  const kst = new Date(now + 9*3600*1000);
+  const y = kst.getUTCFullYear(), m = kst.getUTCMonth(), d = kst.getUTCDate();
+  const kstMidnightAsUTC = Date.UTC(y, m, d, 0, 0, 0);
+  return kstMidnightAsUTC - 9*3600*1000;
+}
 
 function formatOfflineDuration(ms){
   if(ms < 0) ms = 0;
@@ -1628,28 +1886,35 @@ function updateLastSeen(status){
   if(status === 'do_not_disturb' || status === 'do not disturb') status = 'dnd';
   const now = Date.now();
   if(status === 'online'){
-    localStorage.setItem(LAST_ONLINE_KEY, String(now));
+    recordOnlineTimestamp(now);
     el.classList.add('is-active');
     el.innerHTML = '<span class="pulse-dot"></span><b>지금은 활동중</b>';
     return;
   }
   el.classList.remove('is-active');
   if(status === 'idle'){
-    localStorage.setItem(LAST_ONLINE_KEY, String(now));
+    recordOnlineTimestamp(now);
     el.innerHTML = '자리비움';
     return;
   }
   if(status === 'dnd'){
-    localStorage.setItem(LAST_ONLINE_KEY, String(now));
+    recordOnlineTimestamp(now);
     el.innerHTML = '다른 용무 중';
     return;
   }
-  const stored = localStorage.getItem(LAST_ONLINE_KEY);
+  // offline
+  let stored = lastOnlineTs;
+  if(!stored){
+    try{ stored = Number(localStorage.getItem(LAST_ONLINE_KEY)) || null; }catch(e){}
+  }
   if(!stored){
     el.innerHTML = '오프라인 · 마지막 접속 기록 없음';
     return;
   }
-  el.innerHTML = '오프라인 <b>' + formatOfflineDuration(now - Number(stored)) + '</b>';
+  // 요청 #1: 하루(KST 자정)가 지났으면 그 시점부터 다시 카운트되도록 리셋
+  const todayMidnight = kstMidnightTodayTs(now);
+  const ref = stored < todayMidnight ? todayMidnight : stored;
+  el.innerHTML = '오프라인 <b>' + formatOfflineDuration(now - ref) + '</b>';
 }
 setInterval(() => updateLastSeen(currentPresenceStatus), 1000);
 
@@ -1671,7 +1936,12 @@ function renderSpotifyLine(){
 }
 setInterval(() => { if(liveSpotify) renderSpotifyLine(); }, 1000);
 
-/* ── Activity Analytics Dashboard: 세션 관찰 동안의 활동을 24h 로 누적 ── */
+/* ── Activity Analytics Dashboard: 세션 관찰 동안의 활동을 24h 로 누적
+   요청 #2: type을 4(커스텀 상태 문구)만 제외하고 나머지(0 Playing/1 Streaming/2 Listening/3 Watching/5 Competing)는
+   모두 게임/활동으로 인정하도록 하고, 표시 개수도 늘려서(최대 12개) 스크롤로 더 볼 수 있게 함.
+   ※ 발로란트처럼 디스코드 자체 "게임 감지(Game Activity)" 기능에 의존하는 게임은,
+     디스코드 설정 > 활동 상태 에서 "현재 활동을 상태 메시지로 표시" 가 켜져 있어야
+     Lanyard/이 위젯에도 활동이 전달됩니다 (클라이언트 코드로는 해결 불가한 디스코드 측 설정). */
 const ACTIVITY_KEY = 'fxk_activity_log';
 function logActivity(activities){
   if(currentPresenceStatus === 'offline') return;
@@ -1681,7 +1951,7 @@ function logActivity(activities){
   try{ log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }catch(e){ log = []; }
   activities.forEach(a=>{
     if(!a || !a.name) return;
-    if(a.type === 4) return; // custom status text는 제외
+    if(a.type === 4) return; // custom status text만 제외, 나머지 활동 타입은 모두 기록
     const last = log[log.length-1];
     if(last && last.name === a.name && (now - last.end) < 40000){
       last.end = now; // 같은 활동이 이어지는 중이면 종료 시각만 갱신
@@ -1705,7 +1975,7 @@ function renderActivityDashboard(log){
   }
   const byName = {};
   log.forEach(e=>{ byName[e.name] = (byName[e.name]||0) + Math.max(0, e.end - e.start) + 20000; });
-  const rows = Object.entries(byName).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const rows = Object.entries(byName).sort((a,b)=>b[1]-a[1]).slice(0,12);
   const totalMs = Object.values(byName).reduce((a,b)=>a+b,0);
   if(totalEl) totalEl.textContent = formatDuration(totalMs);
   listEl.querySelectorAll('.activity-row').forEach(r=>r.remove());
