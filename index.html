@@ -93,6 +93,12 @@ body{ position:relative; }
   position:fixed; z-index:0; pointer-events:none; border-radius:50%;
   filter:blur(60px); opacity:.45; mix-blend-mode:multiply;
   transition:background 1s ease;
+  transform:translateZ(0);
+  will-change:transform;
+  backface-visibility:hidden;
+}
+@media (max-width:880px){
+  .fog{ filter:blur(34px); }
 }
 .fog.f1{ width:44vw; height:44vw; top:-10%; left:-8%; background:radial-gradient(circle, var(--blood-soft), transparent 70%); animation:driftA 26s ease-in-out infinite; }
 .fog.f2{ width:38vw; height:38vw; bottom:-12%; right:-6%; background:radial-gradient(circle, var(--verdant-soft), transparent 70%); animation:driftB 32s ease-in-out infinite; }
@@ -195,16 +201,24 @@ body{ position:relative; }
   top:0; left:0;
   width:111.1111%;
   height:111.1111%;
+  height:111.1111dvh;
   transform:scale(0.9);
   transform-origin:top left;
   z-index:3;
   overflow-y:auto;
   overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+@media (max-width:880px){
+  /* on mobile, the fixed+scaled wrapper combined with the body's own scroll
+     causes double/locked scrolling; let this single element own the scroll */
+  html, body{ height:100%; overflow:hidden; }
 }
 
 .stage{
   position:relative; z-index:3;
   min-height:100vh;
+  min-height:100dvh;
   display:grid;
   grid-template-columns:1fr 1fr;
   align-items:center;
@@ -641,6 +655,7 @@ body{ position:relative; }
 
 .altar-col{
   position:relative; height:100vh;
+  height:100dvh;
   display:flex; align-items:center; justify-content:center;
 }
 .altar-frame{
@@ -761,7 +776,7 @@ body{ position:relative; }
 
 @media (max-width:880px){
   .stage{ grid-template-columns:1fr; padding-top:70px; }
-  .altar-col{ height:64vh; order:-1; }
+  .altar-col{ height:64vh; height:64dvh; order:-1; }
   .altar-frame{ width:84vw; height:100%; }
   .profile-col{ padding:20px 24px 60px; }
   #characterArt img{
@@ -779,6 +794,14 @@ body{ position:relative; }
   .player-btn-main{ width:44px; height:44px; }
   .link-row{ gap:16px; }
   #soundControl{ top:14px; left:14px; }
+}
+
+#characterArt:focus-visible,
+#sigilWings:focus-visible,
+.id-name:focus-visible{
+  outline:2px solid var(--verdant);
+  outline-offset:3px;
+  border-radius:8px;
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -826,7 +849,7 @@ body{ position:relative; }
 
 <main class="stage">
   <section class="profile-col">
-    <div class="sigil" id="sigilWings" title="ㅤ">
+    <div class="sigil" id="sigilWings" title="날개 장식" tabindex="0" role="button" aria-label="날개 장식 상호작용">
       <svg viewBox="0 0 220 130">
         <defs>
           <linearGradient id="wingEdge" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -875,7 +898,7 @@ body{ position:relative; }
         </span>
       </div>
       <div class="id-text">
-        <span class="id-name" id="idName" title="클릭해서 디스코드 ID 복사">
+        <span class="id-name" id="idName" title="클릭해서 디스코드 ID 복사" tabindex="0" role="button" aria-label="디스코드 아이디 복사하기">
           8dk1<span class="id-tooltip">(1489458472826441901)</span>
         </span>
         <span class="id-status" id="idStatus">아무 생각 없음</span>
@@ -933,16 +956,16 @@ body{ position:relative; }
     </div>
 
     <div class="link-row">
-      <a href="https://discord.com/users/1489458472826441901" target="_blank" title="Discord">
+      <a href="https://discord.com/users/1489458472826441901" target="_blank" title="Discord" aria-label="Discord 프로필로 이동">
         <svg viewBox="0 0 24 24"><path d="M20.3 5.4A17 17 0 0 0 15.9 4l-.3.6a13 13 0 0 1 3.9 1.5 15 15 0 0 0-13 0A13 13 0 0 1 10.4 4l-.3-.6A17 17 0 0 0 5.7 5.4C3 9.4 2.3 13.3 2.6 17.1a17 17 0 0 0 5.1 2.5l.7-1.2a11 11 0 0 1-1.8-.9c.2-.1.3-.2.5-.3a12 12 0 0 0 10 0l.5.3a11 11 0 0 1-1.8.9l.7 1.2a17 17 0 0 0 5.1-2.5c.4-4.4-.7-8.2-2.3-11.7ZM9 14.5c-.9 0-1.6-.9-1.6-2s.7-2 1.6-2 1.6.9 1.6 2-.7 2-1.6 2Zm6 0c-.9 0-1.6-.9-1.6-2s.7-2 1.6-2 1.6.9 1.6 2-.7 2-1.6 2Z"/></svg>
       </a>
-      <a href="https://roblox.com/users/8917506694/profile" target="_blank" title="Roblox">
+      <a href="https://roblox.com/users/8917506694/profile" target="_blank" title="Roblox" aria-label="Roblox 프로필로 이동">
         <svg viewBox="0 0 24 24"><path d="M4.5 3.5 3 19.5l16 1.5L20.5 5 4.5 3.5Zm4.9 5.3 6.1.5-.5 6.1-6.1-.5.5-6.1Z"/></svg>
       </a>
-      <a href="https://open.spotify.com/user/31scabrleupg3ij5bfrw4eo7c4i4?si=4572cbb797004f17" target="_blank" title="Spotify">
+      <a href="https://open.spotify.com/user/31scabrleupg3ij5bfrw4eo7c4i4?si=4572cbb797004f17" target="_blank" title="Spotify" aria-label="Spotify 프로필로 이동">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.4" style="stroke:var(--bone)"/><path d="M6.5 10c4-1.2 8-.9 11 .9" fill="none" stroke="var(--bone)" stroke-width="1.4" stroke-linecap="round"/><path d="M7 13.2c3.3-.9 6.6-.7 9.2.9" fill="none" stroke="var(--bone)" stroke-width="1.4" stroke-linecap="round"/><path d="M7.6 16.2c2.6-.7 5.2-.5 7.2.8" fill="none" stroke="var(--bone)" stroke-width="1.4" stroke-linecap="round"/></svg>
       </a>
-      <a href="https://steamcommunity.com/profiles/76561199626823752/" target="_blank" title="Steam">
+      <a href="https://steamcommunity.com/profiles/76561199626823752/" target="_blank" title="Steam" aria-label="Steam 프로필로 이동">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="var(--bone)" stroke-width="1.4"/><circle cx="8.6" cy="15" r="2.1" fill="none" stroke="var(--bone)" stroke-width="1.2"/><circle cx="15.2" cy="8.6" r="2.1" fill="none" stroke="var(--bone)" stroke-width="1.2"/><line x1="10.2" y1="13.7" x2="13.7" y2="10.1" stroke="var(--bone)" stroke-width="1.2"/></svg>
       </a>
     </div>
@@ -952,7 +975,7 @@ body{ position:relative; }
   
   <section class="altar-col">
     <div class="altar-frame">
-      <div id="characterArt"><img src="https://github.com/fixk1234/12344/blob/2625cf2da1f3e643da9b04fdb9279385643e58ed/%E0%BE%90%E2%9D%A4%EF%B8%8E%20%E0%BD%B2%E0%BE%80%20no%20TikTok.jpg?raw=true" alt="character"></div>
+      <div id="characterArt" tabindex="0" role="button" aria-label="캐릭터 아트 상호작용"><img src="https://github.com/fixk1234/12344/blob/2625cf2da1f3e643da9b04fdb9279385643e58ed/%E0%BE%90%E2%9D%A4%EF%B8%8E%20%E0%BD%B2%E0%BE%80%20no%20TikTok.jpg?raw=true" alt="character"></div>
       <div class="glow-pool"></div>
     </div>
   </section>
@@ -964,6 +987,8 @@ body{ position:relative; }
 <audio id="bgm" crossorigin="anonymous" preload="metadata"></audio>
 
 <script>
+(function(){
+'use strict';
 const starsEl = document.getElementById('stars');
 for(let i=0;i<80;i++){
   const s = document.createElement('div');
@@ -977,10 +1002,31 @@ for(let i=0;i<80;i++){
 
 const artEl = document.getElementById('characterArt');
 
+/* ── Object pool for wing-spark particles ──
+   Reuses a fixed set of DOM nodes instead of creating/destroying
+   an element on every spawn, which is much cheaper on mobile GPUs. */
+const WING_SPARK_POOL_SIZE = 24;
+const wingSparkPool = [];
+function getPooledSpark(){
+  let spark = wingSparkPool.find(s => !s.dataset.active || s.dataset.active === '0');
+  if(!spark){
+    if(wingSparkPool.length < WING_SPARK_POOL_SIZE){
+      spark = document.createElement('div');
+      spark.className = 'wing-spark';
+      spark.style.display = 'none';
+      document.body.appendChild(spark);
+      wingSparkPool.push(spark);
+    } else {
+      // pool exhausted: reuse the oldest one
+      spark = wingSparkPool[0];
+    }
+  }
+  return spark;
+}
 function spawnWingSpark(){
-  const spark = document.createElement('div');
-  spark.className = 'wing-spark';
-  
+  const spark = getPooledSpark();
+  spark.dataset.active = '1';
+
   const startXPct = 38 + Math.random()*34;
   const startYPct = 6 + Math.random()*26;
   const size = Math.random()*2.6 + 1.6;
@@ -988,16 +1034,24 @@ function spawnWingSpark(){
   const drift = (Math.random()*60 - 30);
   const duration = 3.2 + Math.random()*2.6;
 
+  spark.style.display = 'block';
   spark.style.left = startXPct + 'vw';
   spark.style.top = startYPct + 'vh';
   spark.style.width = size + 'px';
   spark.style.height = size + 'px';
   spark.style.setProperty('--sx', drift + 'px');
   spark.style.setProperty('--sy', fallDist + 'px');
+  // restart the CSS animation from scratch on the reused node
+  spark.style.animation = 'none';
+  void spark.offsetWidth;
+  spark.style.animation = '';
   spark.style.animationDuration = duration + 's';
 
-  document.body.appendChild(spark);
-  setTimeout(()=> spark.remove(), duration*1000 + 100);
+  clearTimeout(spark._wingSparkTimer);
+  spark._wingSparkTimer = setTimeout(() => {
+    spark.style.display = 'none';
+    spark.dataset.active = '0';
+  }, duration*1000 + 100);
 }
 setInterval(spawnWingSpark, 1400);
 for(let i=0;i<3;i++){ setTimeout(spawnWingSpark, i*400); }
@@ -1037,7 +1091,7 @@ function playBoing(){
     }
     boing(now, 480);
     boing(now+0.16, 620);
-  }catch(err){}
+  }catch(err){ console.error('playBoing failed:', err); }
 }
 
 
@@ -1081,13 +1135,20 @@ function spawnArtBurst(originEl){
 
 if(artEl){
   const charImg = artEl.querySelector('img');
-  artEl.addEventListener('click', () => {
+  const triggerArtBurst = () => {
     if(!charImg) return;
     charImg.classList.remove('jelly');
     void charImg.offsetWidth;
     charImg.classList.add('jelly');
     spawnArtBurst(artEl);
     playBoing();
+  };
+  artEl.addEventListener('click', triggerArtBurst);
+  artEl.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+      ev.preventDefault();
+      triggerArtBurst();
+    }
   });
   if(charImg){
     charImg.addEventListener('animationend', (ev) => {
@@ -1103,14 +1164,18 @@ const fogWrap2 = document.getElementById('fogWrap2');
 const fogWrap3 = document.getElementById('fogWrap3');
 const depthEl = document.getElementById('depth');
 let lastEmber = 0;
-window.addEventListener('mousemove', (e) => {
+let pendingMouseX = null, pendingMouseY = null, mouseRafId = null;
+function processMouseMove(){
+  mouseRafId = null;
+  if(pendingMouseX === null) return;
+  const e = { clientX: pendingMouseX, clientY: pendingMouseY };
   const nx = (e.clientX / window.innerWidth) - 0.5;
   const ny = (e.clientY / window.innerHeight) - 0.5;
-  
+
   if(fogWrap1) fogWrap1.style.transform = `translate(${nx*46}px, ${ny*34}px)`;
   if(fogWrap2) fogWrap2.style.transform = `translate(${nx*-38}px, ${ny*-30}px)`;
   if(fogWrap3) fogWrap3.style.transform = `translate(${nx*28}px, ${ny*22}px)`;
-  
+
   if(depthEl){
     depthEl.style.setProperty('--rdx', (nx*60)+'px');
     depthEl.style.setProperty('--rdy', (ny*44)+'px');
@@ -1131,7 +1196,14 @@ window.addEventListener('mousemove', (e) => {
     document.body.appendChild(em);
     setTimeout(()=>em.remove(), 900);
   }
-});
+}
+window.addEventListener('mousemove', (e) => {
+  pendingMouseX = e.clientX;
+  pendingMouseY = e.clientY;
+  if(mouseRafId === null){
+    mouseRafId = requestAnimationFrame(processMouseMove);
+  }
+}, { passive:true });
 
 const firebaseConfig = {
   apiKey: "f72ZBSsxK7e9ddz2WQCYDwPhlSDM1bnFDOaCakSD",
@@ -1324,7 +1396,7 @@ function updateSeekFill(){
     if(dur && bgm.buffered && bgm.buffered.length){
       loaded = (bgm.buffered.end(bgm.buffered.length - 1) / dur) * 100;
     }
-  }catch(e){}
+  }catch(e){ console.error('updateSeekFill buffered-range read failed:', e); }
   if(loaded < played) loaded = played;
   seekRange.style.setProperty('--seek-played', played + '%');
   seekRange.style.setProperty('--seek-loaded', loaded + '%');
@@ -1371,24 +1443,31 @@ function showCopyToast(){
   clearTimeout(copyToastTimer);
   copyToastTimer = setTimeout(()=> copyToastEl.classList.remove('show'), 1800);
 }
+async function copyDiscordId(){
+  const text = DISCORD_USER_ID;
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+  }catch(err){ console.error('clipboard copy failed:', err); }
+  showCopyToast();
+}
 if(idNameEl){
-  idNameEl.addEventListener('click', async () => {
-    const text = DISCORD_USER_ID;
-    try{
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        await navigator.clipboard.writeText(text);
-      } else {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        ta.remove();
-      }
-    }catch(err){}
-    showCopyToast();
+  idNameEl.addEventListener('click', copyDiscordId);
+  idNameEl.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+      ev.preventDefault();
+      copyDiscordId();
+    }
   });
 }
 
@@ -1535,10 +1614,10 @@ function applyBannerTint(url){
         for(let i=0;i<d.length;i+=4){ r+=d[i]; g+=d[i+1]; b+=d[i+2]; n++; }
         r=Math.round(r/n); g=Math.round(g/n); b=Math.round(b/n);
         document.documentElement.style.setProperty('--nitro-tint', `rgb(${r},${g},${b})`);
-      }catch(e){}
+      }catch(e){ console.error('applyBannerTint: canvas sampling failed (likely a CORS-tainted image):', e); }
     };
     img.src = url;
-  }catch(e){}
+  }catch(e){ console.error('applyBannerTint failed:', e); }
 }
 
 /* ── 요청: 아바타(프사)에서 "퍼스트 컬러"(가장 대표적인/눈에 띄는 색)를 추출해
@@ -1590,11 +1669,11 @@ function extractAvatarTint(url, onDone){
         }
         avatarAccentColor = picked;
         if(onDone) onDone(avatarAccentColor);
-      }catch(e){}
+      }catch(e){ console.error('extractAvatarTint: canvas sampling failed (likely a CORS-tainted image):', e); }
     };
-    img.onerror = () => {};
+    img.onerror = (e) => { console.error('extractAvatarTint: avatar image failed to load:', url, e); };
     img.src = url;
-  }catch(e){}
+  }catch(e){ console.error('extractAvatarTint failed:', e); }
 }
 function hexToRgb(hex){
   hex = hex.replace('#','');
@@ -1804,31 +1883,29 @@ let lastFirebaseWrite = 0;
 try{
   const cachedTs = Number(localStorage.getItem(LAST_ONLINE_KEY));
   if(cachedTs > 0) lastOnlineTs = cachedTs;
-}catch(e){}
+}catch(e){ console.error('reading cached last-online timestamp failed:', e); }
 
 presenceRef.on('value', snap => {
   const val = Number(snap.val());
   if(val > 0){
     lastOnlineTs = val;
-    try{ localStorage.setItem(LAST_ONLINE_KEY, String(val)); }catch(e){}
+    try{ localStorage.setItem(LAST_ONLINE_KEY, String(val)); }catch(e){ console.error('caching last-online timestamp failed:', e); }
     updateLastSeen(currentPresenceStatus);
   }
 });
 
+// Called whenever the visitor is seen online/idle/dnd. This is the "reset point":
+// once offline starts, the offline counter below counts up from this timestamp,
+// and every time the visitor is active again this timestamp jumps to "now",
+// which is what makes the offline counter start over from 0 the next time
+// they go offline.
 function recordOnlineTimestamp(now){
   lastOnlineTs = now;
-  try{ localStorage.setItem(LAST_ONLINE_KEY, String(now)); }catch(e){}
+  try{ localStorage.setItem(LAST_ONLINE_KEY, String(now)); }catch(e){ console.error('saving last-online timestamp failed:', e); }
   if(now - lastFirebaseWrite > 15000){
     lastFirebaseWrite = now;
-    presenceRef.set(now).catch(()=>{});
+    presenceRef.set(now).catch((err)=>{ console.error('writing presence timestamp to Firebase failed:', err); });
   }
-}
-
-function kstMidnightTodayTs(now){
-  const kst = new Date(now + 9*3600*1000);
-  const y = kst.getUTCFullYear(), m = kst.getUTCMonth(), d = kst.getUTCDate();
-  const kstMidnightAsUTC = Date.UTC(y, m, d, 0, 0, 0);
-  return kstMidnightAsUTC - 9*3600*1000;
 }
 
 function formatOfflineDuration(ms){
@@ -1865,18 +1942,20 @@ function updateLastSeen(status){
     el.innerHTML = '다른 용무 중';
     return;
   }
-  // offline
+  // offline: show the real elapsed time since the visitor was last seen
+  // online/idle/dnd (seconds -> minutes -> hours -> days), updating every
+  // second. This used to be clamped to "since today's midnight", which made
+  // multi-day gaps display as if they were only a few hours long — that
+  // clamp has been removed so long offline gaps correctly show in days.
   let stored = lastOnlineTs;
   if(!stored){
-    try{ stored = Number(localStorage.getItem(LAST_ONLINE_KEY)) || null; }catch(e){}
+    try{ stored = Number(localStorage.getItem(LAST_ONLINE_KEY)) || null; }catch(e){ console.error('reading last-online timestamp failed:', e); }
   }
   if(!stored){
     el.innerHTML = '오프라인 · 마지막 접속 기록 없음';
     return;
   }
-  const todayMidnight = kstMidnightTodayTs(now);
-  const ref = stored < todayMidnight ? todayMidnight : stored;
-  el.innerHTML = '오프라인 <b>' + formatOfflineDuration(now - ref) + '</b>';
+  el.innerHTML = '오프라인 <b>' + formatOfflineDuration(now - stored) + '</b>';
 }
 setInterval(() => updateLastSeen(currentPresenceStatus), 1000);
 
@@ -1899,17 +1978,24 @@ function renderSpotifyLine(){
 setInterval(() => { if(liveSpotify) renderSpotifyLine(); }, 1000);
 
 const ACTIVITY_KEY = 'fxk_activity_log';
+// Presence data can arrive either from the ~60s REST poll (fetchLanyard) or
+// from the websocket's PRESENCE_UPDATE, whichever fires. The merge window
+// below must be comfortably longer than the slowest of those (the 60s poll),
+// otherwise consecutive samples of the *same* activity never merge into one
+// running entry — they each start a fresh 0-length entry instead, which is
+// why tracked playtime used to look permanently stuck under a minute.
+const ACTIVITY_MERGE_WINDOW_MS = 90000; // > 60s poll interval, with margin
 function logActivity(activities){
   if(currentPresenceStatus === 'offline') return;
   if(!activities || !activities.length) return;
   const now = Date.now();
   let log = [];
-  try{ log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }catch(e){ log = []; }
+  try{ log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }catch(e){ console.error('reading activity log failed, resetting it:', e); log = []; }
   activities.forEach(a=>{
     if(!a || !a.name) return;
     if(a.type === 4) return;
     const last = log[log.length-1];
-    if(last && last.name === a.name && (now - last.end) < 40000){
+    if(last && last.name === a.name && (now - last.end) < ACTIVITY_MERGE_WINDOW_MS){
       last.end = now;
     } else {
       log.push({ name:a.name, start:now, end:now });
@@ -1918,7 +2004,7 @@ function logActivity(activities){
   const cutoff = now - 24*60*60*1000;
   log = log.filter(e => e.end >= cutoff);
   if(log.length > 300) log = log.slice(log.length-300);
-  localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log));
+  try{ localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log)); }catch(e){ console.error('saving activity log failed:', e); }
   renderActivityDashboard(log);
 }
 function renderActivityDashboard(log){
@@ -1927,9 +2013,14 @@ function renderActivityDashboard(log){
   const totalEl = document.getElementById('activityTotal');
   if(!listEl) return;
   if(!log){
-    try{ log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }catch(e){ log = []; }
+    try{ log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }catch(e){ console.error('reading activity log failed:', e); log = []; }
   }
   const byName = {};
+  // +20000: each *session* (log entry) only starts once we actually detect the
+  // activity, so we pad it by ~20s to roughly account for that detection lag.
+  // This is now applied once per real session instead of once per poll,
+  // since logActivity's merge window correctly folds consecutive polls of the
+  // same activity into a single entry.
   log.forEach(e=>{ byName[e.name] = (byName[e.name]||0) + Math.max(0, e.end - e.start) + 20000; });
   const rows = Object.entries(byName).sort((a,b)=>b[1]-a[1]).slice(0,12);
   const totalMs = Object.values(byName).reduce((a,b)=>a+b,0);
@@ -1964,10 +2055,16 @@ function initAvatarFx(){
   const canvas = document.getElementById('avatarFx');
   const wrap = document.getElementById('avatarWrap');
   if(!canvas || !wrap || typeof THREE === 'undefined') return;
+  // This Three.js sphere is a small decorative flourish. On phones/tablets
+  // (touch, no real mouse) or reduced-motion setups it just burns battery
+  // and CPU/GPU for an effect nobody can meaningfully interact with anyway.
+  const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(isCoarsePointer || prefersReducedMotion) return;
   const size = 60;
   const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
   renderer.setSize(size, size, false);
-  renderer.setPixelRatio(window.devicePixelRatio || 1);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10);
@@ -1990,18 +2087,27 @@ function initAvatarFx(){
   scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
   let targetX = 0, targetY = 0;
-  window.addEventListener('mousemove', (e) => {
+  let avatarMouseRafId = null, pendingAvatarEvt = null;
+  function processAvatarMouseMove(){
+    avatarMouseRafId = null;
+    if(!pendingAvatarEvt) return;
     const rect = wrap.getBoundingClientRect();
     const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-    targetX = (e.clientX - cx) / window.innerWidth;
-    targetY = (e.clientY - cy) / window.innerHeight;
-  });
+    targetX = (pendingAvatarEvt.clientX - cx) / window.innerWidth;
+    targetY = (pendingAvatarEvt.clientY - cy) / window.innerHeight;
+  }
+  window.addEventListener('mousemove', (e) => {
+    pendingAvatarEvt = e;
+    if(avatarMouseRafId === null){
+      avatarMouseRafId = requestAnimationFrame(processAvatarMouseMove);
+    }
+  }, { passive:true });
 
   function loop(){
     sphere.rotation.y += (targetX*2 - sphere.rotation.y) * 0.06;
     sphere.rotation.x += (-targetY*2 - sphere.rotation.x) * 0.06;
     const accent = getComputedStyle(document.documentElement).getPropertyValue('--st-accent').trim();
-    if(accent){ try{ light2.color = new THREE.Color(accent); }catch(e){} }
+    if(accent){ try{ light2.color = new THREE.Color(accent); }catch(e){ console.error('avatarFx: failed to parse accent color', accent, e); } }
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
   }
@@ -2018,7 +2124,7 @@ async function fetchLanyard(){
     const res = await fetch('https://api.lanyard.rest/v1/users/' + DISCORD_USER_ID);
     const json = await res.json();
     if(json && json.success){ applyLanyardData(json.data); }
-  }catch(err){}
+  }catch(err){ console.error('fetchLanyard failed:', err); }
 }
 
 function connectLanyardSocket(){
@@ -2026,14 +2132,14 @@ function connectLanyardSocket(){
   let heartbeat = null;
   function clearBeat(){ if(heartbeat){ clearInterval(heartbeat); heartbeat = null; } }
   function open(){
-    try{ ws = new WebSocket('wss://api.lanyard.rest/socket'); }catch(err){ setTimeout(open, 4000); return; }
+    try{ ws = new WebSocket('wss://api.lanyard.rest/socket'); }catch(err){ console.error('lanyard socket creation failed, retrying:', err); setTimeout(open, 4000); return; }
     ws.onmessage = (ev) => {
       let msg;
-      try{ msg = JSON.parse(ev.data); }catch(e){ return; }
+      try{ msg = JSON.parse(ev.data); }catch(e){ console.error('lanyard socket: bad message payload:', e); return; }
       if(msg.op === 1){
         clearBeat();
         heartbeat = setInterval(() => {
-          try{ ws.send(JSON.stringify({ op: 3 })); }catch(e){}
+          try{ ws.send(JSON.stringify({ op: 3 })); }catch(e){ console.error('lanyard socket heartbeat send failed:', e); }
         }, msg.d.heartbeat_interval);
         ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: DISCORD_USER_ID } }));
       }
@@ -2045,7 +2151,10 @@ function connectLanyardSocket(){
       clearBeat();
       setTimeout(open, 3000);
     };
-    ws.onerror = () => { try{ ws.close(); }catch(e){} };
+    ws.onerror = (ev) => {
+      console.error('lanyard socket error, reconnecting:', ev);
+      try{ ws.close(); }catch(e){ console.error('lanyard socket close after error failed:', e); }
+    };
   }
   open();
 }
@@ -2074,33 +2183,41 @@ function setupWingSfxBoost(){
     wingSfxGain.gain.value = 2.6;
     src.connect(wingSfxGain).connect(wingSfxCtx.destination);
     wingSfxBoosted = true;
-  }catch(err){}
+  }catch(err){ console.error('wing sfx gain boost setup failed:', err); }
 }
 
 let wingStruckTimer = null;
-if(wingEl){
-  wingEl.addEventListener('click', () => {
+function triggerWingStrike(){
+  wingEl.classList.remove('wing-struck');
+  void wingEl.offsetWidth;
+  wingEl.classList.add('wing-struck');
+  clearTimeout(wingStruckTimer);
+  wingStruckTimer = setTimeout(() => {
     wingEl.classList.remove('wing-struck');
-    void wingEl.offsetWidth;
-    wingEl.classList.add('wing-struck');
-    clearTimeout(wingStruckTimer);
-    wingStruckTimer = setTimeout(() => {
-      wingEl.classList.remove('wing-struck');
-    }, 560);
-    for(let i=0;i<14;i++){ setTimeout(spawnWingSpark, i*35); }
-    try{
-      if(!wingSfx){
-        wingSfx = new Audio(WING_SFX_SRC);
-        wingSfx.volume = 1;
-        wingSfx.crossOrigin = 'anonymous';
-      }
-      setupWingSfxBoost();
-      if(wingSfxCtx && wingSfxCtx.state === 'suspended'){ wingSfxCtx.resume(); }
-      wingSfx.currentTime = 0;
-      wingSfx.play().catch(()=>{});
-    }catch(err){}
+  }, 560);
+  for(let i=0;i<14;i++){ setTimeout(spawnWingSpark, i*35); }
+  try{
+    if(!wingSfx){
+      wingSfx = new Audio(WING_SFX_SRC);
+      wingSfx.volume = 1;
+      wingSfx.crossOrigin = 'anonymous';
+    }
+    setupWingSfxBoost();
+    if(wingSfxCtx && wingSfxCtx.state === 'suspended'){ wingSfxCtx.resume(); }
+    wingSfx.currentTime = 0;
+    wingSfx.play().catch(()=>{});
+  }catch(err){ console.error('wing sfx playback failed:', err); }
+}
+if(wingEl){
+  wingEl.addEventListener('click', triggerWingStrike);
+  wingEl.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+      ev.preventDefault();
+      triggerWingStrike();
+    }
   });
 }
+})();
 </script>
 </body>
 </html>
