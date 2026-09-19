@@ -210,9 +210,10 @@ body{ position:relative; }
   -webkit-overflow-scrolling:touch;
 }
 @media (max-width:880px){
-  /* on mobile, the fixed+scaled wrapper combined with the body's own scroll
-     causes double/locked scrolling; let this single element own the scroll */
   html, body{ height:100%; overflow:hidden; }
+}
+@media (min-width:881px){
+  #pageScale{ overflow:hidden; }
 }
 
 .stage{
@@ -406,14 +407,42 @@ body{ position:relative; }
   margin-bottom:10px;
 }
 .activity-head b{ color:var(--ink); }
-.activity-list{ display:flex; flex-direction:column; gap:8px; max-height:60px; overflow-y:auto; }
+.activity-list{ display:flex; flex-direction:column; gap:0; max-height:136px; overflow-y:auto; padding-right:2px; overscroll-behavior:contain; }
 .activity-list::-webkit-scrollbar{ width:4px; }
 .activity-list::-webkit-scrollbar-thumb{ background:var(--gold); border-radius:4px; }
-.activity-row{ display:flex; align-items:center; gap:8px; font-size:.78rem; flex-shrink:0; }
-.activity-row .a-name{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.activity-row .a-time{ color:var(--ash); font-size:.68rem; flex-shrink:0; }
-.activity-bar-track{ position:relative; height:5px; border-radius:3px; background:var(--line); overflow:hidden; flex-shrink:0; width:64px; }
-.activity-bar-fill{ position:absolute; inset:0; width:0%; border-radius:3px; background:var(--st-accent); transition:width .5s ease, background .5s ease; }
+.record-sep{
+  font-family:'Jua', sans-serif; font-size:.6rem; letter-spacing:.1em; color:var(--ash);
+  opacity:.7; padding:10px 0 6px 22px;
+}
+.record-sep:first-child{ padding-top:1px; }
+.record-row{
+  position:relative; display:flex; align-items:flex-start; gap:10px;
+  padding:7px 4px 7px 22px; font-size:.78rem;
+  animation:recordIn .35s ease both;
+}
+@keyframes recordIn{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:translateY(0); } }
+.record-row::before{ content:''; position:absolute; left:5px; top:0; bottom:0; width:1px; background:var(--line); }
+.record-dot{
+  position:absolute; left:1px; top:11px; width:9px; height:9px; border-radius:50%; flex-shrink:0;
+  background:var(--st-accent); box-shadow:0 0 0 3px var(--panel-bg-strong);
+  transition:background .3s ease;
+}
+.record-row.is-live .record-dot{
+  background:var(--blood);
+  box-shadow:0 0 0 3px var(--panel-bg-strong), 0 0 8px var(--blood-soft);
+  animation:recordLivePulse 1.6s ease-in-out infinite;
+}
+@keyframes recordLivePulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.4); } }
+.record-body{ flex:1; min-width:0; }
+.record-top{ display:flex; align-items:center; gap:6px; }
+.record-name{ font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.record-live{
+  font-family:'Jua', sans-serif; font-size:.54rem; letter-spacing:.06em; color:var(--blood);
+  border:1px solid var(--blood-soft); border-radius:20px; padding:1px 6px; flex-shrink:0;
+  animation:recordLiveTag 1.6s ease-in-out infinite;
+}
+@keyframes recordLiveTag{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
+.record-meta{ font-size:.68rem; color:var(--ash); margin-top:2px; letter-spacing:.01em; }
 .activity-empty{ font-size:.74rem; color:var(--ash); text-align:center; padding:6px 0; }
 .activity-foot{ margin-top:8px; font-size:.62rem; color:var(--ash); opacity:.75; line-height:1.5; }
 
@@ -948,11 +977,11 @@ body{ position:relative; }
     </div>
 
     <div class="activity-panel" data-tilt data-tilt-max="4" data-tilt-speed="500" data-tilt-perspective="1400" data-tilt-scale="1.008">
-      <div class="activity-head"><span>ACTIVITY · 24H</span><b id="activityTotal">0m</b></div>
+      <div class="activity-head"><span>PLAY RECORD · 24H</span><b id="activityTotal">0m</b></div>
       <div class="activity-list" id="activityList">
         <div class="activity-empty" id="activityEmpty">아직 기록된 활동이 없어요</div>
       </div>
-      <div class="activity-foot">브라우저가 이 페이지를 관찰한 동안 감지된 디스코드 활동만 누적돼요 (기기 전체 사용시간이 아니에요).</div>
+      <div class="activity-foot">브라우저가 이 페이지를 열어둔 동안 감지된 플레이 기록이에요.</div>
     </div>
 
     <div class="link-row">
@@ -989,6 +1018,40 @@ body{ position:relative; }
 <script>
 (function(){
 'use strict';
+
+let fitScaleRaf = null;
+function fitPageScale(){
+  const ps = document.getElementById('pageScale');
+  if(!ps) return;
+  if(window.innerWidth <= 880){
+    ps.style.transform = '';
+    ps.style.width = '';
+    ps.style.height = '';
+    return;
+  }
+  ps.style.transform = 'none';
+  ps.style.width = '100%';
+  ps.style.height = '100vh';
+  const naturalHeight = ps.scrollHeight;
+  const vh = window.innerHeight;
+  let scale = naturalHeight > 0 ? vh / naturalHeight : 1;
+  if(scale > 1) scale = 1;
+  if(scale < 0.55) scale = 0.55; // sanity floor so extreme windows don't shrink to unreadable
+  const inv = 100 / scale;
+  ps.style.width = inv + '%';
+  ps.style.height = inv + '%';
+  ps.style.transform = 'scale(' + scale + ')';
+}
+function scheduleFitPageScale(){
+  if(fitScaleRaf) cancelAnimationFrame(fitScaleRaf);
+  fitScaleRaf = requestAnimationFrame(fitPageScale);
+}
+fitPageScale();
+window.addEventListener('resize', scheduleFitPageScale);
+window.addEventListener('load', fitPageScale);
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitPageScale).catch(()=>{}); }
+setTimeout(fitPageScale, 500); // catch any late webfont/image reflow
+
 const starsEl = document.getElementById('stars');
 for(let i=0;i<80;i++){
   const s = document.createElement('div');
@@ -1497,7 +1560,6 @@ function renderBadges(publicFlags){
 
 const STATUS_LABEL = { online:'online', idle:'away', dnd:'do not disturb', offline:'offline' };
 
-/* ── Discord CDN 아바타/배너 동적 URL (해시 기반) ── */
 function discordAssetUrl(userId, hash, kind){
   if(!hash) return null;
   const animated = hash.startsWith('a_');
@@ -1597,6 +1659,8 @@ function applyLanyardData(data){
     liveSpotify = null;
     if(spotifyLineEl) spotifyLineEl.textContent = "i'm not listening anything";
   }
+
+  scheduleFitPageScale();
 }
 
 function applyBannerTint(url){
@@ -1620,8 +1684,6 @@ function applyBannerTint(url){
   }catch(e){ console.error('applyBannerTint failed:', e); }
 }
 
-/* ── 요청: 아바타(프사)에서 "퍼스트 컬러"(가장 대표적인/눈에 띄는 색)를 추출해
-   사이트 전체 accent 컬러 + 날개색 + 활동중 상태색에 전부 반영 ── */
 let avatarAccentColor = null; // {r,g,b}
 function extractAvatarTint(url, onDone){
   try{
@@ -1696,7 +1758,6 @@ const WHITE_RGB = {r:255,g:255,b:255}, BLACK_RGB = {r:0,g:0,b:0};
 function lightenRgb(rgb, amt){ return mixColor(rgb, WHITE_RGB, amt); }
 function darkenRgb(rgb, amt){ return mixColor(rgb, BLACK_RGB, amt); }
 
-/* ── 상태별 상태점(dot) 색상 ── */
 const STATUS_DOT_COLORS = {
   online:  '#ff6fb0',
   idle:    '#ffd23f',
@@ -1894,11 +1955,6 @@ presenceRef.on('value', snap => {
   }
 });
 
-// Called whenever the visitor is seen online/idle/dnd. This is the "reset point":
-// once offline starts, the offline counter below counts up from this timestamp,
-// and every time the visitor is active again this timestamp jumps to "now",
-// which is what makes the offline counter start over from 0 the next time
-// they go offline.
 function recordOnlineTimestamp(now){
   lastOnlineTs = now;
   try{ localStorage.setItem(LAST_ONLINE_KEY, String(now)); }catch(e){ console.error('saving last-online timestamp failed:', e); }
@@ -1942,11 +1998,6 @@ function updateLastSeen(status){
     el.innerHTML = '다른 용무 중';
     return;
   }
-  // offline: show the real elapsed time since the visitor was last seen
-  // online/idle/dnd (seconds -> minutes -> hours -> days), updating every
-  // second. This used to be clamped to "since today's midnight", which made
-  // multi-day gaps display as if they were only a few hours long — that
-  // clamp has been removed so long offline gaps correctly show in days.
   let stored = lastOnlineTs;
   if(!stored){
     try{ stored = Number(localStorage.getItem(LAST_ONLINE_KEY)) || null; }catch(e){ console.error('reading last-online timestamp failed:', e); }
@@ -1978,22 +2029,19 @@ function renderSpotifyLine(){
 setInterval(() => { if(liveSpotify) renderSpotifyLine(); }, 1000);
 
 const ACTIVITY_KEY = 'fxk_activity_log';
-// Presence data can arrive either from the ~60s REST poll (fetchLanyard) or
-// from the websocket's PRESENCE_UPDATE, whichever fires. The merge window
-// below must be comfortably longer than the slowest of those (the 60s poll),
-// otherwise consecutive samples of the *same* activity never merge into one
-// running entry — they each start a fresh 0-length entry instead, which is
-// why tracked playtime used to look permanently stuck under a minute.
-const ACTIVITY_MERGE_WINDOW_MS = 90000; // > 60s poll interval, with margin
+const ACTIVITY_MERGE_WINDOW_MS = 90000;
+let liveActivityNames = [];
 function logActivity(activities){
-  if(currentPresenceStatus === 'offline') return;
-  if(!activities || !activities.length) return;
+  if(currentPresenceStatus === 'offline'){ liveActivityNames = []; return; }
+  if(!activities || !activities.length){ liveActivityNames = []; return; }
   const now = Date.now();
   let log = [];
   try{ log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }catch(e){ console.error('reading activity log failed, resetting it:', e); log = []; }
+  liveActivityNames = [];
   activities.forEach(a=>{
     if(!a || !a.name) return;
     if(a.type === 4) return;
+    liveActivityNames.push(a.name);
     const last = log[log.length-1];
     if(last && last.name === a.name && (now - last.end) < ACTIVITY_MERGE_WINDOW_MS){
       last.end = now;
@@ -2015,49 +2063,96 @@ function renderActivityDashboard(log){
   if(!log){
     try{ log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }catch(e){ console.error('reading activity log failed:', e); log = []; }
   }
-  const byName = {};
-  // +20000: each *session* (log entry) only starts once we actually detect the
-  // activity, so we pad it by ~20s to roughly account for that detection lag.
-  // This is now applied once per real session instead of once per poll,
-  // since logActivity's merge window correctly folds consecutive polls of the
-  // same activity into a single entry.
-  log.forEach(e=>{ byName[e.name] = (byName[e.name]||0) + Math.max(0, e.end - e.start) + 20000; });
-  const rows = Object.entries(byName).sort((a,b)=>b[1]-a[1]).slice(0,12);
-  const totalMs = Object.values(byName).reduce((a,b)=>a+b,0);
+  const durationOf = e => Math.max(0, e.end - e.start) + 20000;
+  const totalMs = log.reduce((sum, e) => sum + durationOf(e), 0);
   if(totalEl) totalEl.textContent = formatDuration(totalMs);
-  listEl.querySelectorAll('.activity-row').forEach(r=>r.remove());
-  if(!rows.length){
+
+  listEl.querySelectorAll('.record-row, .record-sep').forEach(r=>r.remove());
+
+  if(!log.length){
     if(emptyEl) emptyEl.style.display = 'block';
     return;
   }
   if(emptyEl) emptyEl.style.display = 'none';
-  const max = rows[0][1] || 1;
-  rows.forEach(([name, ms])=>{
+
+  // Newest session first — this panel is a play *record*, not a ranking, so
+  // order reflects "what happened, most recently" rather than "what took the
+  // most time". Cap it so the timeline stays scannable.
+  const entries = log.slice().reverse().slice(0, 20);
+  const frag = document.createDocumentFragment();
+  let lastDateKey = null;
+
+  entries.forEach((e, idx)=>{
+    const start = new Date(e.start);
+    const dateKey = start.toDateString();
+    if(dateKey !== lastDateKey){
+      const sep = document.createElement('div');
+      sep.className = 'record-sep';
+      sep.textContent = dayLabel(start);
+      frag.appendChild(sep);
+      lastDateKey = dateKey;
+    }
+    const isLive = idx === 0 && liveActivityNames.includes(e.name);
     const row = document.createElement('div');
-    row.className = 'activity-row';
+    row.className = 'record-row' + (isLive ? ' is-live' : '');
     row.innerHTML =
-      '<span class="a-name">' + escapeHtml(name) + '</span>' +
-      '<span class="a-time">' + formatDuration(ms) + '</span>' +
-      '<span class="activity-bar-track"><span class="activity-bar-fill" style="width:' + Math.round(100*ms/max) + '%"></span></span>';
-    listEl.appendChild(row);
+      '<span class="record-dot"></span>' +
+      '<div class="record-body">' +
+        '<div class="record-top">' +
+          '<span class="record-name">' + escapeHtml(e.name) + '</span>' +
+          (isLive ? '<span class="record-live">LIVE</span>' : '') +
+        '</div>' +
+        '<div class="record-meta">' + timeRangeLabel(start, new Date(e.end)) + ' · ' + formatDuration(durationOf(e)) + '</div>' +
+      '</div>';
+    frag.appendChild(row);
   });
+  listEl.appendChild(frag);
+}
+function dayLabel(d){
+  const now = new Date();
+  const startOfDay = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const diffDays = Math.round((startOfDay(now) - startOfDay(d)) / 86400000);
+  if(diffDays <= 0) return '오늘';
+  if(diffDays === 1) return '어제';
+  return (d.getMonth()+1) + '월 ' + d.getDate() + '일';
+}
+function formatTimeKR(d){
+  let h = d.getHours();
+  const m = d.getMinutes();
+  const period = h < 12 ? '오전' : '오후';
+  h = h % 12; if(h === 0) h = 12;
+  return period + ' ' + h + '시 ' + String(m).padStart(2,'0') + '분';
+}
+function timeRangeLabel(start, end){
+  const s = formatTimeKR(start), e = formatTimeKR(end);
+  return s === e ? (s + '부터') : (s + '부터 ' + e + '까지');
 }
 function formatDuration(ms){
   const min = Math.round(ms/60000);
-  if(min < 1) return '<1m';
   if(min < 60) return min + 'm';
   const h = Math.floor(min/60), m = min%60;
   return h + 'h ' + m + 'm';
 }
 renderActivityDashboard();
 
+(function fixActivityListWheel(){
+  const list = document.getElementById('activityList');
+  if(!list) return;
+  list.addEventListener('wheel', (ev) => {
+    const atTop = list.scrollTop <= 0;
+    const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 1;
+    const scrollingUp = ev.deltaY < 0, scrollingDown = ev.deltaY > 0;
+    if((scrollingUp && !atTop) || (scrollingDown && !atBottom)){
+      list.scrollTop += ev.deltaY;
+      ev.preventDefault();
+    }
+  }, { passive:false });
+})();
+
 function initAvatarFx(){
   const canvas = document.getElementById('avatarFx');
   const wrap = document.getElementById('avatarWrap');
   if(!canvas || !wrap || typeof THREE === 'undefined') return;
-  // This Three.js sphere is a small decorative flourish. On phones/tablets
-  // (touch, no real mouse) or reduced-motion setups it just burns battery
-  // and CPU/GPU for an effect nobody can meaningfully interact with anyway.
   const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(isCoarsePointer || prefersReducedMotion) return;
