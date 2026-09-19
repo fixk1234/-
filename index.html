@@ -210,9 +210,17 @@ body{ position:relative; }
   -webkit-overflow-scrolling:touch;
 }
 @media (max-width:880px){
+  /* on mobile, the fixed+scaled wrapper combined with the body's own scroll
+     causes double/locked scrolling; let this single element own the scroll */
   html, body{ height:100%; overflow:hidden; }
 }
 @media (min-width:881px){
+  /* Desktop: fitPageScale() in the script below measures the real content
+     height and sets width/height/transform on #pageScale itself (inline,
+     so it wins over the 111.1111%/0.9 fallback above) to the exact scale
+     that makes everything fit one viewport at 100% browser zoom. Once that's
+     true there's nothing left to scroll, so we hard-block wheel/scrollbar
+     here rather than relying on the fit being pixel-perfect every time. */
   #pageScale{ overflow:hidden; }
 }
 
@@ -746,7 +754,7 @@ body{ position:relative; }
   100%{ transform:scale(1, 1); }
 }
 .wing-spark{
-  position:fixed; z-index:1; pointer-events:none; border-radius:50%;
+  position:fixed; z-index:10; pointer-events:none; border-radius:50%;
   background:radial-gradient(circle, var(--wing-spark-core), var(--wing-spark-fade) 72%);
   box-shadow:0 0 6px var(--wing-spark-glow);
   animation:sparkFall linear forwards;
@@ -769,7 +777,7 @@ body{ position:relative; }
   100%{ opacity:0; transform:translate(var(--sx), var(--sy)) scale(.35); }
 }
 .art-burst-ring{
-  position:fixed; z-index:1; pointer-events:none; border-radius:50%;
+  position:fixed; z-index:10; pointer-events:none; border-radius:50%;
   width:170px; height:170px;
   border:2px solid var(--spark-glow, rgba(242,239,233,0.7));
   box-shadow:0 0 16px var(--spark-glow, rgba(242,239,233,0.5));
@@ -981,7 +989,7 @@ body{ position:relative; }
       <div class="activity-list" id="activityList">
         <div class="activity-empty" id="activityEmpty">아직 기록된 활동이 없어요</div>
       </div>
-      <div class="activity-foot">브라우저가 이 페이지를 열어둔 동안 감지된 플레이 기록이에요.</div>
+      <div class="activity-foot">브라우저가 이 페이지를 열어둔 동안 감지된 플레이 기록이에요 (기기 전체 사용시간이 아니에요) · 24시간이 지난 기록은 자동으로 사라져요.</div>
     </div>
 
     <div class="link-row">
@@ -1019,6 +1027,16 @@ body{ position:relative; }
 (function(){
 'use strict';
 
+// ---- Fit the whole page into one viewport, no scrolling (desktop) ----
+// #pageScale's base CSS assumes a fixed 0.9 scale, tuned once for whatever
+// the profile-col's height happened to be at the time. Any time a widget
+// grows (like the record panel), that guess goes stale, the div's real
+// content ends up taller than its box, and its own overflow-y:auto kicks in
+// — that's the scrollbar/mouse-wheel behavior. This measures the *actual*
+// content height and computes the exact scale that makes it fit one
+// viewport, every time, so there's never anything left to scroll. The
+// min-width:881px CSS rule then hard-locks overflow off. Mobile is
+// untouched — it keeps the static scale and its own intentional scroll.
 let fitScaleRaf = null;
 function fitPageScale(){
   const ps = document.getElementById('pageScale');
@@ -1560,6 +1578,7 @@ function renderBadges(publicFlags){
 
 const STATUS_LABEL = { online:'online', idle:'away', dnd:'do not disturb', offline:'offline' };
 
+/* ── Discord CDN 아바타/배너 동적 URL (해시 기반) ── */
 function discordAssetUrl(userId, hash, kind){
   if(!hash) return null;
   const animated = hash.startsWith('a_');
@@ -1660,6 +1679,11 @@ function applyLanyardData(data){
     if(spotifyLineEl) spotifyLineEl.textContent = "i'm not listening anything";
   }
 
+  // Turning Spotify on/off adds or removes the "i'm listening ..." progress
+  // bar at the very bottom of the page, which changes the page's real
+  // height. #pageScale is locked to a scale computed earlier, so without
+  // this the extra bar (or anything else that shifted) just gets clipped by
+  // the now-hard overflow:hidden instead of showing up.
   scheduleFitPageScale();
 }
 
@@ -1684,6 +1708,8 @@ function applyBannerTint(url){
   }catch(e){ console.error('applyBannerTint failed:', e); }
 }
 
+/* ── 요청: 아바타(프사)에서 "퍼스트 컬러"(가장 대표적인/눈에 띄는 색)를 추출해
+   사이트 전체 accent 컬러 + 날개색 + 활동중 상태색에 전부 반영 ── */
 let avatarAccentColor = null; // {r,g,b}
 function extractAvatarTint(url, onDone){
   try{
@@ -1758,6 +1784,7 @@ const WHITE_RGB = {r:255,g:255,b:255}, BLACK_RGB = {r:0,g:0,b:0};
 function lightenRgb(rgb, amt){ return mixColor(rgb, WHITE_RGB, amt); }
 function darkenRgb(rgb, amt){ return mixColor(rgb, BLACK_RGB, amt); }
 
+/* ── 상태별 상태점(dot) 색상 ── */
 const STATUS_DOT_COLORS = {
   online:  '#ff6fb0',
   idle:    '#ffd23f',
@@ -1955,6 +1982,11 @@ presenceRef.on('value', snap => {
   }
 });
 
+// Called whenever the visitor is seen online/idle/dnd. This is the "reset point":
+// once offline starts, the offline counter below counts up from this timestamp,
+// and every time the visitor is active again this timestamp jumps to "now",
+// which is what makes the offline counter start over from 0 the next time
+// they go offline.
 function recordOnlineTimestamp(now){
   lastOnlineTs = now;
   try{ localStorage.setItem(LAST_ONLINE_KEY, String(now)); }catch(e){ console.error('saving last-online timestamp failed:', e); }
@@ -1998,6 +2030,11 @@ function updateLastSeen(status){
     el.innerHTML = '다른 용무 중';
     return;
   }
+  // offline: show the real elapsed time since the visitor was last seen
+  // online/idle/dnd (seconds -> minutes -> hours -> days), updating every
+  // second. This used to be clamped to "since today's midnight", which made
+  // multi-day gaps display as if they were only a few hours long — that
+  // clamp has been removed so long offline gaps correctly show in days.
   let stored = lastOnlineTs;
   if(!stored){
     try{ stored = Number(localStorage.getItem(LAST_ONLINE_KEY)) || null; }catch(e){ console.error('reading last-online timestamp failed:', e); }
@@ -2029,7 +2066,15 @@ function renderSpotifyLine(){
 setInterval(() => { if(liveSpotify) renderSpotifyLine(); }, 1000);
 
 const ACTIVITY_KEY = 'fxk_activity_log';
-const ACTIVITY_MERGE_WINDOW_MS = 90000;
+// Presence data can arrive either from the ~60s REST poll (fetchLanyard) or
+// from the websocket's PRESENCE_UPDATE, whichever fires. The merge window
+// below must be comfortably longer than the slowest of those (the 60s poll),
+// otherwise consecutive samples of the *same* activity never merge into one
+// running entry — they each start a fresh 0-length entry instead, which is
+// why tracked playtime used to look permanently stuck under a minute.
+const ACTIVITY_MERGE_WINDOW_MS = 90000; // > 60s poll interval, with margin
+// Names currently being played, per the latest presence sample. Used only to
+// flag the top-of-list record as "LIVE" — it never affects what gets stored.
 let liveActivityNames = [];
 function logActivity(activities){
   if(currentPresenceStatus === 'offline'){ liveActivityNames = []; return; }
@@ -2063,6 +2108,11 @@ function renderActivityDashboard(log){
   if(!log){
     try{ log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }catch(e){ console.error('reading activity log failed:', e); log = []; }
   }
+  // +20000: each *session* (log entry) only starts once we actually detect the
+  // activity, so we pad it by ~20s to roughly account for that detection lag.
+  // This is applied once per real session instead of once per poll, since
+  // logActivity's merge window correctly folds consecutive polls of the same
+  // activity into a single entry.
   const durationOf = e => Math.max(0, e.end - e.start) + 20000;
   const totalMs = log.reduce((sum, e) => sum + durationOf(e), 0);
   if(totalEl) totalEl.textContent = formatDuration(totalMs);
@@ -2135,6 +2185,12 @@ function formatDuration(ms){
 }
 renderActivityDashboard();
 
+// #pageScale (the whole-page scroll container) has `transform:scale(0.9)`,
+// which makes browsers miscompute wheel-to-scroll deltas for scrollable
+// descendants — inside it, the mouse wheel either barely moves this list or
+// skips straight to scrolling the outer page instead. We take the wheel
+// event over manually so it always scrolls the list first, and only lets it
+// bubble to the page once the list itself is at its top/bottom edge.
 (function fixActivityListWheel(){
   const list = document.getElementById('activityList');
   if(!list) return;
@@ -2153,6 +2209,9 @@ function initAvatarFx(){
   const canvas = document.getElementById('avatarFx');
   const wrap = document.getElementById('avatarWrap');
   if(!canvas || !wrap || typeof THREE === 'undefined') return;
+  // This Three.js sphere is a small decorative flourish. On phones/tablets
+  // (touch, no real mouse) or reduced-motion setups it just burns battery
+  // and CPU/GPU for an effect nobody can meaningfully interact with anyway.
   const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(isCoarsePointer || prefersReducedMotion) return;
