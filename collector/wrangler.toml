@@ -1,0 +1,12 @@
+name = "fxxklost-collector"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# 1분마다 실행 — 페이지를 열어두지 않아도 기록됩니다
+[triggers]
+crons = ["* * * * *"]
+
+[vars]
+DISCORD_USER_ID = "1489458472826441901"
+FIREBASE_DB_URL = "https://ff123-2bd41-default-rtdb.firebaseio.com"
+# 비밀값은 여기 쓰지 말고: npx wrangler secret put FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY
