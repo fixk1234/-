@@ -1,0 +1,2514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FXXKLOST · 8dk1</title>
+<meta name="description" content="FXXKLOST(8dk1)의 프로필 — Discord · Roblox · Spotify · Steam 링크와 실시간 상태, 최근 활동.">
+<meta name="theme-color" content="#ffe3ee">
+<!-- 배포 주소가 정해지면 주석을 풀고 주소를 바꿔 주세요 -->
+<!-- <link rel="canonical" href="https://YOUR-DOMAIN/"> -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FXXKLOST">
+<meta property="og:title" content="FXXKLOST · online as 8dk1">
+<meta property="og:description" content="falling in love — Discord · Roblox · Spotify · Steam 링크 모음">
+<!-- 공유 미리보기용 대표 이미지: 1200×630 JPG/PNG를 직접 호스팅해서 교체하는 걸 권장 -->
+<meta property="og:image" content="https://github.com/fixk1234/12344/blob/2625cf2da1f3e643da9b04fdb9279385643e58ed/%E0%BE%90%E2%9D%A4%EF%B8%8E%20%E0%BD%B2%E0%BE%80%20no%20TikTok.jpg?raw=true">
+<meta property="og:image:alt" content="FXXKLOST 캐릭터 일러스트">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23ff6fb0'/%3E%3Ctext x='32' y='47' font-size='42' text-anchor='middle' fill='white' font-family='serif'%3E%E2%80%A0%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://api.lanyard.rest">
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;600;700;900&display=swap');
+
+:root{
+  --ink:#2b1220;
+  --bone:#33131f;
+  --ash:#8a5b74;
+  --line:rgba(43,18,32,0.12);
+  --surface:#ffffff;
+  --surface-soft:#fff3f8;
+  --verdant:#ff8fc0;
+  --verdant-soft:rgba(255,143,192,0.38);
+  --blood:#ff4fa3;
+  --blood-soft:rgba(255,79,163,0.38);
+  --gold:#ffc2d9;
+  --gold-soft:rgba(255,194,217,0.38);
+
+  --panel-bg:rgba(255,255,255,0.75);
+  --panel-bg-soft:rgba(255,255,255,0.7);
+  --panel-bg-strong:rgba(255,255,255,0.95);
+  --panel-bg-strongest:rgba(255,255,255,0.85);
+  --vignette-edge:rgba(255,255,255,0.65);
+
+  --wing-edge-2:#ff9fce;
+  --wing-edge-3:#ff4fa3;
+  --wing-hollow-2:#ffc7e4;
+  --wing-hollow-3:#ff8fc0;
+  --wing-feather:#e0468f;
+  --wing-spark-core:rgba(255,111,180,0.95);
+  --wing-spark-fade:rgba(255,111,180,0);
+  --wing-spark-glow:rgba(255,111,180,0.6);
+
+  --status-online:#ff6fb0;
+  --status-idle:#ffb74f;
+  --status-dnd:#ff3b5c;
+  --status-offline:#9aa0ac;
+
+  --st-accent:#9aa0ac;
+  --st-accent-soft:rgba(154,160,172,0.30);
+  --st-bg-a:#ffffff;
+  --st-bg-b:#f2f0f5;
+  --st-glow:rgba(154,160,172,0.18);
+}
+
+*, *::before, *::after{ box-sizing:border-box; }
+
+html, body{
+  margin:0; width:100%; min-height:100vh;
+  background:var(--surface);
+  color:var(--ink);
+  font-family:'Noto Sans KR', sans-serif;
+  overflow-x:hidden;
+  cursor:default;
+  transition:filter .6s ease;
+}
+
+html[data-status="offline"] body{ filter:grayscale(.85) contrast(1.02); }
+
+body{ position:relative; }
+
+#depth{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  --rx:18%; --ry:20%; --gx:82%; --gy:75%;
+  background:
+    radial-gradient(ellipse at calc(var(--rx) + var(--rdx, 0px)) calc(var(--ry) + var(--rdy, 0px)), var(--st-glow), transparent 55%),
+    radial-gradient(ellipse at calc(var(--gx) + var(--gdx, 0px)) calc(var(--gy) + var(--gdy, 0px)), var(--st-accent-soft), transparent 55%),
+    linear-gradient(160deg, var(--st-bg-a) 0%, var(--st-bg-b) 100%);
+  transition:background .6s ease-out;
+}
+#statusFx{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  mix-blend-mode:multiply;
+  opacity:.9;
+}
+.fog-wrap{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  transition:transform .5s cubic-bezier(.2,.7,.3,1);
+  will-change:transform;
+}
+.fog{
+  position:fixed; z-index:0; pointer-events:none; border-radius:50%;
+  filter:blur(60px); opacity:.45; mix-blend-mode:multiply;
+  transition:background 1s ease;
+  transform:translateZ(0);
+  will-change:transform;
+  backface-visibility:hidden;
+}
+@media (max-width:880px){
+  .fog{ filter:blur(34px); }
+}
+.fog.f1{ width:44vw; height:44vw; top:-10%; left:-8%; background:radial-gradient(circle, var(--blood-soft), transparent 70%); animation:driftA 26s ease-in-out infinite; }
+.fog.f2{ width:38vw; height:38vw; bottom:-12%; right:-6%; background:radial-gradient(circle, var(--verdant-soft), transparent 70%); animation:driftB 32s ease-in-out infinite; }
+.fog.f3{ width:30vw; height:30vw; top:35%; left:40%; background:radial-gradient(circle, var(--st-accent-soft), transparent 70%); animation:driftC 22s ease-in-out infinite; }
+@keyframes driftA{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(6vw,8vh); } }
+@keyframes driftB{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-7vw,-6vh); } }
+@keyframes driftC{ 0%,100%{ transform:translate(-4vw,0); } 50%{ transform:translate(4vw,6vh); } }
+#vignette{
+  position:fixed; inset:0; z-index:2; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 55%, var(--vignette-edge) 100%);
+}
+#grain{
+  position:fixed; inset:0; z-index:2; pointer-events:none; opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+#stars, #stars2{
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+}
+.star{
+  position:absolute; width:2.5px; height:2.5px; background:var(--st-accent);
+  border-radius:50%; opacity:.5; box-shadow:0 0 4px var(--st-accent-soft);
+  animation:twinkle 4s ease-in-out infinite;
+}
+@keyframes twinkle{
+  0%,100%{ opacity:.15; transform:scale(1); }
+  50%{ opacity:.9; transform:scale(1.6); }
+}
+
+.ember{
+  position:fixed; z-index:1; pointer-events:none;
+  background:linear-gradient(160deg, var(--verdant), var(--blood) 70%);
+  clip-path:polygon(50% 0%, 100% 35%, 70% 100%, 30% 100%, 0% 35%);
+  animation:emberRise 1.1s ease-out forwards;
+  will-change:transform, opacity;
+}
+@keyframes emberRise{
+  0%{ opacity:.95; transform:translateY(0) rotate(0deg) scale(1); }
+  100%{ opacity:0; transform:translateY(-46px) rotate(140deg) scale(.25); }
+}
+
+#soundControl{
+  position:fixed; top:26px; left:26px; z-index:20;
+  display:flex; align-items:center;
+}
+#soundBtn{
+  width:44px; height:44px; border-radius:50%; flex-shrink:0;
+  background:var(--panel-bg-soft);
+  border:1px solid var(--line);
+  box-shadow:0 4px 16px -6px rgba(20,18,28,0.12);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; backdrop-filter:blur(6px);
+  transition:.25s;
+}
+#soundBtn:hover{ background:var(--panel-bg-strong); border-color:var(--st-accent); }
+#soundBtn svg{ width:18px; height:18px; stroke:var(--bone); fill:none; }
+
+#volumePanel{
+  width:0; margin-left:0; opacity:0; overflow:hidden;
+  display:flex; align-items:center; gap:8px;
+  height:44px; padding:0 0;
+  background:var(--panel-bg-soft);
+  border:1px solid transparent;
+  border-radius:22px;
+  backdrop-filter:blur(6px);
+  transition:width .3s ease, opacity .3s ease, margin-left .3s ease, padding .3s ease, border-color .3s ease;
+}
+#soundControl:hover #volumePanel,
+#soundControl:focus-within #volumePanel{
+  width:120px; margin-left:8px; opacity:1; padding:0 16px 0 14px;
+  border-color:var(--line);
+}
+@media (hover:none){
+  #volumePanel{ width:120px; margin-left:8px; opacity:1; padding:0 16px 0 14px; border-color:var(--line); }
+}
+#volumeRange{
+  -webkit-appearance:none; appearance:none;
+  width:100%; height:3px; border-radius:3px;
+  background:linear-gradient(90deg, var(--verdant) var(--vol, 60%), var(--line) var(--vol, 60%));
+  outline:none; cursor:pointer;
+}
+#volumeRange::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:12px; height:12px; border-radius:50%;
+  background:var(--bone);
+  box-shadow:0 0 6px var(--verdant-soft);
+  cursor:pointer;
+}
+#volumeRange::-moz-range-thumb{
+  width:12px; height:12px; border-radius:50%; border:none;
+  background:var(--bone);
+  box-shadow:0 0 6px var(--verdant-soft);
+  cursor:pointer;
+}
+
+#viewCount{
+  position:fixed; bottom:26px; left:26px; z-index:20;
+  display:flex; align-items:center; gap:8px;
+  color:var(--ash); font-family:'Jua', sans-serif; font-size:13px; letter-spacing:.12em;
+}
+#viewCount svg{ width:15px; height:15px; stroke:var(--ash); fill:none; }
+
+#pageScale{
+  position:fixed;
+  top:0; left:0;
+  width:111.1111%;
+  height:111.1111%;
+  height:111.1111dvh;
+  transform:scale(0.9);
+  transform-origin:top left;
+  z-index:3;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+@media (max-width:880px){
+  /* on mobile, the fixed+scaled wrapper combined with the body's own scroll
+     causes double/locked scrolling; let this single element own the scroll */
+  html, body{ height:100%; overflow:hidden; }
+}
+@media (min-width:881px){
+  /* Desktop: fitPageScale() in the script below measures the real content
+     height and sets width/height/transform on #pageScale itself (inline,
+     so it wins over the 111.1111%/0.9 fallback above) to the exact scale
+     that makes everything fit one viewport at 100% browser zoom. Once that's
+     true there's nothing left to scroll, so we hard-block wheel/scrollbar
+     here rather than relying on the fit being pixel-perfect every time. */
+  #pageScale{ overflow:hidden; }
+}
+
+.stage{
+  position:relative; z-index:3;
+  min-height:100vh;
+  min-height:100dvh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+}
+
+.profile-col{
+  display:flex; flex-direction:column; align-items:center;
+  padding:56px 40px 0;
+  animation:riseIn 1s ease-out both;
+}
+@keyframes riseIn{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+.sigil{
+  position:relative;
+  width:180px; height:100px; margin-bottom:22px; opacity:.98;
+  animation:sigilFloat 5s ease-in-out infinite, wingGlow 3.4s ease-in-out infinite;
+  cursor:pointer; border-radius:24px;
+}
+@keyframes wingGlow{
+  0%,100%{ filter:drop-shadow(0 0 5px var(--wing-feather)) drop-shadow(0 0 14px var(--st-accent-soft)); }
+  50%{ filter:drop-shadow(0 0 10px var(--wing-feather)) drop-shadow(0 0 24px var(--st-accent-soft)); }
+}
+/* 호버 확대는 svg에 적용 (부모의 float 애니메이션이 transform을 덮어쓰지 않도록) */
+.sigil svg{ width:100%; height:100%; overflow:visible; transition:transform .35s cubic-bezier(.2,.7,.3,1); }
+.sigil:hover svg{ transform:scale(1.07) translateY(-4px); }
+
+.sigil .feather{
+  fill:none;
+  stroke:var(--wing-feather);
+  stroke-width:1.2;
+  stroke-linecap:round;
+  vector-effect:non-scaling-stroke;
+  opacity:.95;
+}
+.sigil .feather-fill{
+  fill:url(#wingHollow);
+  opacity:.96;
+}
+.sigil .wing-core{
+  stroke:url(#wingEdge);
+  stroke-width:1.6;
+}
+/* 평소: 천천히 접혀 있다가 → 두 번 '파닥' (위로 크게 → 작게) → 다시 정리 */
+.sigil .wing-l, .sigil .wing-r{ transform-box:fill-box; }
+.sigil .wing-l{ transform-origin:96% 58%; animation:flapL 3.6s cubic-bezier(.45,0,.25,1) infinite; }
+.sigil .wing-r{ transform-origin:4% 58%;  animation:flapR 3.6s cubic-bezier(.45,0,.25,1) infinite; }
+.sigil .feather{ transform-box:fill-box; transform-origin:100% 50%; }
+.sigil .wing-r .feather{ transform-origin:0% 50%; }
+.sigil .wing-l .feather{ animation:plumeL 3.6s ease-in-out infinite; }
+.sigil .wing-r .feather{ animation:plumeR 3.6s ease-in-out infinite; }
+.sigil .feather:nth-child(2){ animation-delay:.06s; }
+.sigil .feather:nth-child(3){ animation-delay:.12s; }
+.sigil .feather:nth-child(4){ animation-delay:.18s; }
+.sigil .feather:nth-child(5){ animation-delay:.24s; }
+.sigil .feather:nth-child(6){ animation-delay:.3s; }
+@keyframes flapL{
+  0%, 58%, 100%{ transform:rotate(0deg) scaleX(1); }
+  30%{ transform:rotate(-2.5deg) scaleX(1.01); }
+  64%{ transform:rotate(-17deg) scaleX(1.07); }
+  70%{ transform:rotate(4deg) scaleX(.95); }
+  76%{ transform:rotate(-10deg) scaleX(1.04); }
+  83%{ transform:rotate(2deg) scaleX(.98); }
+}
+@keyframes flapR{
+  0%, 58%, 100%{ transform:rotate(0deg) scaleX(1); }
+  30%{ transform:rotate(2.5deg) scaleX(1.01); }
+  64%{ transform:rotate(17deg) scaleX(1.07); }
+  70%{ transform:rotate(-4deg) scaleX(.95); }
+  76%{ transform:rotate(10deg) scaleX(1.04); }
+  83%{ transform:rotate(-2deg) scaleX(.98); }
+}
+@keyframes plumeL{
+  0%, 60%, 100%{ transform:rotate(0deg); }
+  67%{ transform:rotate(-6deg); }
+  74%{ transform:rotate(3deg); }
+  82%{ transform:rotate(-2deg); }
+}
+@keyframes plumeR{
+  0%, 60%, 100%{ transform:rotate(0deg); }
+  67%{ transform:rotate(6deg); }
+  74%{ transform:rotate(-3deg); }
+  82%{ transform:rotate(2deg); }
+}
+@keyframes sigilFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-7px); } }
+/* 클릭: 크게 펼쳤다가 두 번 퍼덕 + 빛 번쩍 (float은 유지) */
+.sigil.wing-struck{ animation:sigilFloat 5s ease-in-out infinite, wingFlash .7s ease-out; }
+.sigil.wing-struck .wing-l{ animation:strikeL .7s cubic-bezier(.2,.8,.3,1); }
+.sigil.wing-struck .wing-r{ animation:strikeR .7s cubic-bezier(.2,.8,.3,1); }
+.sigil.wing-struck .feather{ animation:none; }
+@keyframes strikeL{
+  0%{ transform:rotate(0deg) scaleX(1); }
+  22%{ transform:rotate(-30deg) scaleX(1.22); }
+  42%{ transform:rotate(6deg) scaleX(.92); }
+  62%{ transform:rotate(-14deg) scaleX(1.08); }
+  80%{ transform:rotate(2deg) scaleX(.98); }
+  100%{ transform:rotate(0deg) scaleX(1); }
+}
+@keyframes strikeR{
+  0%{ transform:rotate(0deg) scaleX(1); }
+  22%{ transform:rotate(30deg) scaleX(1.22); }
+  42%{ transform:rotate(-6deg) scaleX(.92); }
+  62%{ transform:rotate(14deg) scaleX(1.08); }
+  80%{ transform:rotate(-2deg) scaleX(.98); }
+  100%{ transform:rotate(0deg) scaleX(1); }
+}
+@keyframes wingFlash{
+  0%,100%{ filter:drop-shadow(0 0 6px var(--wing-feather)) drop-shadow(0 0 14px var(--st-accent-soft)); }
+  30%{ filter:drop-shadow(0 0 22px #fff) drop-shadow(0 0 44px var(--st-accent)) brightness(1.15); }
+}
+
+.brand-title{
+  position:relative;
+  font-family:'Jua', sans-serif; font-weight:600;
+  font-size:2.5rem; letter-spacing:.18em;
+  margin:0 0 6px 0; text-align:center;
+  color:var(--bone);
+  text-shadow:
+    0 0 12px var(--blood-soft),
+    0 0 26px var(--verdant-soft);
+}
+.brand-sub{
+  font-size:1rem; color:var(--ash); letter-spacing:.1em;
+  margin:0 0 30px 0; text-align:center; font-style:italic;
+}
+
+.id-card{
+  position:relative;
+  z-index:4;
+  overflow:visible;
+  width:336px;
+  background:var(--panel-bg);
+  box-shadow:0 10px 30px -14px rgba(20,18,28,0.14);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:14px 16px;
+  display:flex; align-items:center; gap:14px;
+  backdrop-filter:blur(8px);
+  transform-style:preserve-3d;
+  transition:box-shadow .3s ease, border-color .3s ease;
+}
+.id-card:hover{ border-color:var(--verdant-soft); box-shadow:0 14px 34px -14px rgba(0,0,0,0.6); }
+.js-tilt-glare-inner{ border-radius:10px; }
+
+.badge-row{
+  position:absolute; top:10px; right:12px;
+  display:flex; gap:5px; align-items:center;
+}
+.badge-row .badge{
+  width:15px; height:15px; display:flex; align-items:center; justify-content:center;
+  opacity:.9; filter:drop-shadow(0 0 3px rgba(0,0,0,0.5));
+}
+.badge-row .badge svg{ width:100%; height:100%; }
+.badge-hypesquad svg{ fill:var(--verdant); }
+.badge-early svg{ fill:var(--gold); }
+.badge-nitro svg{ fill:#b491e0; }
+
+.status-dot.st-online{ background:var(--status-online); }
+.status-dot.st-idle{ background:var(--status-idle); }
+.status-dot.st-dnd{ background:var(--status-dnd); }
+.status-dot.st-offline{ background:var(--status-offline); }
+.status-dot{ transition:background .4s ease; }
+
+.id-name{
+  cursor:pointer; position:relative;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.id-name:hover{ color:var(--verdant); }
+.id-name:active{ transform:translateY(1px); }
+.id-tooltip{
+  font-size:0.68rem; color:var(--ash); font-family:'Noto Sans KR', sans-serif;
+  opacity:0; transform:translateX(-4px);
+  transition:opacity .3s ease, transform .3s ease; pointer-events:none;
+}
+.id-name:hover .id-tooltip{
+  opacity:1; transform:translateX(0);
+}
+.id-status{ display:inline-flex; align-items:center; gap:5px; white-space:nowrap; max-width:190px; overflow:hidden; text-overflow:ellipsis; }
+.id-status .activity-icon{ width:11px; height:11px; opacity:.75; flex-shrink:0; }
+.id-lastseen{ display:inline-flex; align-items:center; gap:6px; font-size:.72rem; color:var(--ash); margin-top:2px; letter-spacing:.02em; }
+.id-lastseen b{ color:var(--st-accent); font-weight:600; }
+.id-lastseen.is-active{ color:var(--status-online); }
+.id-lastseen .pulse-dot{
+  width:6px; height:6px; border-radius:50%; background:var(--status-online);
+  box-shadow:0 0 6px var(--status-online); flex-shrink:0;
+  animation:listeningPulse 1.8s ease-in-out infinite;
+}
+
+/* ── Activity Analytics Dashboard ── */
+.activity-panel{
+  width:336px; margin-top:14px;
+  background:var(--panel-bg);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:14px 16px 12px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 10px 30px -14px rgba(20,18,28,0.14);
+}
+.activity-head{
+  display:flex; align-items:center; justify-content:space-between;
+  font-family:'Jua', sans-serif; font-size:.7rem; letter-spacing:.1em; color:var(--ash);
+  margin-bottom:10px;
+}
+.activity-head b{ color:var(--ink); }
+.activity-list{ display:flex; flex-direction:column; gap:0; max-height:136px; overflow-y:auto; padding-right:2px; overscroll-behavior:contain; }
+.activity-list::-webkit-scrollbar{ width:4px; }
+.activity-list::-webkit-scrollbar-thumb{ background:var(--gold); border-radius:4px; }
+.record-sep{
+  font-family:'Jua', sans-serif; font-size:.6rem; letter-spacing:.1em; color:var(--ash);
+  opacity:.7; padding:10px 0 6px 22px;
+}
+.record-sep:first-child{ padding-top:1px; }
+.record-row{
+  position:relative; display:flex; align-items:flex-start; gap:10px;
+  padding:7px 4px 7px 22px; font-size:.78rem;
+  animation:recordIn .35s ease both;
+}
+@keyframes recordIn{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:translateY(0); } }
+.record-row::before{ content:''; position:absolute; left:5px; top:0; bottom:0; width:1px; background:var(--line); }
+.record-dot{
+  position:absolute; left:1px; top:11px; width:9px; height:9px; border-radius:50%; flex-shrink:0;
+  background:var(--st-accent); box-shadow:0 0 0 3px var(--panel-bg-strong);
+  transition:background .3s ease;
+}
+.record-row.is-live .record-dot{
+  background:var(--blood);
+  box-shadow:0 0 0 3px var(--panel-bg-strong), 0 0 8px var(--blood-soft);
+  animation:recordLivePulse 1.6s ease-in-out infinite;
+}
+@keyframes recordLivePulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.4); } }
+.record-body{ flex:1; min-width:0; }
+.record-top{ display:flex; align-items:center; gap:6px; }
+.record-name{ font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.record-live{
+  font-family:'Jua', sans-serif; font-size:.54rem; letter-spacing:.06em; color:var(--blood);
+  border:1px solid var(--blood-soft); border-radius:20px; padding:1px 6px; flex-shrink:0;
+  animation:recordLiveTag 1.6s ease-in-out infinite;
+}
+@keyframes recordLiveTag{ 0%,100%{ opacity:1; } 50%{ opacity:.55; } }
+.record-meta{ font-size:.68rem; color:var(--ash); margin-top:2px; letter-spacing:.01em; }
+.activity-empty{ font-size:.74rem; color:var(--ash); text-align:center; padding:6px 0; }
+.activity-foot{ margin-top:8px; font-size:.62rem; color:var(--ash); opacity:.75; line-height:1.5; }
+
+#copyToast{
+  position:fixed; left:50%; bottom:70px; transform:translate(-50%,10px);
+  z-index:60; background:rgba(43,18,32,0.92); color:#fff;
+  border:1px solid var(--verdant-soft); border-radius:8px;
+  padding:9px 16px; font-family:'Jua', sans-serif; font-size:.72rem; letter-spacing:.08em;
+  opacity:0; pointer-events:none; backdrop-filter:blur(6px);
+  transition:opacity .3s ease, transform .3s ease;
+  box-shadow:0 8px 24px -8px rgba(0,0,0,0.7);
+}
+#copyToast.show{ opacity:1; transform:translate(-50%,0); }
+.avatar{
+  position:relative; width:52px; height:52px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #2a2a2a, #0c0c0c);
+  border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; overflow:visible;
+}
+.avatar img{
+  width:100%; height:100%; object-fit:cover; border-radius:50%;
+  position:relative; z-index:1;
+}
+#avatarFx{
+  position:absolute; inset:0; width:100%; height:100%; border-radius:50%;
+  pointer-events:none; z-index:1; mix-blend-mode:screen; opacity:.85;
+}
+.status-dot{
+  position:absolute; bottom:1px; right:1px; width:11px; height:11px;
+  border-radius:50%; background:#ff6fb0; border:2px solid var(--ink);
+  z-index:5; pointer-events:none;
+}
+.listening-badge{
+  position:absolute; top:-4px; left:-4px; width:20px; height:20px;
+  border-radius:50%; background:var(--verdant);
+  border:2px solid var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(.4);
+  transition:opacity .3s ease, transform .3s ease;
+  box-shadow:0 0 8px var(--verdant-soft);
+  z-index:6;
+}
+.listening-badge.show{
+  opacity:1; transform:scale(1);
+  animation:listeningPulse 1.6s ease-in-out infinite;
+}
+.listening-badge svg{ width:11px; height:11px; fill:var(--ink); }
+@keyframes listeningPulse{
+  0%,100%{ box-shadow:0 0 6px var(--verdant-soft); }
+  50%{ box-shadow:0 0 14px var(--verdant), 0 0 4px var(--verdant-soft); }
+}
+.id-text{ display:flex; flex-direction:column; gap:3px; }
+.id-name{ font-family:'Jua', sans-serif; font-size:1rem; letter-spacing:.05em; }
+.id-status{ font-size:.85rem; color:var(--ash); font-family:'Noto Sans KR',sans-serif; }
+
+.player-widget{
+  width:336px; margin-top:18px;
+  background:var(--panel-bg);
+  box-shadow:0 10px 30px -14px rgba(20,18,28,0.14);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:14px 16px;
+  backdrop-filter:blur(8px);
+}
+.player-top{
+  display:flex; align-items:center; gap:12px; margin-bottom:14px;
+}
+.lp-disc{
+  position:relative; flex-shrink:0; width:40px; height:40px; border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%, var(--ink) 0 14%, transparent 14.5%),
+    repeating-radial-gradient(circle at 50% 50%, #1c1c1a 0, #1c1c1a 1.5px, #0a0a09 2px, #0a0a09 3.2px);
+  border:1px solid var(--line);
+  box-shadow:0 0 0 2px rgba(0,0,0,0.4) inset, 0 4px 10px -4px rgba(0,0,0,0.7);
+  animation:lpSpin 6s linear infinite paused;
+  will-change:transform;
+  transform:translateZ(0);
+}
+.lp-disc::after{
+  content:''; position:absolute; inset:0; margin:auto; width:10px; height:10px; border-radius:50%;
+  background:radial-gradient(circle at 40% 35%, var(--verdant), var(--blood) 80%);
+  box-shadow:0 0 6px var(--verdant-soft);
+}
+.lp-disc.spinning{ animation-play-state:running; }
+@keyframes lpSpin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+.player-top-text{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+.player-top-label{
+  font-family:'Jua', sans-serif; font-size:.62rem; letter-spacing:.14em; color:var(--ash);
+  display:flex; align-items:center; gap:5px;
+}
+.player-top-label .live-dot{
+  width:5px; height:5px; border-radius:50%; background:var(--status-online);
+  box-shadow:0 0 5px var(--status-online); display:none;
+}
+.player-top-label.live .live-dot{ display:inline-block; animation:twinkle 1.6s ease-in-out infinite; }
+.player-top-title{
+  font-size:.85rem; color:var(--bone); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:190px;
+}
+.player-row{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.player-btn{
+  position:relative; flex-shrink:0;
+  width:38px; height:38px; border-radius:50%;
+  background:var(--panel-bg-soft);
+  border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:.2s;
+}
+.player-btn:hover{ background:var(--panel-bg-strong); border-color:var(--st-accent); }
+.player-btn svg{ width:16px; height:16px; stroke:var(--bone); fill:none; display:block; }
+.player-btn-label{
+  position:absolute; bottom:-2px; right:-2px;
+  width:14px; height:14px; border-radius:50%;
+  background:var(--blood); border:1px solid #fff;
+  font-family:'Jua', sans-serif; font-size:.58rem; line-height:1; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 1px 4px rgba(255,79,163,0.45);
+  z-index:1;
+}
+.player-btn-main{ width:48px; height:48px; background:var(--panel-bg-strongest); }
+.player-eq{
+  display:flex; align-items:flex-end; gap:2px; height:10px; margin-left:2px;
+  opacity:.35;
+}
+.player-eq span{
+  width:2px; height:3px; border-radius:1px; background:var(--blood);
+  animation:eqIdle 1.2s ease-in-out infinite;
+}
+.player-eq span:nth-child(2){ animation-delay:.15s; }
+.player-eq span:nth-child(3){ animation-delay:.3s; }
+.player-top-label.playing .player-eq{ opacity:1; }
+.player-top-label.playing .player-eq span{ animation-name:eqPlay; }
+@keyframes eqIdle{ 0%,100%{ height:3px; } 50%{ height:5px; } }
+@keyframes eqPlay{
+  0%,100%{ height:3px; }
+  35%{ height:10px; }
+  60%{ height:5px; }
+}
+.playlist-head{
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:'Jua', sans-serif; font-size:.58rem; letter-spacing:.12em; color:var(--ash);
+  margin-top:12px; padding-top:10px; border-top:1px solid var(--line);
+}
+.playlist{
+  margin-top:6px; padding-top:0; border-top:none;
+  display:flex; flex-direction:column; gap:3px;
+  max-height:168px; overflow-y:auto;
+}
+.playlist::-webkit-scrollbar{ width:4px; }
+.playlist::-webkit-scrollbar-thumb{ background:var(--gold); border-radius:4px; }
+.playlist-head b{ color:var(--ink); }
+.playlist-item{
+  display:flex; align-items:center; gap:8px;
+  width:100%; border:none; background:transparent; text-align:left;
+  font-family:inherit;
+  padding:6px 8px; border-radius:8px;
+  cursor:pointer; font-size:.74rem; color:var(--ash);
+  transition:background .2s, color .2s;
+}
+.playlist-item:hover{ background:rgba(255,143,192,0.12); color:var(--ink); }
+.playlist-item.active{
+  background:linear-gradient(90deg, rgba(255,143,192,0.22), rgba(255,194,217,0.08));
+  color:var(--bone); font-weight:600;
+}
+.playlist-num{
+  font-family:'Jua', sans-serif; font-size:.62rem; width:14px; text-align:right; opacity:.55;
+}
+.playlist-item.active .playlist-num{ color:var(--blood); opacity:1; }
+.playlist-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.track-line .sp-progress{
+  display:block; width:min(220px, 70vw); height:3px; margin:8px auto 0;
+  border-radius:3px; background:var(--line); overflow:hidden;
+}
+.track-line .sp-progress i{
+  display:block; height:100%; width:0%; background:var(--verdant);
+  box-shadow:0 0 8px var(--verdant-soft);
+  transition:width .4s linear;
+}
+.player-btn-main svg{ width:20px; height:20px; fill:var(--bone); stroke:none; }
+.player-seek-row{ display:flex; align-items:center; gap:10px; margin-top:12px; }
+.player-time{
+  font-family:'Jua', sans-serif; font-size:.68rem; color:var(--ash);
+  letter-spacing:.05em; min-width:30px;
+}
+#curTime{ text-align:right; }
+#durTime{ text-align:left; }
+.seek-range{
+  flex:1; -webkit-appearance:none; appearance:none;
+  height:4px; border-radius:3px;
+  background:linear-gradient(to right,
+    var(--verdant) 0%,
+    var(--verdant) var(--seek-played, 0%),
+    rgba(255,143,192,0.28) var(--seek-played, 0%),
+    rgba(255,143,192,0.28) var(--seek-loaded, 0%),
+    var(--line) var(--seek-loaded, 0%),
+    var(--line) 100%);
+  outline:none; cursor:pointer;
+}
+.seek-range::-webkit-slider-runnable-track{
+  height:4px; border-radius:3px; background:transparent;
+}
+.seek-range::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:11px; height:11px; border-radius:50%;
+  background:var(--bone);
+  box-shadow:0 0 6px var(--verdant-soft);
+  cursor:pointer;
+  margin-top:-3.5px;
+}
+.seek-range::-moz-range-track{
+  height:4px; border-radius:3px; background:transparent; border:none;
+}
+.seek-range::-moz-range-progress{
+  height:4px; border-radius:3px; background:var(--verdant);
+}
+.seek-range::-moz-range-thumb{
+  width:11px; height:11px; border-radius:50%; border:none;
+  background:var(--bone);
+  box-shadow:0 0 6px var(--verdant-soft);
+  cursor:pointer;
+}
+
+.link-row{ display:flex; gap:22px; margin-top:26px; }
+.link-row a{
+  width:24px; height:24px; opacity:.75; transition:.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.link-row a:hover{ opacity:1; transform:translateY(-2px); }
+.link-row svg{ width:100%; height:100%; fill:var(--bone); }
+
+.track-line{
+  margin-top:22px; font-size:.78rem; color:var(--ash);
+  letter-spacing:.08em; text-align:center;
+}
+.track-line span{ color:var(--bone); }
+.track-line strong{ color:var(--bone); font-weight:600; letter-spacing:.02em; }
+
+.altar-col{
+  position:relative; height:100vh;
+  height:100dvh;
+  display:flex; align-items:center; justify-content:center;
+}
+.altar-frame{
+  position:relative; width:min(52vw, 640px); height:88vh;
+  display:flex; align-items:center; justify-content:center;
+}
+.altar-frame{
+  border-radius:22px;
+  overflow:hidden;
+}
+#characterArt{
+  position:relative;
+  width:100%; height:78%;
+  border:none;
+  border-radius:18px;
+  display:flex; align-items:center; justify-content:center;
+  color:rgba(242,239,233,0.28);
+  font-family:'Jua', sans-serif; font-size:.72rem; letter-spacing:.15em; text-align:center;
+  background:radial-gradient(circle at 50% 35%, rgba(191,227,255,0.06), transparent 65%);
+  cursor:pointer;
+}
+#characterArt::before{
+  content:''; position:absolute; top:-6%; left:50%; width:1px; height:112%;
+  background:linear-gradient(to bottom, transparent, var(--verdant-soft) 30%, var(--blood-soft) 70%, transparent);
+  transform:translateX(-50%); opacity:.5;
+  animation:beamPulse 4s ease-in-out infinite;
+}
+@keyframes beamPulse{
+  0%,100%{ opacity:.3; }
+  50%{ opacity:.7; }
+}
+#characterArt img{
+  width:100%; height:100%; object-fit:cover; object-position:center 18%;
+  border-radius:18px;
+  filter:none;
+  -webkit-mask-image:linear-gradient(to bottom, black 78%, transparent 100%),
+                      linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to bottom, black 78%, transparent 100%),
+              linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-composite:intersect;
+  animation:artBreathe 6s ease-in-out infinite;
+  transform-origin:center center;
+}
+@keyframes artBreathe{
+  0%,100%{ transform:translateY(0) scale(1); }
+  50%{ transform:translateY(-6px) scale(1.01); }
+}
+#characterArt img.jelly{
+  animation:jellySquish .6s cubic-bezier(.36,.02,.16,1) 1;
+}
+@keyframes jellySquish{
+  0%{   transform:scale(1, 1); }
+  18%{  transform:scale(1.18, 0.8); }
+  36%{  transform:scale(0.86, 1.16); }
+  54%{  transform:scale(1.1, 0.9); }
+  72%{  transform:scale(0.95, 1.05); }
+  86%{  transform:scale(1.03, 0.98); }
+  100%{ transform:scale(1, 1); }
+}
+.wing-spark{
+  position:fixed; z-index:10; pointer-events:none; border-radius:50%;
+  background:radial-gradient(circle, var(--wing-spark-core), var(--wing-spark-fade) 72%);
+  box-shadow:0 0 6px var(--wing-spark-glow);
+  animation:sparkFall linear forwards;
+}
+@keyframes sparkFall{
+  0%{ opacity:0; transform:translate(0,0) scale(1); }
+  10%{ opacity:.9; }
+  80%{ opacity:.55; }
+  100%{ opacity:0; transform:translate(var(--sx), var(--sy)) scale(.4); }
+}
+.wing-spark.spark-burst{
+  background:radial-gradient(circle, var(--spark-core, #fff), var(--spark-mid, rgba(242,239,233,0.7)) 45%, transparent 75%);
+  box-shadow:0 0 10px var(--spark-glow, rgba(242,239,233,0.9)), 0 0 22px var(--spark-glow, rgba(242,239,233,0.5));
+  animation:sparkBurst cubic-bezier(.16,.9,.3,1) forwards;
+}
+@keyframes sparkBurst{
+  0%{ opacity:0; transform:translate(0,0) scale(.2); }
+  14%{ opacity:1; transform:translate(calc(var(--sx) * 0.22), calc(var(--sy) * 0.22)) scale(1.3); }
+  55%{ opacity:.95; }
+  100%{ opacity:0; transform:translate(var(--sx), var(--sy)) scale(.35); }
+}
+.art-burst-ring{
+  position:fixed; z-index:10; pointer-events:none; border-radius:50%;
+  width:170px; height:170px;
+  border:2px solid var(--spark-glow, rgba(242,239,233,0.7));
+  box-shadow:0 0 16px var(--spark-glow, rgba(242,239,233,0.5));
+  transform:translate(-50%,-50%) scale(0);
+  animation:burstRing .5s cubic-bezier(.2,.8,.3,1) forwards;
+}
+@keyframes burstRing{
+  0%{ transform:translate(-50%,-50%) scale(0); opacity:.9; }
+  100%{ transform:translate(-50%,-50%) scale(1); opacity:0; }
+}
+
+
+.glow-pool{
+  position:absolute; bottom:6%; left:50%; transform:translateX(-50%);
+  width:78%; height:14px; border-radius:50%;
+  background:radial-gradient(ellipse at center, var(--verdant-soft), transparent 70%);
+  filter:blur(2px);
+  animation:pulseGlow 3.5s ease-in-out infinite;
+}
+@keyframes pulseGlow{
+  0%,100%{ opacity:.5; transform:translateX(-50%) scaleX(1); }
+  50%{ opacity:.9; transform:translateX(-50%) scaleX(1.08); }
+}
+
+.reflection{
+  position:absolute; bottom:-2%; left:0; width:100%; height:40%;
+  transform:scaleY(-1);
+  -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.32), transparent 85%);
+  mask-image:linear-gradient(to bottom, rgba(0,0,0,.32), transparent 85%);
+  opacity:.5; pointer-events:none;
+}
+.reflection #characterArt{ border:none; background:none; }
+
+@media (max-width:880px){
+  .stage{ grid-template-columns:1fr; padding-top:70px; }
+  .altar-col{ height:64vh; height:64dvh; order:-1; }
+  .altar-frame{ width:84vw; height:100%; }
+  .profile-col{ padding:20px 24px 60px; }
+  #characterArt img{
+    object-fit:contain;
+    object-position:center top;
+  }
+}
+
+@media (max-width:420px){
+  .profile-col{ padding:16px 14px 48px; }
+  .id-card, .player-widget{ width:100%; max-width:320px; }
+  .brand-title{ font-size:1.6rem; }
+  .player-row{ gap:10px; }
+  .player-btn{ width:34px; height:34px; }
+  .player-btn-main{ width:44px; height:44px; }
+  .link-row{ gap:16px; }
+  #soundControl{ top:14px; left:14px; }
+}
+
+#characterArt:focus-visible,
+#sigilWings:focus-visible,
+.id-name:focus-visible{
+  outline:2px solid var(--verdant);
+  outline-offset:3px;
+  border-radius:8px;
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="depth"></div>
+<canvas id="statusFx"></canvas>
+<div class="fog-wrap" id="fogWrap1"><div class="fog f1"></div></div>
+<div class="fog-wrap" id="fogWrap2"><div class="fog f2"></div></div>
+<div class="fog-wrap" id="fogWrap3"><div class="fog f3"></div></div>
+<div id="stars"></div>
+<div id="vignette"></div>
+<div id="grain"></div>
+
+<div id="pageScale">
+
+<div id="soundControl">
+  <button id="soundBtn" aria-label="음소거 켜기/끄기">
+    <svg id="soundIconOn" viewBox="0 0 24 24" stroke-width="1.6" style="display:none">
+      <path d="M4 9v6h4l5 5V4L8 9H4z" stroke-linejoin="round"/>
+      <path d="M16.5 8.5a5 5 0 0 1 0 7" stroke-linecap="round"/>
+      <path d="M19 6a9 9 0 0 1 0 12" stroke-linecap="round"/>
+    </svg>
+    <svg id="soundIconOff" viewBox="0 0 24 24" stroke-width="1.6">
+      <path d="M4 9v6h4l5 5V4L8 9H4z" stroke-linejoin="round"/>
+      <line x1="17" y1="9" x2="22" y2="14" stroke-linecap="round"/>
+      <line x1="22" y1="9" x2="17" y2="14" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <div id="volumePanel">
+    <input type="range" id="volumeRange" min="0" max="100" value="60" aria-label="볼륨 조절">
+  </div>
+</div>
+
+<div id="copyToast">복사되었습니다!</div>
+
+<div id="viewCount">
+  <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+  <span id="count">000</span>
+</div>
+
+<main class="stage">
+  <section class="profile-col">
+    <div class="sigil" id="sigilWings" title="날개 장식" tabindex="0" role="button" aria-label="날개 장식 상호작용">
+      <svg viewBox="0 0 220 130">
+        <defs>
+          <linearGradient id="wingEdge" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ffffff" stop-opacity="1"/>
+            <stop offset="45%" style="stop-color:var(--wing-edge-2)" stop-opacity=".95"/>
+            <stop offset="100%" style="stop-color:var(--wing-edge-3)" stop-opacity=".95"/>
+          </linearGradient>
+          <radialGradient id="wingHollow" cx="50%" cy="35%" r="75%">
+            <stop offset="0%" style="stop-color:#ffffff" stop-opacity=".95"/>
+            <stop offset="55%" style="stop-color:var(--wing-hollow-2)" stop-opacity=".8"/>
+            <stop offset="100%" style="stop-color:var(--wing-hollow-3)" stop-opacity=".45"/>
+          </radialGradient>
+        </defs>
+        
+        <g class="wing-l">
+          <path class="feather-fill" d="M110 78 C 84 46 46 26 6 10 C 30 34 46 54 52 84 C 34 74 16 74 2 82 C 24 82 40 92 50 108 C 34 104 20 108 12 118 C 30 112 44 114 54 124 C 62 108 74 92 110 78 Z"/>
+          <path class="feather wing-core" d="M110 78 C 84 46 46 26 6 10 C 30 34 46 54 52 84 C 34 74 16 74 2 82 C 24 82 40 92 50 108 C 34 104 20 108 12 118 C 30 112 44 114 54 124 C 62 108 74 92 110 78 Z"/>
+          <path class="feather" d="M104 74 C 82 48 52 32 20 20"/>
+          <path class="feather" d="M96 82 C 72 62 44 50 14 46"/>
+          <path class="feather" d="M90 92 C 66 78 38 72 10 74"/>
+          <path class="feather" d="M84 102 C 62 92 36 90 18 96"/>
+        </g>
+        
+        <g class="wing-r">
+          <path class="feather-fill" d="M110 78 C 136 46 174 26 214 10 C 190 34 174 54 168 84 C 186 74 204 74 218 82 C 196 82 180 92 170 108 C 186 104 200 108 208 118 C 190 112 176 114 166 124 C 158 108 146 92 110 78 Z"/>
+          <path class="feather wing-core" d="M110 78 C 136 46 174 26 214 10 C 190 34 174 54 168 84 C 186 74 204 74 218 82 C 196 82 180 92 170 108 C 186 104 200 108 208 118 C 190 112 176 114 166 124 C 158 108 146 92 110 78 Z"/>
+          <path class="feather" d="M116 74 C 138 48 168 32 200 20"/>
+          <path class="feather" d="M124 82 C 148 62 176 50 206 46"/>
+          <path class="feather" d="M130 92 C 154 78 182 72 210 74"/>
+          <path class="feather" d="M136 102 C 158 92 184 90 202 96"/>
+        </g>
+      </svg>
+    </div>
+
+    <h1 class="brand-title">FXXKLOST</h1>
+    <p class="brand-sub">falling in love</p>
+
+    <div class="id-card" data-tilt data-tilt-max="7" data-tilt-speed="500" data-tilt-perspective="900" data-tilt-glare data-tilt-max-glare="0.12" data-tilt-scale="1.015">
+      <div class="badge-row" id="badgeRow"></div>
+      <div class="avatar" id="avatarWrap">
+        <canvas id="avatarFx"></canvas>
+        <img id="avatarImg" crossorigin="anonymous" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ffe3f0'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%23ff8fc0'/%3E%3Cellipse cx='50' cy='88' rx='30' ry='24' fill='%23ff8fc0'/%3E%3C/svg%3E" alt="avatar">
+        <span id="statusDot" class="status-dot"></span>
+        <span id="listeningBadge" class="listening-badge" title="listening to spotify">
+          <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6Z"/></svg>
+        </span>
+      </div>
+      <div class="id-text">
+        <span class="id-name" id="idName" title="클릭해서 디스코드 ID 복사" tabindex="0" role="button" aria-label="디스코드 아이디 복사하기">
+          8dk1<span class="id-tooltip">(1489458472826441901)</span>
+        </span>
+        <span class="id-status" id="idStatus">아무 생각 없음</span>
+        <span class="id-lastseen" id="lastSeen"></span>
+      </div>
+    </div>
+
+    <div id="playerWidget" class="player-widget" data-tilt data-tilt-max="5" data-tilt-speed="500" data-tilt-perspective="1200" data-tilt-glare data-tilt-max-glare="0.08" data-tilt-scale="1.01">
+      <div class="player-top">
+        <div id="lpDisc" class="lp-disc"></div>
+        <div class="player-top-text">
+          <span id="playerTopLabel" class="player-top-label">
+            <span class="live-dot"></span>
+            now playing
+            <span class="player-eq" aria-hidden="true"><span></span><span></span><span></span></span>
+          </span>
+          <span id="playerTopTitle" class="player-top-title">もうそう☆えくすぷれす</span>
+        </div>
+      </div>
+      <div class="player-row">
+        <button id="prevTrackBtn" class="player-btn" aria-label="이전 곡" title="이전 곡">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" fill="var(--bone)" stroke="none"/></svg>
+        </button>
+        <button id="skipBackBtn" class="player-btn" aria-label="5초 뒤로" title="5초 뒤로">
+          <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 6V2L7 7l5 5V8a5 5 0 1 1-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="player-btn-label">5</span>
+        </button>
+        <button id="playPauseBtn" class="player-btn player-btn-main" aria-label="재생/일시정지" title="재생/일시정지">
+          <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+        <button id="skipFwdBtn" class="player-btn" aria-label="5초 앞으로" title="5초 앞으로">
+          <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 6V2l5 5-5 5V8a5 5 0 1 0 5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="player-btn-label">5</span>
+        </button>
+        <button id="nextTrackBtn" class="player-btn" aria-label="다음 곡" title="다음 곡">
+          <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" fill="var(--bone)" stroke="none"/></svg>
+        </button>
+      </div>
+      <div class="player-seek-row">
+        <span id="curTime" class="player-time">0:00</span>
+        <input type="range" id="seekRange" class="seek-range" min="0" max="100" value="0" step="0.1" aria-label="재생 위치">
+        <span id="durTime" class="player-time">0:00</span>
+      </div>
+      <div class="playlist-head"><span>PLAYLIST</span><b id="playlistCount">6</b></div>
+      <div id="playlist" class="playlist"></div>
+    </div>
+
+    <div class="activity-panel" data-tilt data-tilt-max="4" data-tilt-speed="500" data-tilt-perspective="1400" data-tilt-scale="1.008">
+      <div class="activity-head"><span>PLAY RECORD · 24H</span><b id="activityTotal">0m</b></div>
+      <div class="activity-list" id="activityList">
+        <div class="activity-empty" id="activityEmpty">아직 기록된 활동이 없어요</div>
+      </div>
+      <div class="activity-foot" id="collectorStatus" role="status"></div>
+    </div>
+
+    <div class="link-row">
+      <a href="https://discord.com/users/1489458472826441901" target="_blank" rel="noopener noreferrer" title="Discord" aria-label="Discord 프로필로 이동">
+        <svg viewBox="0 0 24 24"><path d="M20.3 5.4A17 17 0 0 0 15.9 4l-.3.6a13 13 0 0 1 3.9 1.5 15 15 0 0 0-13 0A13 13 0 0 1 10.4 4l-.3-.6A17 17 0 0 0 5.7 5.4C3 9.4 2.3 13.3 2.6 17.1a17 17 0 0 0 5.1 2.5l.7-1.2a11 11 0 0 1-1.8-.9c.2-.1.3-.2.5-.3a12 12 0 0 0 10 0l.5.3a11 11 0 0 1-1.8.9l.7 1.2a17 17 0 0 0 5.1-2.5c.4-4.4-.7-8.2-2.3-11.7ZM9 14.5c-.9 0-1.6-.9-1.6-2s.7-2 1.6-2 1.6.9 1.6 2-.7 2-1.6 2Zm6 0c-.9 0-1.6-.9-1.6-2s.7-2 1.6-2 1.6.9 1.6 2-.7 2-1.6 2Z"/></svg>
+      </a>
+      <a href="https://roblox.com/users/8917506694/profile" target="_blank" rel="noopener noreferrer" title="Roblox" aria-label="Roblox 프로필로 이동">
+        <svg viewBox="0 0 24 24"><path d="M4.5 3.5 3 19.5l16 1.5L20.5 5 4.5 3.5Zm4.9 5.3 6.1.5-.5 6.1-6.1-.5.5-6.1Z"/></svg>
+      </a>
+      <a href="https://open.spotify.com/user/31scabrleupg3ij5bfrw4eo7c4i4?si=4572cbb797004f17" target="_blank" rel="noopener noreferrer" title="Spotify" aria-label="Spotify 프로필로 이동">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.4" style="stroke:var(--bone)"/><path d="M6.5 10c4-1.2 8-.9 11 .9" fill="none" stroke="var(--bone)" stroke-width="1.4" stroke-linecap="round"/><path d="M7 13.2c3.3-.9 6.6-.7 9.2.9" fill="none" stroke="var(--bone)" stroke-width="1.4" stroke-linecap="round"/><path d="M7.6 16.2c2.6-.7 5.2-.5 7.2.8" fill="none" stroke="var(--bone)" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </a>
+      <a href="https://steamcommunity.com/profiles/76561199626823752/" target="_blank" rel="noopener noreferrer" title="Steam" aria-label="Steam 프로필로 이동">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="var(--bone)" stroke-width="1.4"/><circle cx="8.6" cy="15" r="2.1" fill="none" stroke="var(--bone)" stroke-width="1.2"/><circle cx="15.2" cy="8.6" r="2.1" fill="none" stroke="var(--bone)" stroke-width="1.2"/><line x1="10.2" y1="13.7" x2="13.7" y2="10.1" stroke="var(--bone)" stroke-width="1.2"/></svg>
+      </a>
+    </div>
+
+    <p class="track-line" id="spotifyLine">I'm not listening to anything right now</p>
+  </section>
+  
+  <section class="altar-col">
+    <div class="altar-frame">
+      <div id="characterArt" tabindex="0" role="button" aria-label="캐릭터 아트 상호작용"><img src="https://github.com/fixk1234/12344/blob/2625cf2da1f3e643da9b04fdb9279385643e58ed/%E0%BE%90%E2%9D%A4%EF%B8%8E%20%E0%BD%B2%E0%BE%80%20no%20TikTok.jpg?raw=true" alt="character"></div>
+      <div class="glow-pool"></div>
+    </div>
+  </section>
+
+</main>
+
+</div>
+
+<audio id="bgm" crossorigin="anonymous" preload="metadata"></audio>
+
+<script>
+(function(){
+'use strict';
+
+// ---- Fit the whole page into one viewport, no scrolling (desktop) ----
+// #pageScale's base CSS assumes a fixed 0.9 scale, tuned once for whatever
+// the profile-col's height happened to be at the time. Any time a widget
+// grows (like the record panel), that guess goes stale, the div's real
+// content ends up taller than its box, and its own overflow-y:auto kicks in
+// — that's the scrollbar/mouse-wheel behavior. This measures the *actual*
+// content height and computes the exact scale that makes it fit one
+// viewport, every time, so there's never anything left to scroll. The
+// min-width:881px CSS rule then hard-locks overflow off. Mobile is
+// untouched — it keeps the static scale and its own intentional scroll.
+let fitScaleRaf = null;
+function fitPageScale(){
+  const ps = document.getElementById('pageScale');
+  if(!ps) return;
+  if(window.innerWidth <= 880){
+    ps.style.transform = '';
+    ps.style.width = '';
+    ps.style.height = '';
+    return;
+  }
+  ps.style.transform = 'none';
+  ps.style.width = '100%';
+  ps.style.height = '100vh';
+  const naturalHeight = ps.scrollHeight;
+  const vh = window.innerHeight;
+  let scale = naturalHeight > 0 ? vh / naturalHeight : 1;
+  if(scale > 1) scale = 1;
+  if(scale < 0.55) scale = 0.55; // sanity floor so extreme windows don't shrink to unreadable
+  const inv = 100 / scale;
+  ps.style.width = inv + '%';
+  ps.style.height = inv + '%';
+  ps.style.transform = 'scale(' + scale + ')';
+}
+function scheduleFitPageScale(){
+  if(fitScaleRaf) cancelAnimationFrame(fitScaleRaf);
+  fitScaleRaf = requestAnimationFrame(fitPageScale);
+}
+fitPageScale();
+window.addEventListener('resize', scheduleFitPageScale);
+window.addEventListener('load', fitPageScale);
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitPageScale).catch(()=>{}); }
+setTimeout(fitPageScale, 500); // catch any late webfont/image reflow
+
+const starsEl = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s = document.createElement('div');
+  s.className='star';
+  s.style.left = Math.random()*100+'%';
+  s.style.top = Math.random()*100+'%';
+  s.style.animationDelay = (Math.random()*4)+'s';
+  s.style.width = s.style.height = (Math.random()*1.6+1)+'px';
+  starsEl.appendChild(s);
+}
+
+const artEl = document.getElementById('characterArt');
+
+/* ── Object pool for wing-spark particles ──
+   Reuses a fixed set of DOM nodes instead of creating/destroying
+   an element on every spawn, which is much cheaper on mobile GPUs. */
+const WING_SPARK_POOL_SIZE = 24;
+const wingSparkPool = [];
+function getPooledSpark(){
+  let spark = wingSparkPool.find(s => !s.dataset.active || s.dataset.active === '0');
+  if(!spark){
+    if(wingSparkPool.length < WING_SPARK_POOL_SIZE){
+      spark = document.createElement('div');
+      spark.className = 'wing-spark';
+      spark.style.display = 'none';
+      document.body.appendChild(spark);
+      wingSparkPool.push(spark);
+    } else {
+      // pool exhausted: reuse the oldest one
+      spark = wingSparkPool[0];
+    }
+  }
+  return spark;
+}
+const _rmMq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches:false };
+function fxOn(){ return !_rmMq.matches && !document.hidden; }
+function spawnWingSpark(){
+  if(!fxOn()) return;
+  const spark = getPooledSpark();
+  spark.dataset.active = '1';
+
+  const startXPct = 38 + Math.random()*34;
+  const startYPct = 6 + Math.random()*26;
+  const size = Math.random()*2.6 + 1.6;
+  const fallDist = window.innerHeight * (0.28 + Math.random()*0.3);
+  const drift = (Math.random()*60 - 30);
+  const duration = 3.2 + Math.random()*2.6;
+
+  spark.style.display = 'block';
+  spark.style.left = startXPct + 'vw';
+  spark.style.top = startYPct + 'vh';
+  spark.style.width = size + 'px';
+  spark.style.height = size + 'px';
+  spark.style.setProperty('--sx', drift + 'px');
+  spark.style.setProperty('--sy', fallDist + 'px');
+  // restart the CSS animation from scratch on the reused node
+  spark.style.animation = 'none';
+  void spark.offsetWidth;
+  spark.style.animation = '';
+  spark.style.animationDuration = duration + 's';
+
+  clearTimeout(spark._wingSparkTimer);
+  spark._wingSparkTimer = setTimeout(() => {
+    spark.style.display = 'none';
+    spark.dataset.active = '0';
+  }, duration*1000 + 100);
+}
+setInterval(spawnWingSpark, 1400);
+for(let i=0;i<3;i++){ setTimeout(spawnWingSpark, i*400); }
+
+let boingCtx = null;
+function getBoingCtx(){
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return null;
+  if(!boingCtx || boingCtx.state === 'closed'){
+    boingCtx = new AC();
+  }
+  return boingCtx;
+}
+function sfxMuted(){ return typeof bgm !== 'undefined' && bgm.volume === 0; }   // 음소거는 모든 소리에 적용
+function playBoing(){
+  if(sfxMuted()) return;
+  try{
+    const ctx = getBoingCtx();
+    if(!ctx) return;
+    if(ctx.state === 'suspended'){ ctx.resume().catch(()=>{}); }
+    const now = ctx.currentTime;
+    function boing(startTime, baseFreq){
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(baseFreq, startTime);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq*2.4, startTime+0.07);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq*0.75, startTime+0.2);
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.28, startTime+0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime+0.24);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime+0.26);
+      osc.onended = () => {
+        osc.disconnect();
+        gain.disconnect();
+      };
+    }
+    boing(now, 480);
+    boing(now+0.16, 620);
+  }catch(err){ console.error('playBoing failed:', err); }
+}
+
+
+function spawnArtBurst(originEl){
+  const rect = originEl.getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height*0.55;
+  const burstColors = getBurstSparkColors();
+
+  const ring = document.createElement('div');
+  ring.className = 'art-burst-ring';
+  const ringColor = burstColors[Math.floor(Math.random()*burstColors.length)];
+  ring.style.left = cx + 'px';
+  ring.style.top = cy + 'px';
+  ring.style.setProperty('--spark-glow', ringColor.glow);
+  document.body.appendChild(ring);
+  setTimeout(()=> ring.remove(), 550);
+
+  const count = 14;
+  for(let i=0;i<count;i++){
+    const angle = (Math.PI*2*i/count) + (Math.random()*0.4-0.2);
+    const dist = 70 + Math.random()*150;
+    const spark = document.createElement('div');
+    spark.className = 'wing-spark spark-burst';
+    const color = burstColors[Math.floor(Math.random()*burstColors.length)];
+    const size = Math.random()*2.4 + 1.6;
+    spark.style.left = cx + 'px';
+    spark.style.top = cy + 'px';
+    spark.style.width = size + 'px';
+    spark.style.height = size + 'px';
+    spark.style.setProperty('--sx', Math.cos(angle)*dist + 'px');
+    spark.style.setProperty('--sy', Math.sin(angle)*dist + 'px');
+    spark.style.setProperty('--spark-core', color.core);
+    spark.style.setProperty('--spark-mid', color.mid);
+    spark.style.setProperty('--spark-glow', color.glow);
+    spark.style.animationDuration = (0.75 + Math.random()*0.55) + 's';
+    document.body.appendChild(spark);
+    setTimeout(()=> spark.remove(), 1450);
+  }
+}
+
+if(artEl){
+  const charImg = artEl.querySelector('img');
+  const triggerArtBurst = () => {
+    if(!charImg) return;
+    charImg.classList.remove('jelly');
+    void charImg.offsetWidth;
+    charImg.classList.add('jelly');
+    spawnArtBurst(artEl);
+    playBoing();
+  };
+  artEl.addEventListener('click', triggerArtBurst);
+  artEl.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+      ev.preventDefault();
+      triggerArtBurst();
+    }
+  });
+  if(charImg){
+    charImg.addEventListener('animationend', (ev) => {
+      if(ev.animationName === 'jellySquish'){
+        charImg.classList.remove('jelly');
+      }
+    });
+  }
+}
+
+const fogWrap1 = document.getElementById('fogWrap1');
+const fogWrap2 = document.getElementById('fogWrap2');
+const fogWrap3 = document.getElementById('fogWrap3');
+const depthEl = document.getElementById('depth');
+let lastEmber = 0;
+let pendingMouseX = null, pendingMouseY = null, mouseRafId = null;
+function processMouseMove(){
+  mouseRafId = null;
+  if(!fxOn()) return;
+  if(pendingMouseX === null) return;
+  const e = { clientX: pendingMouseX, clientY: pendingMouseY };
+  const nx = (e.clientX / window.innerWidth) - 0.5;
+  const ny = (e.clientY / window.innerHeight) - 0.5;
+
+  if(fogWrap1) fogWrap1.style.transform = `translate(${nx*46}px, ${ny*34}px)`;
+  if(fogWrap2) fogWrap2.style.transform = `translate(${nx*-38}px, ${ny*-30}px)`;
+  if(fogWrap3) fogWrap3.style.transform = `translate(${nx*28}px, ${ny*22}px)`;
+
+  if(depthEl){
+    depthEl.style.setProperty('--rdx', (nx*60)+'px');
+    depthEl.style.setProperty('--rdy', (ny*44)+'px');
+    depthEl.style.setProperty('--gdx', (nx*-52)+'px');
+    depthEl.style.setProperty('--gdy', (ny*-40)+'px');
+  }
+
+  const now = Date.now();
+  if(now - lastEmber > 45){
+    lastEmber = now;
+    const em = document.createElement('div');
+    em.className = 'ember';
+    const size = Math.random()*3 + 2;
+    em.style.width = size+'px';
+    em.style.height = size+'px';
+    em.style.left = (e.clientX + (Math.random()*20-10)) + 'px';
+    em.style.top = (e.clientY + (Math.random()*20-10)) + 'px';
+    document.body.appendChild(em);
+    setTimeout(()=>em.remove(), 900);
+  }
+}
+window.addEventListener('mousemove', (e) => {
+  pendingMouseX = e.clientX;
+  pendingMouseY = e.clientY;
+  if(mouseRafId === null){
+    mouseRafId = requestAnimationFrame(processMouseMove);
+  }
+}, { passive:true });
+
+const firebaseConfig = {
+  apiKey: "f72ZBSsxK7e9ddz2WQCYDwPhlSDM1bnFDOaCakSD",
+  authDomain: "ff123-2bd41.firebaseapp.com",
+  databaseURL: "https://ff123-2bd41-default-rtdb.firebaseio.com",
+  projectId: "ff123-2bd41",
+  storageBucket: "ff123-2bd41.appspot.com",
+  messagingSenderId: "100505946646",
+  appId: "1:100505946646:web:865520845a7037da821817"
+};
+let db = null;
+try{
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+}catch(err){ console.error('Firebase 초기화 실패 - 조회수/기록만 비활성화:', err); }
+const countEl = document.getElementById('count');
+if(!db){ if(countEl) countEl.textContent = '—'; }
+else try{
+  const visitorRef = db.ref('visitorCount');
+  let counted = false;
+  try{ counted = sessionStorage.getItem('fxk_viewed') === '1'; }catch(e){}
+  if(!counted){   // 같은 탭에서는 한 번만 증가
+    visitorRef.transaction(v => (Number(v) || 0) + 1)
+      .then(() => { try{ sessionStorage.setItem('fxk_viewed','1'); }catch(e){} })
+      .catch(err => console.error('조회수 증가 실패:', err));
+  }
+  visitorRef.on('value', sn => {
+    const n = Number(sn.val());
+    countEl.textContent = (sn.exists() && isFinite(n)) ? String(n).padStart(3,'0') : '—';
+  }, err => { console.error('조회수 읽기 실패:', err); countEl.textContent = '—'; });
+}catch(err){ console.error('조회수 초기화 실패:', err); if(countEl) countEl.textContent = '—'; }
+
+const PLAYLIST = [
+  { title:'もうそう☆えくすぷれす', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/%E3%82%82%E3%81%86%E3%81%9D%E3%81%86%E2%98%86%E3%81%88%E3%81%8F%E3%81%99%E3%81%B7%E3%82%8C%E3%81%99_spotdown.org.mp3' },
+  { title:'shotgun.', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/shotgun._spotdown.org.mp3' },
+  { title:'slaughtered', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/slaughtered_spotdown.org.mp3' },
+  { title:'POPI PO - SLOWED', src:'https://raw.githubusercontent.com/fixk1234/12344/8e3f27f6fbd2556ec9a22cd6cc808de92c076dc5/POPI%20PO%20-%20SLOWED_spotdown.org.mp3' },
+  { title:'without u', src:'https://raw.githubusercontent.com/fixk1234/12344/3c7addf1c7073152cce6cbae66846d7c0897edf5/without%20u_spotdown.org.mp3' },
+  { title:'Monochrome', src:'https://raw.githubusercontent.com/fixk1234/12344/d52b4c834922a2502d59f3085e4a5538b01f4beb/Monochrome%20-%20Voacl%20Duet%20ver._spotdown.org.mp3' }
+];
+
+const bgm = document.getElementById('bgm');
+const soundBtn = document.getElementById('soundBtn');
+const volumeRange = document.getElementById('volumeRange');
+const iconOn = document.getElementById('soundIconOn');
+const iconOff = document.getElementById('soundIconOff');
+const playlistEl = document.getElementById('playlist');
+const playerTopTitle = document.getElementById('playerTopTitle');
+const playerTopLabel = document.getElementById('playerTopLabel');
+const playlistCountEl = document.getElementById('playlistCount');
+
+let trackIndex = 0;
+let lastVolume = (volumeRange.value / 100) || 0.6;
+bgm.volume = lastVolume;
+if(playlistCountEl) playlistCountEl.textContent = String(PLAYLIST.length);
+
+function renderPlaylist(){
+  if(!playlistEl) return;
+  playlistEl.innerHTML = '';
+  PLAYLIST.forEach((t, i) => {
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'playlist-item' + (i === trackIndex ? ' active' : '');
+    item.innerHTML = '<span class="playlist-num">' + String(i+1).padStart(2,'0') + '</span><span class="playlist-name">' + escapeHtml(t.title) + '</span>';
+    item.addEventListener('click', () => loadTrack(i, true));
+    playlistEl.appendChild(item);
+  });
+}
+function highlightPlaylist(){
+  if(!playlistEl) return;
+  playlistEl.querySelectorAll('.playlist-item').forEach((el, i) => {
+    el.classList.toggle('active', i === trackIndex);
+  });
+}
+function loadTrack(i, autoplay){
+  const next = ((i % PLAYLIST.length) + PLAYLIST.length) % PLAYLIST.length;
+  const shouldPlay = autoplay || (!bgm.paused && !bgm.ended);
+  trackIndex = next;
+  const t = PLAYLIST[trackIndex];
+  bgm.src = t.src;
+  if(playerTopTitle) playerTopTitle.textContent = t.title;
+  highlightPlaylist();
+  seekRange.value = 0;
+  curTimeEl.textContent = '0:00';
+  durTimeEl.textContent = '0:00';
+  updateSeekFill();
+  seekRange.disabled = true;          // 메타데이터 로딩 전에는 탐색 비활성화
+  try{ localStorage.setItem('fxk_track', String(trackIndex)); }catch(e){}
+  updateMediaMeta();
+  if(shouldPlay){ bgm.play().catch(err => console.warn('재생 실패:', err)); }
+}
+
+function setIcon(){
+  volumeRange.style.setProperty('--vol', Math.round(bgm.volume * 100) + '%');   // 지나간 부분 채우기
+  const muted = bgm.volume === 0;
+  iconOn.style.display = muted ? 'none' : 'block';
+  iconOff.style.display = muted ? 'block' : 'none';
+}
+setIcon();
+
+volumeRange.addEventListener('input', () => {
+  const v = volumeRange.value / 100;
+  bgm.volume = v;
+  if(v > 0) lastVolume = v;
+  setIcon();
+  try{ localStorage.setItem('fxk_vol', String(v)); }catch(e){}
+});
+
+soundBtn.addEventListener('click', () => {
+  if(bgm.volume > 0){
+    lastVolume = bgm.volume;
+    bgm.volume = 0;
+    volumeRange.value = 0;
+  } else {
+    bgm.volume = lastVolume || 0.6;
+    volumeRange.value = Math.round(bgm.volume * 100);
+  }
+  setIcon();
+});
+
+const playPauseBtn = document.getElementById('playPauseBtn');
+const playIcon = document.getElementById('playIcon');
+const pauseIcon = document.getElementById('pauseIcon');
+const skipBackBtn = document.getElementById('skipBackBtn');
+const skipFwdBtn = document.getElementById('skipFwdBtn');
+const prevTrackBtn = document.getElementById('prevTrackBtn');
+const nextTrackBtn = document.getElementById('nextTrackBtn');
+const seekRange = document.getElementById('seekRange');
+const curTimeEl = document.getElementById('curTime');
+const durTimeEl = document.getElementById('durTime');
+let isSeeking = false;
+
+function formatTime(sec){
+  if(!isFinite(sec) || sec < 0) sec = 0;
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return m + ':' + String(s).padStart(2, '0');
+}
+
+function updatePlayIcon(){
+  const playing = !bgm.paused && !bgm.ended;
+  playIcon.style.display = playing ? 'none' : 'block';
+  pauseIcon.style.display = playing ? 'block' : 'none';
+  const lp = document.getElementById('lpDisc');
+  if(lp) lp.classList.toggle('spinning', playing);
+  if(playerTopLabel) playerTopLabel.classList.toggle('playing', playing);
+  if('mediaSession' in navigator){ try{ navigator.mediaSession.playbackState = playing ? 'playing' : 'paused'; }catch(e){} }
+}
+updatePlayIcon();
+
+/* 잠금화면 · 이어폰 · 브라우저 미디어 컨트롤에 곡 정보와 조작 버튼 연결 */
+function updateMediaMeta(){
+  if(!('mediaSession' in navigator) || !window.MediaMetadata) return;
+  const t = PLAYLIST[trackIndex];
+  const img = document.querySelector('#characterArt img');
+  try{
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:t.title, artist:'FXXKLOST', album:'SITE BGM',
+      artwork: img && img.src ? [{ src:img.src, sizes:'512x512' }] : []
+    });
+  }catch(e){}
+}
+if('mediaSession' in navigator){
+  const set = (a, f) => { try{ navigator.mediaSession.setActionHandler(a, f); }catch(e){} };
+  set('play', () => bgm.play().catch(()=>{}));
+  set('pause', () => bgm.pause());
+  set('previoustrack', () => loadTrack(trackIndex - 1, true));
+  set('nexttrack', () => loadTrack(trackIndex + 1, true));
+  set('seekbackward', () => { bgm.currentTime = Math.max(0, bgm.currentTime - 5); });
+  set('seekforward', () => { bgm.currentTime = Math.min(bgm.duration || 0, bgm.currentTime + 5); });
+}
+
+playPauseBtn.addEventListener('click', () => {
+  if(bgm.paused){ bgm.play().catch(()=>{}); }
+  else{ bgm.pause(); }
+});
+bgm.addEventListener('play', updatePlayIcon);
+bgm.addEventListener('pause', updatePlayIcon);
+bgm.addEventListener('ended', () => loadTrack(trackIndex + 1, true));
+
+skipBackBtn.addEventListener('click', () => {
+  bgm.currentTime = Math.max(0, bgm.currentTime - 5);
+});
+skipFwdBtn.addEventListener('click', () => {
+  const dur = isFinite(bgm.duration) ? bgm.duration : bgm.currentTime + 5;
+  bgm.currentTime = Math.min(dur, bgm.currentTime + 5);
+});
+if(prevTrackBtn) prevTrackBtn.addEventListener('click', () => loadTrack(trackIndex - 1, true));
+if(nextTrackBtn) nextTrackBtn.addEventListener('click', () => loadTrack(trackIndex + 1, true));
+
+function refreshDuration(){
+  if(isFinite(bgm.duration)){
+    seekRange.max = bgm.duration;
+    seekRange.disabled = false;
+    durTimeEl.textContent = formatTime(bgm.duration);
+  }
+  updateSeekFill();
+}
+bgm.addEventListener('loadedmetadata', refreshDuration);
+bgm.addEventListener('durationchange', refreshDuration);
+
+bgm.addEventListener('timeupdate', () => {
+  if(!isSeeking){ seekRange.value = bgm.currentTime; }
+  curTimeEl.textContent = formatTime(bgm.currentTime);
+  updateSeekFill();
+});
+bgm.addEventListener('progress', updateSeekFill);
+
+seekRange.addEventListener('input', () => {
+  isSeeking = true;
+  curTimeEl.textContent = formatTime(Number(seekRange.value));
+  updateSeekFill();
+});
+seekRange.addEventListener('change', () => {
+  bgm.currentTime = Number(seekRange.value);
+  isSeeking = false;
+  updateSeekFill();
+});
+
+function updateSeekFill(){
+  if(!seekRange) return;
+  const dur = isFinite(bgm.duration) && bgm.duration > 0 ? bgm.duration : 0;
+  const pos = Number(seekRange.value) || 0;
+  const played = dur ? Math.max(0, Math.min(100, (pos / dur) * 100)) : 0;
+  let loaded = 0;
+  try{
+    if(dur && bgm.buffered && bgm.buffered.length){
+      loaded = (bgm.buffered.end(bgm.buffered.length - 1) / dur) * 100;
+    }
+  }catch(e){ console.error('updateSeekFill buffered-range read failed:', e); }
+  if(loaded < played) loaded = played;
+  seekRange.style.setProperty('--seek-played', played + '%');
+  seekRange.style.setProperty('--seek-loaded', loaded + '%');
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+(function(){
+  const av = document.getElementById('avatarImg');
+  if(!av) return;
+  const fallback = av.getAttribute('src');
+  av.addEventListener('error', function(){ if(this.src !== fallback){ this.src = fallback; } });
+})();
+renderPlaylist();
+try{
+  const sv = Number(localStorage.getItem('fxk_vol')), st = Number(localStorage.getItem('fxk_track'));
+  if(isFinite(sv) && localStorage.getItem('fxk_vol') !== null){ bgm.volume = Math.min(1, Math.max(0, sv)); volumeRange.value = Math.round(bgm.volume*100); if(sv > 0) lastVolume = sv; setIcon(); }
+  loadTrack(isFinite(st) ? st : 0, false);
+}catch(e){ loadTrack(0, false); }
+
+/* 음악은 방문자가 재생 버튼을 눌렀을 때만 시작 (자동재생·스크롤/마우스 이동 트리거 제거) */
+bgm.addEventListener('error', () => {
+  if(playerTopTitle) playerTopTitle.textContent = PLAYLIST[trackIndex].title + ' (재생 오류)';
+  seekRange.disabled = true;
+});
+
+if(window.VanillaTilt){
+  VanillaTilt.init(document.querySelectorAll('[data-tilt]'));
+}
+
+const DISCORD_USER_ID = '1489458472826441901';
+let spotifyActive = false;
+let currentPresenceStatus = 'offline';
+let liveSpotify = null;
+
+const idNameEl = document.getElementById('idName');
+const copyToastEl = document.getElementById('copyToast');
+let copyToastTimer = null;
+function showCopyToast(){
+  if(!copyToastEl) return;
+  copyToastEl.setAttribute('role','status');
+  copyToastEl.classList.add('show');
+  clearTimeout(copyToastTimer);
+  copyToastTimer = setTimeout(()=> copyToastEl.classList.remove('show'), 1800);
+}
+async function copyDiscordId(){
+  const text = DISCORD_USER_ID;
+  let ok = false;
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(text); ok = true;
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      ok = document.execCommand('copy');
+      ta.remove();
+    }
+  }catch(err){ console.error('clipboard copy failed:', err); }
+  if(ok) showCopyToast();
+}
+if(idNameEl){
+  idNameEl.addEventListener('click', copyDiscordId);
+  idNameEl.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+      ev.preventDefault();
+      copyDiscordId();
+    }
+  });
+}
+
+const BADGE_SVGS = {
+  hypesquad: '<svg viewBox="0 0 24 24"><path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5Zm0 2.3 7 3.9v4.8c0 3.9-3 6.3-7 7.2-4-.9-7-3.3-7-7.2V8.2l7-3.9Z"/></svg>',
+  early:     '<svg viewBox="0 0 24 24"><path d="m12 2 2.7 6.6 7.1.5-5.5 4.6 1.8 6.9L12 16.9 5.9 20.6l1.8-6.9-5.5-4.6 7.1-.5L12 2Z"/></svg>',
+  nitro:     '<svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5.2 3.6 9.4 8 10 4.4-.6 8-4.8 8-10V6l-8-4Zm-1.1 13.3-3.4-3.4 1.4-1.4 2 2 5-5 1.4 1.4-6.4 6.4Z"/></svg>'
+};
+function renderBadges(publicFlags){
+  const row = document.getElementById('badgeRow');
+  if(!row) return;
+  row.innerHTML = '';
+  const flags = publicFlags || 0;
+  const has = (bit) => (flags & bit) === bit;
+  const list = [];
+  if(has(64) || has(128) || has(256)) list.push(['hypesquad','HypeSquad']);
+  if(has(512)) list.push(['early','Early Supporter']);
+  list.push(['nitro','Discord Nitro']);
+  list.forEach(([key, label]) => {
+    const el = document.createElement('span');
+    el.className = 'badge badge-' + key;
+    el.title = label;
+    el.innerHTML = BADGE_SVGS[key];
+    row.appendChild(el);
+  });
+}
+
+const STATUS_LABEL = { online:'online', idle:'away', dnd:'do not disturb', offline:'offline' };
+
+/* ── Discord CDN 아바타/배너 동적 URL (해시 기반) ── */
+function discordAssetUrl(userId, hash, kind){
+  if(!hash) return null;
+  const animated = hash.startsWith('a_');
+  const ext = animated ? 'gif' : 'png';
+  return 'https://cdn.discordapp.com/' + kind + '/' + userId + '/' + hash + '.' + ext + '?size=256';
+}
+
+function unwrapLanyardPayload(d){
+  if(!d || typeof d !== 'object') return null;
+  if(d[DISCORD_USER_ID]) return d[DISCORD_USER_ID];
+  if(d.discord_user || d.discord_status || d.status || 'listening_to_spotify' in d) return d;
+  const keys = Object.keys(d);
+  if(keys.length === 1 && d[keys[0]] && typeof d[keys[0]] === 'object') return d[keys[0]];
+  return d;
+}
+
+function resolvePresenceStatus(data){
+  let status = String((data && (data.discord_status || data.status)) || '').toLowerCase().trim();
+  if(status === 'do_not_disturb' || status === 'do not disturb') status = 'dnd';
+  const hasFlags = ['active_on_discord_desktop','active_on_discord_mobile','active_on_discord_web']
+    .some(k => typeof data[k] === 'boolean');
+  const anyClient = !!(data.active_on_discord_desktop || data.active_on_discord_mobile || data.active_on_discord_web);
+  if(hasFlags && !anyClient) return 'offline';
+  if(status === 'online' || status === 'idle' || status === 'dnd' || status === 'offline') return status;
+  return hasFlags && anyClient ? 'online' : 'offline';
+}
+
+function isSpotifyLive(data, status){
+  if(status === 'offline') return false;
+  if(!data || !data.listening_to_spotify || !data.spotify) return false;
+  const end = data.spotify.timestamps && data.spotify.timestamps.end;
+  if(end && Number(end) < Date.now() - 1500) return false;
+  return true;
+}
+
+function updateCustomStatusText(data){
+  const idStatusEl = document.getElementById('idStatus');
+  if(!idStatusEl) return;
+  let text = '';
+  if(data && Array.isArray(data.activities)){
+    const custom = data.activities.find(a => a && a.type === 4);
+    if(custom && custom.state) text = String(custom.state).trim();
+  }
+  idStatusEl.textContent = text || '아무 생각 없음';
+}
+
+function applyLanyardData(data){
+  data = unwrapLanyardPayload(data);
+  if(!data) return;
+  lastDataAt = Date.now();
+  const statusDotEl = document.getElementById('statusDot');
+  const spotifyLineEl = document.getElementById('spotifyLine');
+  const listeningBadgeEl = document.getElementById('listeningBadge');
+  const avatarImgEl = document.getElementById('avatarImg');
+
+  updateCustomStatusText(data);
+
+  if(data.discord_user){
+    renderBadges(data.discord_user.public_flags);
+    const uid = data.discord_user.id;
+    const avUrl = discordAssetUrl(uid, data.discord_user.avatar, 'avatars');
+    if(avUrl && avatarImgEl){
+      avatarImgEl.src = avUrl;
+      extractAvatarTint(avUrl, () => applyStatusTheme(currentPresenceStatus));
+    }
+    if(data.discord_user.banner){
+      const bnUrl = discordAssetUrl(uid, data.discord_user.banner, 'banners');
+      if(bnUrl){ applyBannerTint(bnUrl); }
+    }
+  }
+
+  const status = resolvePresenceStatus(data);
+  if(statusDotEl){
+    statusDotEl.classList.remove('st-online','st-idle','st-dnd','st-offline');
+    statusDotEl.classList.add('st-' + status);
+    statusDotEl.title = STATUS_LABEL[status] || 'offline';
+  }
+
+  applyStatusTheme(status);
+  currentPresenceStatus = status;
+  updateLastSeen(status);
+  if(status === 'offline') logActivity([]);
+  else logActivity(data.activities);
+
+  spotifyActive = isSpotifyLive(data, status);
+  if(listeningBadgeEl){ listeningBadgeEl.classList.toggle('show', spotifyActive); }
+  if(spotifyActive){
+    const sp = data.spotify;
+    liveSpotify = {
+      song: sp.song || '',
+      artist: sp.artist || '',
+      start: sp.timestamps && sp.timestamps.start,
+      end: sp.timestamps && sp.timestamps.end
+    };
+    renderSpotifyLine();
+  } else {
+    liveSpotify = null;
+    if(spotifyLineEl) spotifyLineEl.textContent = "I'm not listening to anything right now";
+  }
+
+  // Turning Spotify on/off adds or removes the "i'm listening ..." progress
+  // bar at the very bottom of the page, which changes the page's real
+  // height. #pageScale is locked to a scale computed earlier, so without
+  // this the extra bar (or anything else that shifted) just gets clipped by
+  // the now-hard overflow:hidden instead of showing up.
+  scheduleFitPageScale();
+}
+
+function applyBannerTint(url){
+  try{
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try{
+        const c = document.createElement('canvas');
+        c.width = 16; c.height = 16;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, 16, 16);
+        const d = ctx.getImageData(0, 0, 16, 16).data;
+        let r=0,g=0,b=0,n=0;
+        for(let i=0;i<d.length;i+=4){ r+=d[i]; g+=d[i+1]; b+=d[i+2]; n++; }
+        r=Math.round(r/n); g=Math.round(g/n); b=Math.round(b/n);
+        document.documentElement.style.setProperty('--nitro-tint', `rgb(${r},${g},${b})`);
+      }catch(e){ console.error('applyBannerTint: canvas sampling failed (likely a CORS-tainted image):', e); }
+    };
+    img.src = url;
+  }catch(e){ console.error('applyBannerTint failed:', e); }
+}
+
+/* ── 요청: 아바타(프사)에서 "퍼스트 컬러"(가장 대표적인/눈에 띄는 색)를 추출해
+   사이트 전체 accent 컬러 + 날개색 + 활동중 상태색에 전부 반영 ── */
+let avatarAccentColor = null; // {r,g,b}
+const _tintCache = {};
+function extractAvatarTint(url, onDone){
+  if(_tintCache[url]){ onDone && onDone(_tintCache[url]); return; }
+  const _od = onDone; onDone = (r) => { _tintCache[url] = r === undefined ? true : r; _od && _od(r); };
+  try{
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try{
+        const size = 32;
+        const c = document.createElement('canvas');
+        c.width = size; c.height = size;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, size, size);
+        const d = ctx.getImageData(0, 0, size, size).data;
+
+        const buckets = {};
+        for(let i=0;i<d.length;i+=4){
+          if(d[i+3] < 20) continue;
+          const r=d[i], g=d[i+1], b=d[i+2];
+          const max=Math.max(r,g,b), min=Math.min(r,g,b);
+          const sat = max===0 ? 0 : (max-min)/max;
+          const light = max/255;
+          if(light > 0.94 || light < 0.08) continue;
+          const key = (r>>4)+','+(g>>4)+','+(b>>4);
+          const weight = 0.25 + sat*1.5;
+          if(!buckets[key]) buckets[key] = { r:0,g:0,b:0, w:0 };
+          buckets[key].r += r*weight;
+          buckets[key].g += g*weight;
+          buckets[key].b += b*weight;
+          buckets[key].w += weight;
+        }
+        const keys = Object.keys(buckets);
+        let picked = null;
+        if(keys.length){
+          keys.sort((a,b)=> buckets[b].w - buckets[a].w);
+          const top = buckets[keys[0]];
+          picked = { r:Math.round(top.r/top.w), g:Math.round(top.g/top.w), b:Math.round(top.b/top.w) };
+        } else {
+          let r=0,g=0,b=0,n=0;
+          for(let i=0;i<d.length;i+=4){
+            if(d[i+3] < 12) continue;
+            r+=d[i]; g+=d[i+1]; b+=d[i+2]; n++;
+          }
+          if(n === 0) return;
+          picked = { r:Math.round(r/n), g:Math.round(g/n), b:Math.round(b/n) };
+        }
+        avatarAccentColor = picked;
+        if(onDone) onDone(avatarAccentColor);
+      }catch(e){ console.error('extractAvatarTint: canvas sampling failed (likely a CORS-tainted image):', e); }
+    };
+    img.onerror = (e) => { console.error('extractAvatarTint: avatar image failed to load:', url, e); };
+    img.src = url;
+  }catch(e){ console.error('extractAvatarTint failed:', e); }
+}
+function hexToRgb(hex){
+  hex = hex.replace('#','');
+  if(hex.length === 3){ hex = hex.split('').map(c=>c+c).join(''); }
+  const num = parseInt(hex, 16);
+  return { r:(num>>16)&255, g:(num>>8)&255, b:num&255 };
+}
+function rgbToHex({r,g,b}){
+  const h = (n)=> Math.max(0,Math.min(255,Math.round(n))).toString(16).padStart(2,'0');
+  return '#' + h(r) + h(g) + h(b);
+}
+function mixColor(rgb, target, amt){
+  return {
+    r: rgb.r + (target.r - rgb.r) * amt,
+    g: rgb.g + (target.g - rgb.g) * amt,
+    b: rgb.b + (target.b - rgb.b) * amt
+  };
+}
+const WHITE_RGB = {r:255,g:255,b:255}, BLACK_RGB = {r:0,g:0,b:0};
+function lightenRgb(rgb, amt){ return mixColor(rgb, WHITE_RGB, amt); }
+function darkenRgb(rgb, amt){ return mixColor(rgb, BLACK_RGB, amt); }
+
+/* ── 상태별 상태점(dot) 색상 ── */
+const STATUS_DOT_COLORS = {
+  online:  '#ff6fb0',
+  idle:    '#ffd23f',
+  dnd:     '#ff3b5c',
+  offline: '#9aa0ac'
+};
+const STATUS_FX = {
+  online:  'particles',
+  idle:    'wireframe',
+  dnd:     'wireframe',
+  offline: 'mono'
+};
+let currentFx = null;
+function rgbaStr(rgb, a){ return 'rgba(' + Math.round(rgb.r) + ',' + Math.round(rgb.g) + ',' + Math.round(rgb.b) + ',' + a + ')'; }
+function luminanceOf(rgb){ return 0.299*rgb.r + 0.587*rgb.g + 0.114*rgb.b; }
+
+function applyContrastMode(mode){
+  const root = document.documentElement;
+  root.setAttribute('data-contrast', mode);
+  if(mode === 'dark'){
+    root.style.setProperty('--ink', '#f6eef2');
+    root.style.setProperty('--bone', '#ffeaf3');
+    root.style.setProperty('--ash', '#d9b6c9');
+    root.style.setProperty('--line', 'rgba(255,255,255,0.14)');
+    root.style.setProperty('--surface', '#161018');
+    root.style.setProperty('--surface-soft', '#1f1620');
+    root.style.setProperty('--panel-bg', 'rgba(26,18,28,0.72)');
+    root.style.setProperty('--panel-bg-soft', 'rgba(26,18,28,0.65)');
+    root.style.setProperty('--panel-bg-strong', 'rgba(38,28,42,0.92)');
+    root.style.setProperty('--panel-bg-strongest', 'rgba(38,28,42,0.88)');
+    root.style.setProperty('--vignette-edge', 'rgba(6,4,8,0.65)');
+  } else {
+    root.style.setProperty('--ink', '#2b1220');
+    root.style.setProperty('--bone', '#33131f');
+    root.style.setProperty('--ash', '#8a5b74');
+    root.style.setProperty('--line', 'rgba(43,18,32,0.12)');
+    root.style.setProperty('--surface', '#ffffff');
+    root.style.setProperty('--surface-soft', '#fff3f8');
+    root.style.setProperty('--panel-bg', 'rgba(255,255,255,0.75)');
+    root.style.setProperty('--panel-bg-soft', 'rgba(255,255,255,0.7)');
+    root.style.setProperty('--panel-bg-strong', 'rgba(255,255,255,0.95)');
+    root.style.setProperty('--panel-bg-strongest', 'rgba(255,255,255,0.85)');
+    root.style.setProperty('--vignette-edge', 'rgba(255,255,255,0.65)');
+  }
+}
+
+function shadeToSpark(rgb, lightenAmt){
+  const v = lightenRgb(rgb, lightenAmt);
+  return {
+    core: rgbToHex(lightenRgb(v, 0.6)),
+    mid: rgbaStr(v, 0.85),
+    glow: rgbaStr(v, 0.8)
+  };
+}
+function getBurstSparkColors(){
+  const base = avatarAccentColor || { r:255, g:143, b:192 };
+  return [ shadeToSpark(base, 0.4), shadeToSpark(base, 0.15), shadeToSpark(base, 0.55) ];
+}
+
+function applyStatusTheme(status){
+  const root = document.documentElement;
+  root.setAttribute('data-status', status);
+
+  const onlineColor = avatarAccentColor ? rgbToHex(lightenRgb(avatarAccentColor, 0.06)) : STATUS_DOT_COLORS.online;
+  const dotColor = status === 'online' ? onlineColor : (STATUS_DOT_COLORS[status] || STATUS_DOT_COLORS.offline);
+  const fxMode = STATUS_FX[status] || STATUS_FX.offline;
+
+  const baseRGB = avatarAccentColor || hexToRgb(dotColor);
+  const accentHex = rgbToHex(baseRGB);
+  const soft = rgbaStr(baseRGB, 0.30);
+  const glow = rgbaStr(baseRGB, 0.18);
+  const bgB = 'rgb(' +
+    Math.round(255 - (255 - baseRGB.r) * 0.05) + ',' +
+    Math.round(255 - (255 - baseRGB.g) * 0.05) + ',' +
+    Math.round(255 - (255 - baseRGB.b) * 0.05) + ')';
+
+  let contrastMode = 'light';
+  if(avatarAccentColor){
+    const lum = luminanceOf(baseRGB);
+    if(lum > 205) contrastMode = 'dark';
+    else contrastMode = 'light';
+  }
+  applyContrastMode(contrastMode);
+
+  root.style.setProperty('--st-accent', accentHex);
+  root.style.setProperty('--st-accent-soft', soft);
+  root.style.setProperty('--st-bg-a', contrastMode === 'dark' ? '#161018' : '#ffffff');
+  root.style.setProperty('--st-bg-b', status === 'offline' ? (contrastMode === 'dark' ? '#201620' : '#f2f0f5') : bgB);
+  root.style.setProperty('--st-glow', glow);
+
+  root.style.setProperty('--status-online', onlineColor);
+  root.style.setProperty('--status-idle', STATUS_DOT_COLORS.idle);
+  root.style.setProperty('--status-dnd', STATUS_DOT_COLORS.dnd);
+  root.style.setProperty('--status-offline', STATUS_DOT_COLORS.offline);
+
+  if(avatarAccentColor){
+    const edge3 = rgbToHex(baseRGB);
+    const edge2 = rgbToHex(lightenRgb(baseRGB, 0.32));
+    const hollow2 = rgbToHex(lightenRgb(baseRGB, 0.42));
+    const hollow3 = rgbToHex(lightenRgb(baseRGB, 0.12));
+    const feather = rgbToHex(darkenRgb(baseRGB, 0.12));
+    root.style.setProperty('--wing-edge-2', edge2);
+    root.style.setProperty('--wing-edge-3', edge3);
+    root.style.setProperty('--wing-hollow-2', hollow2);
+    root.style.setProperty('--wing-hollow-3', hollow3);
+    root.style.setProperty('--wing-feather', feather);
+
+    const sparkBase = lightenRgb(baseRGB, 0.06);
+    root.style.setProperty('--wing-spark-core', rgbaStr(sparkBase, 0.95));
+    root.style.setProperty('--wing-spark-fade', rgbaStr(sparkBase, 0));
+    root.style.setProperty('--wing-spark-glow', rgbaStr(sparkBase, 0.6));
+
+    const verdantRGB = lightenRgb(baseRGB, 0.1);
+    const bloodRGB = darkenRgb(baseRGB, 0.04);
+    const goldRGB = lightenRgb(baseRGB, 0.38);
+    root.style.setProperty('--verdant', rgbToHex(verdantRGB));
+    root.style.setProperty('--verdant-soft', rgbaStr(verdantRGB, 0.38));
+    root.style.setProperty('--blood', rgbToHex(bloodRGB));
+    root.style.setProperty('--blood-soft', rgbaStr(bloodRGB, 0.38));
+    root.style.setProperty('--gold', rgbToHex(goldRGB));
+    root.style.setProperty('--gold-soft', rgbaStr(goldRGB, 0.38));
+  }
+
+  startStatusFx(fxMode, dotColor);
+}
+
+function startStatusFx(mode, colorHex){
+  const canvas = document.getElementById('statusFx');
+  if(!canvas) return;
+  if(currentFx){ cancelAnimationFrame(currentFx); currentFx = null; }
+  const ctx = canvas.getContext('2d');
+  if(_rmMq.matches){ ctx.clearRect(0, 0, canvas.width, canvas.height); return; }   // 움직임 줄이기 설정 존중
+  function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  if(window.__fxResize) window.removeEventListener('resize', window.__fxResize);
+  window.__fxResize = resize;
+  window.addEventListener('resize', resize);
+
+  if(mode === 'particles'){
+    const N = 46;
+    const pts = Array.from({length:N}, () => ({
+      x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+      vx: (Math.random()-.5)*.35, vy: (Math.random()-.5)*.35, r: 1 + Math.random()*1.8
+    }));
+    (function loop(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = colorHex;
+      pts.forEach(p=>{
+        p.x += p.vx; p.y += p.vy;
+        if(p.x<0||p.x>canvas.width) p.vx*=-1;
+        if(p.y<0||p.y>canvas.height) p.vy*=-1;
+        ctx.globalAlpha = .55;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+      });
+      currentFx = requestAnimationFrame(loop);
+    })();
+  } else if(mode === 'wireframe'){
+    let t = 0;
+    (function loop(){
+      t += 0.006;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.strokeStyle = colorHex; ctx.globalAlpha = .18;
+      const cx = canvas.width/2, cy = canvas.height*0.6, spacing = 46;
+      for(let i=-14;i<14;i++){
+        ctx.beginPath();
+        ctx.moveTo(cx + i*spacing, cy - 260);
+        ctx.lineTo(cx + i*spacing*2.4 + Math.sin(t+i)*8, cy + 260);
+        ctx.stroke();
+      }
+      for(let j=0;j<10;j++){
+        const y = cy - 260 + j*52;
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
+      }
+      currentFx = requestAnimationFrame(loop);
+    })();
+  } else {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    currentFx = null;
+  }
+}
+
+const LAST_ONLINE_KEY = 'fxk_last_online_ts';
+const presenceRef = db ? db.ref('presence/lastOnline') : null;
+let lastOnlineTs = null;
+
+try{
+  const cachedTs = Number(localStorage.getItem(LAST_ONLINE_KEY));
+  if(cachedTs > 0) lastOnlineTs = cachedTs;
+}catch(e){ console.error('reading cached last-online timestamp failed:', e); }
+
+if(presenceRef) presenceRef.on('value', snap => {
+  const val = Number(snap.val());
+  if(val > 0){
+    lastOnlineTs = Math.max(lastOnlineTs || 0, val);
+    try{ localStorage.setItem(LAST_ONLINE_KEY, String(lastOnlineTs)); }catch(e){ console.error('caching last-online timestamp failed:', e); }
+    updateLastSeen(currentPresenceStatus);
+  }
+});
+
+// Called whenever the visitor is seen online/idle/dnd. This is the "reset point":
+// once offline starts, the offline counter below counts up from this timestamp,
+// and every time the visitor is active again this timestamp jumps to "now",
+// which is what makes the offline counter start over from 0 the next time
+// they go offline.
+function recordOnlineTimestamp(now){
+  lastOnlineTs = now;
+  try{ localStorage.setItem(LAST_ONLINE_KEY, String(now)); }catch(e){ console.error('saving last-online timestamp failed:', e); }
+}
+
+function formatOfflineDuration(ms){
+  if(ms < 0) ms = 0;
+  const sec = Math.floor(ms/1000);
+  if(sec < 60) return sec + '초';
+  const min = Math.floor(sec/60);
+  if(min < 60) return min + '분 ' + (sec%60) + '초';
+  const hr = Math.floor(min/60);
+  if(hr < 24) return hr + '시간 ' + (min%60) + '분';
+  const day = Math.floor(hr/24);
+  return day + '일 ' + (hr%24) + '시간';
+}
+let lastDataAt = 0;                  // Lanyard 상태 데이터를 마지막으로 받은 시각
+const DATA_STALE_MS = 150000;
+function updateLastSeen(status){
+  const el = document.getElementById('lastSeen');
+  if(!el) return;
+  status = String(status || 'offline').toLowerCase();
+  if(status === 'do_not_disturb' || status === 'do not disturb') status = 'dnd';
+  const devNow = Date.now();
+  const now = devNow + serverTimeOffset;   // 수집 서버가 기록한 시각과 같은 기준
+  if(status !== 'offline' && lastDataAt && devNow - lastDataAt > DATA_STALE_MS){
+    // 상태 정보가 끊겼으면 온라인으로 단정하지 않고, 접속 기록도 갱신하지 않음
+    el.classList.remove('is-active');
+    el.innerHTML = '상태 확인 중…';
+    return;
+  }
+  if(status === 'online'){
+    recordOnlineTimestamp(now);
+    el.classList.add('is-active');
+    el.innerHTML = '<span class="pulse-dot"></span><b>지금은 활동중</b>';
+    return;
+  }
+  el.classList.remove('is-active');
+  if(status === 'idle'){
+    recordOnlineTimestamp(now);
+    el.innerHTML = '자리비움';
+    return;
+  }
+  if(status === 'dnd'){
+    recordOnlineTimestamp(now);
+    el.innerHTML = '다른 용무 중';
+    return;
+  }
+  // offline: show the real elapsed time since the visitor was last seen
+  // online/idle/dnd (seconds -> minutes -> hours -> days), updating every
+  // second. This used to be clamped to "since today's midnight", which made
+  // multi-day gaps display as if they were only a few hours long — that
+  // clamp has been removed so long offline gaps correctly show in days.
+  let stored = lastOnlineTs;
+  if(!stored){
+    try{ stored = Number(localStorage.getItem(LAST_ONLINE_KEY)) || null; }catch(e){ console.error('reading last-online timestamp failed:', e); }
+  }
+  if(!stored){
+    el.innerHTML = '오프라인 · 마지막 접속 기록 없음';
+    return;
+  }
+  el.innerHTML = '오프라인 <b>' + formatOfflineDuration(now - stored) + '</b>';
+}
+setInterval(() => updateLastSeen(currentPresenceStatus), 1000);
+
+function renderSpotifyLine(){
+  const spotifyLineEl = document.getElementById('spotifyLine');
+  if(!spotifyLineEl || !liveSpotify) return;
+  if(Number(liveSpotify.end) && Date.now() > Number(liveSpotify.end) + 20000){
+    liveSpotify = null;               // 새 상태가 안 들어오면 청취 종료로 처리
+    spotifyLineEl.textContent = "I'm not listening to anything right now";
+    return;
+  }
+  const songLabel = escapeHtml(liveSpotify.song) + (liveSpotify.artist ? ' · ' + escapeHtml(liveSpotify.artist) : '');
+  let extra = '';
+  const start = Number(liveSpotify.start);
+  const end = Number(liveSpotify.end);
+  if(start && end && end > start){
+    const now = Date.now();
+    const pos = Math.min(end - start, Math.max(0, now - start));
+    const pct = Math.round((pos / (end - start)) * 100);
+    extra = ' <span>(' + formatTime(pos/1000) + ' / ' + formatTime((end-start)/1000) + ')</span>' +
+      '<span class="sp-progress"><i style="width:' + pct + '%"></i></span>';
+  }
+  spotifyLineEl.innerHTML = "i'm listening <strong>" + songLabel + "</strong> now" + extra;
+}
+setInterval(() => { if(liveSpotify) renderSpotifyLine(); }, 1000);
+
+// ===== 활동 기록: 수집 서버가 Firebase 'activity'에 1분마다 기록 (페이지를 안 열어도 기록됨) =====
+const ACTIVITY_WINDOW_MS = 24*60*60*1000;
+const LIVE_STALE_MS = 150000;
+let liveActivityKeys = new Set();
+let serverActivity = null;
+let serverTimeOffset = 0;
+
+function activityKeyOf(a){
+  return String(a.type + '_' + (a.application_id || a.name))
+    .replace(/[.#$\[\]\/\u0000-\u001f\u007f]/g, '_').slice(0, 120);
+}
+function logActivity(activities){
+  liveActivityKeys = new Set();
+  if(currentPresenceStatus !== 'offline' && activities){
+    activities.forEach(a => { if(a && a.name && a.type !== 4) liveActivityKeys.add(activityKeyOf(a)); });
+  }
+  renderActivityDashboard();   // 활동이 끝나거나 오프라인이 되면 LIVE도 바로 사라짐
+}
+function renderActivityDashboard(){
+  const listEl = document.getElementById('activityList');
+  const emptyEl = document.getElementById('activityEmpty');
+  const totalEl = document.getElementById('activityTotal');
+  if(!listEl) return;
+  const now = Date.now() + serverTimeOffset;
+  const winStart = now - ACTIVITY_WINDOW_MS;
+  const data = serverActivity || {};
+  const meta = data.meta || {};
+  const collectorFresh = !!meta.lastRun && now - meta.lastRun < 5*60000;   // 수집 서버가 살아 있는지
+  // 수집 서버 상태 표시: 자동 기록이 실제로 돌고 있는지 방문자도 확인할 수 있게
+  const stEl = document.getElementById('collectorStatus');
+  if(stEl){
+    const ago = ms => { const m = Math.max(0, Math.round(ms/60000)); return m < 1 ? '방금' : m < 60 ? m + '분 전' : m < 1440 ? Math.floor(m/60) + '시간 전' : Math.floor(m/1440) + '일 전'; };
+    let txt = '', warn = false;
+    if(!serverActivity){ txt = ''; }
+    else if(!meta.lastRun){ txt = '수집 서버가 아직 기록을 보내지 않았어요.'; warn = true; }
+    else if(!collectorFresh){ txt = '수집 서버 응답 없음 · 마지막 수집 ' + ago(now - meta.lastRun); warn = true; }
+    else{
+      txt = '마지막 수집 ' + ago(now - meta.lastRun);
+      if(meta.lastErrorAt && now - meta.lastErrorAt < 10*60000) txt += ' · 최근 상태 확인 일부 실패';
+    }
+    stEl.textContent = txt;
+    stEl.style.color = warn ? 'var(--blood)' : '';
+  }
+  const liveInfoFresh = lastDataAt && (Date.now() - lastDataAt) < DATA_STALE_MS;   // Discord 상태가 최신인지
+  const entries = [];
+  const add = (s, isOpen, key) => {
+    if(!s) return;
+    const start = Number(s.start);
+    let end = Number(isOpen ? s.lastSeen : s.end);
+    if(!start || !end) return;
+    // LIVE = 수집 서버가 방금 본 활동 (+ 최신 Discord 상태가 있으면 그 상태에도 있어야 함)
+    const isLive = isOpen && collectorFresh && (now - end) < LIVE_STALE_MS &&
+                   (liveInfoFresh ? liveActivityKeys.has(key) : true);
+    if(isLive) end = now;
+    if(end < winStart) return;                       // 24시간 지난 기록 제외
+    entries.push({ name: s.name || '알 수 없음', start, end,
+                   from: Math.max(start, winStart), to: Math.min(end, now), live: isLive });
+  };
+  Object.values(data.sessions || {}).forEach(s => add(s, false, s && s.key));
+  Object.entries(data.open || {}).forEach(([k, s]) => add(s, true, k));
+  entries.sort((a, b) => (b.live - a.live) || (b.end - a.end));
+
+  // 합계 = 실제로 활동한 시간 (동시에 켠 활동은 겹친 시간을 한 번만 셈)
+  const iv = entries.map(e => [e.from, e.to]).filter(x => x[1] > x[0]).sort((a, b) => a[0] - b[0]);
+  let total = 0, cs = null, ce = null;
+  iv.forEach(([a, b]) => {
+    if(cs === null){ cs = a; ce = b; }
+    else if(a <= ce){ ce = Math.max(ce, b); }
+    else { total += ce - cs; cs = a; ce = b; }
+  });
+  if(cs !== null) total += ce - cs;
+  if(totalEl) totalEl.textContent = formatDuration(total);
+
+  listEl.querySelectorAll('.record-row, .record-sep').forEach(r => r.remove());
+  if(!entries.length){ if(emptyEl) emptyEl.style.display = 'block'; return; }
+  if(emptyEl) emptyEl.style.display = 'none';
+
+  const frag = document.createDocumentFragment();
+  let lastDateKey = null;
+  entries.slice(0, 20).forEach(e => {
+    const start = new Date(e.start);
+    const dateKey = start.toDateString();
+    if(dateKey !== lastDateKey){
+      const sep = document.createElement('div');
+      sep.className = 'record-sep';
+      sep.textContent = dayLabel(start);
+      frag.appendChild(sep);
+      lastDateKey = dateKey;
+    }
+    const row = document.createElement('div');
+    row.className = 'record-row' + (e.live ? ' is-live' : '');
+    row.innerHTML =
+      '<span class="record-dot"></span>' +
+      '<div class="record-body">' +
+        '<div class="record-top">' +
+          '<span class="record-name">' + escapeHtml(e.name) + '</span>' +
+          (e.live ? '<span class="record-live">LIVE</span>' : '') +
+        '</div>' +
+        '<div class="record-meta">' + (e.live ? formatTimeKR(start) + '부터 · 진행 중' : timeRangeLabel(start, new Date(e.end))) + ' · ' + formatDuration(e.to - e.from) + '</div>' +
+      '</div>';
+    frag.appendChild(row);
+  });
+  listEl.appendChild(frag);
+}
+try{
+  db.ref('activity').on('value',
+    s => { serverActivity = s.val() || {}; renderActivityDashboard(); },
+    err => console.error('활동 기록 읽기 실패:', err));
+  db.ref('.info/serverTimeOffset').on('value', s => { serverTimeOffset = Number(s.val()) || 0; });
+}catch(e){ console.error('활동 기록 연결 실패:', e); }
+setInterval(renderActivityDashboard, 30000);
+try{ localStorage.removeItem('fxk_activity_log'); }catch(e){}
+function dayLabel(d){
+  const now = new Date();
+  const startOfDay = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const diffDays = Math.round((startOfDay(now) - startOfDay(d)) / 86400000);
+  if(diffDays <= 0) return '오늘';
+  if(diffDays === 1) return '어제';
+  return (d.getMonth()+1) + '월 ' + d.getDate() + '일';
+}
+function formatTimeKR(d){
+  let h = d.getHours();
+  const m = d.getMinutes();
+  const period = h < 12 ? '오전' : '오후';
+  h = h % 12; if(h === 0) h = 12;
+  return period + ' ' + h + '시 ' + String(m).padStart(2,'0') + '분';
+}
+function timeRangeLabel(start, end){
+  const s = formatTimeKR(start), e = formatTimeKR(end);
+  return s === e ? (s + '부터') : (s + '부터 ' + e + '까지');
+}
+function formatDuration(ms){
+  if(ms > 0 && ms < 60000) return '<1m';
+  const min = Math.floor(ms/60000);
+  if(min < 60) return min + 'm';
+  const h = Math.floor(min/60), m = min%60;
+  return h + 'h ' + m + 'm';
+}
+renderActivityDashboard();
+
+// #pageScale (the whole-page scroll container) has `transform:scale(0.9)`,
+// which makes browsers miscompute wheel-to-scroll deltas for scrollable
+// descendants — inside it, the mouse wheel either barely moves this list or
+// skips straight to scrolling the outer page instead. We take the wheel
+// event over manually so it always scrolls the list first, and only lets it
+// bubble to the page once the list itself is at its top/bottom edge.
+(function fixActivityListWheel(){
+  const list = document.getElementById('activityList');
+  if(!list) return;
+  list.addEventListener('wheel', (ev) => {
+    const atTop = list.scrollTop <= 0;
+    const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 1;
+    const scrollingUp = ev.deltaY < 0, scrollingDown = ev.deltaY > 0;
+    if((scrollingUp && !atTop) || (scrollingDown && !atBottom)){
+      list.scrollTop += ev.deltaY;
+      ev.preventDefault();
+    }
+  }, { passive:false });
+})();
+
+function initAvatarFx(){
+  const canvas = document.getElementById('avatarFx');
+  const wrap = document.getElementById('avatarWrap');
+  if(!canvas || !wrap || typeof THREE === 'undefined') return;
+  // This Three.js sphere is a small decorative flourish. On phones/tablets
+  // (touch, no real mouse) or reduced-motion setups it just burns battery
+  // and CPU/GPU for an effect nobody can meaningfully interact with anyway.
+  const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(isCoarsePointer || prefersReducedMotion) return;
+  const size = 60;
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+  renderer.setSize(size, size, false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10);
+  camera.position.z = 3;
+
+  const geo = new THREE.SphereGeometry(1, 24, 24);
+  const mat = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff, transparent:true, opacity:0.12,
+    roughness:0.15, metalness:0.05, clearcoat:1, clearcoatRoughness:0.1
+  });
+  const sphere = new THREE.Mesh(geo, mat);
+  scene.add(sphere);
+
+  const light1 = new THREE.PointLight(0xffffff, 1.4);
+  light1.position.set(2,2,2);
+  scene.add(light1);
+  const light2 = new THREE.PointLight(0xff6fb0, 0.8);
+  light2.position.set(-2,-1,1.5);
+  scene.add(light2);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+  let targetX = 0, targetY = 0;
+  let avatarMouseRafId = null, pendingAvatarEvt = null;
+  function processAvatarMouseMove(){
+    avatarMouseRafId = null;
+    if(!pendingAvatarEvt) return;
+    const rect = wrap.getBoundingClientRect();
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    targetX = (pendingAvatarEvt.clientX - cx) / window.innerWidth;
+    targetY = (pendingAvatarEvt.clientY - cy) / window.innerHeight;
+  }
+  window.addEventListener('mousemove', (e) => {
+    pendingAvatarEvt = e;
+    if(avatarMouseRafId === null){
+      avatarMouseRafId = requestAnimationFrame(processAvatarMouseMove);
+    }
+  }, { passive:true });
+
+  let frameN = 0, lastAccent = '';
+  function loop(){
+    sphere.rotation.y += (targetX*2 - sphere.rotation.y) * 0.06;
+    sphere.rotation.x += (-targetY*2 - sphere.rotation.x) * 0.06;
+    if(document.hidden){ requestAnimationFrame(loop); return; }
+    if(++frameN % 30 === 1){
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--st-accent').trim();
+      if(accent && accent !== lastAccent){ lastAccent = accent; try{ light2.color = new THREE.Color(accent); }catch(e){ console.error('avatarFx: failed to parse accent color', accent, e); } }
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+if(document.readyState === 'complete' || document.readyState === 'interactive'){
+  initAvatarFx();
+} else {
+  window.addEventListener('DOMContentLoaded', initAvatarFx);
+}
+
+let lastSocketAt = 0;
+async function fetchLanyard(){
+  if(document.hidden) return;
+  const started = Date.now();
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 8000);
+  try{
+    const res = await fetch('https://api.lanyard.rest/v1/users/' + DISCORD_USER_ID, { signal: ctl.signal });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if(lastSocketAt > started) return;      // 더 최신인 소켓 상태를 덮어쓰지 않음
+    if(json && json.success && json.data && typeof json.data === 'object'){ applyLanyardData(json.data); }
+  }catch(err){ console.error('fetchLanyard failed:', err); }
+  finally{ clearTimeout(timer); }
+}
+
+function connectLanyardSocket(){
+  let ws;
+  let heartbeat = null, attempt = 0;
+  function clearBeat(){ if(heartbeat){ clearInterval(heartbeat); heartbeat = null; } }
+  function open(){
+    try{ ws = new WebSocket('wss://api.lanyard.rest/socket'); }catch(err){ console.error('lanyard socket creation failed, retrying:', err); setTimeout(open, 4000); return; }
+    ws.onmessage = (ev) => {
+      let msg;
+      try{ msg = JSON.parse(ev.data); }catch(e){ console.error('lanyard socket: bad message payload:', e); return; }
+      if(msg.op === 1){
+        clearBeat();
+        heartbeat = setInterval(() => {
+          try{ ws.send(JSON.stringify({ op: 3 })); }catch(e){ console.error('lanyard socket heartbeat send failed:', e); }
+        }, msg.d.heartbeat_interval);
+        ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: DISCORD_USER_ID } }));
+      }
+      if(msg.t === 'INIT_STATE' || msg.t === 'PRESENCE_UPDATE'){
+        attempt = 0; lastSocketAt = Date.now();
+        applyLanyardData(unwrapLanyardPayload(msg.d));
+      }
+    };
+    ws.onclose = () => {
+      clearBeat();
+      const delay = Math.min(30000, 1000 * Math.pow(2, attempt++)) + Math.random() * 1000;   // 점진적 + 무작위 지연
+      setTimeout(open, delay);
+    };
+    ws.onerror = (ev) => {
+      console.error('lanyard socket error, reconnecting:', ev);
+      try{ ws.close(); }catch(e){ console.error('lanyard socket close after error failed:', e); }
+    };
+  }
+  open();
+}
+
+applyStatusTheme('offline');
+renderBadges(0);
+updateLastSeen('offline');
+fetchLanyard();
+connectLanyardSocket();
+setInterval(fetchLanyard, 60000);
+document.addEventListener('visibilitychange', () => { if(!document.hidden) fetchLanyard(); });
+
+const WING_SFX_SRC = "https://raw.githubusercontent.com/fixk1234/12344/cf6eadc9a9cba1620462478222bda2eb2415ac94/kula-diamond-bye-bye-_v_-made-with-Voicemod.mp3";
+const wingEl = document.getElementById('sigilWings');
+let wingSfx = null;
+let wingSfxCtx = null;
+let wingSfxGain = null;
+let wingSfxBoosted = false;
+
+function setupWingSfxBoost(){
+  if(wingSfxBoosted || !wingSfx) return;
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    wingSfxCtx = new AC();
+    const src = wingSfxCtx.createMediaElementSource(wingSfx);
+    wingSfxGain = wingSfxCtx.createGain();
+    wingSfxGain.gain.value = 2.6;
+    const limiter = wingSfxCtx.createDynamicsCompressor();   // 증폭 시 갑작스러운 큰 소리 방지
+    src.connect(wingSfxGain).connect(limiter).connect(wingSfxCtx.destination);
+    wingSfxBoosted = true;
+  }catch(err){ console.error('wing sfx gain boost setup failed:', err); }
+}
+
+let wingStruckTimer = null;
+function triggerWingStrike(){
+  wingEl.classList.remove('wing-struck');
+  void wingEl.offsetWidth;
+  wingEl.classList.add('wing-struck');
+  clearTimeout(wingStruckTimer);
+  wingStruckTimer = setTimeout(() => {
+    wingEl.classList.remove('wing-struck');
+  }, 720);
+  for(let i=0;i<14;i++){ setTimeout(spawnWingSpark, i*35); }
+  if(sfxMuted()) return;
+  try{
+    if(!wingSfx){
+      wingSfx = new Audio(WING_SFX_SRC);
+      wingSfx.volume = 1;
+      wingSfx.crossOrigin = 'anonymous';
+    }
+    setupWingSfxBoost();
+    if(wingSfxCtx && wingSfxCtx.state === 'suspended'){ wingSfxCtx.resume(); }
+    wingSfx.currentTime = 0;
+    wingSfx.play().catch(()=>{});
+  }catch(err){ console.error('wing sfx playback failed:', err); }
+}
+if(wingEl){
+  wingEl.addEventListener('click', triggerWingStrike);
+  wingEl.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+      ev.preventDefault();
+      triggerWingStrike();
+    }
+  });
+}
+})();
+</script>
+</body>
+</html>
